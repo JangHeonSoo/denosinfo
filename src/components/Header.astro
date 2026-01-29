@@ -1,0 +1,114 @@
+---
+import HeaderLink from '@/components/HeaderLink'
+import TwitterIcon from '@/components/icons/TwitterIcon'
+import GithubIcon from '@/components/icons/GithubIcon'
+import MenuIcon from './icons/MenuIcon.astro'
+import Search from '@/components/Search'
+import TagIcon from './icons/TagIcon.astro'
+import ToggleTheme from './ToggleTheme.astro'
+import { siteConfig } from '@/data/site.config'
+
+// ADD YOUR SOCIAL NETWORKS HERE
+const SOCIALNETWORKS = [
+	{
+		name: 'Github',
+		url: `https://github.com/${siteConfig.social.github}`,
+		icon: GithubIcon
+	},
+
+	{
+		name: 'Twitter',
+		url: `https://twitter.com/${siteConfig.social.twitter}`,
+		icon: TwitterIcon
+	}
+].filter(network => siteConfig.social.github || siteConfig.social.twitter)
+---
+
+<header class='fixed top-0 left-0 right-0 w-full h-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-50 border-b border-black/5 dark:border-white/10'>
+	<div class='w-full h-full px-5 md:px-8 lg:px-12 flex justify-between items-center'>
+		<a class='text-2xl font-heading font-bold text-primary-dark dark:text-primary tracking-tight' href='/'>
+			DENOS<span class='text-secondary'>INFO</span>
+		</a>
+
+		<nav class='hidden md:flex items-center gap-8'>
+			<HeaderLink href='/' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
+				홈
+			</HeaderLink>
+			<HeaderLink href='/about' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
+				About
+			</HeaderLink>
+			<HeaderLink href='/contact' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
+				협찬문의
+			</HeaderLink>
+			<HeaderLink href='/tags' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
+				Tags
+			</HeaderLink>
+			
+			<div class='flex items-center gap-3'>
+				<Search />
+				<ToggleTheme />
+			</div>
+		</nav>
+
+		<button id='astro-header-drawer-button' type='button' class='md:hidden'>
+			<MenuIcon />
+			<span class='sr-only'>Show Menu</span>
+		</button>
+	</div>
+</header>
+
+<!-- Mobile Menu -->
+<div
+	id='astro-header-drawer'
+	class='md:hidden fixed top-20 right-0 w-64 h-screen bg-white dark:bg-gray-800 shadow-xl transform translate-x-full transition-transform duration-300 z-40'
+>
+	<nav class='flex flex-col p-6 gap-4'>
+		<HeaderLink href='/' class='text-lg'>홈</HeaderLink>
+		<HeaderLink href='/about' class='text-lg'>About</HeaderLink>
+		<HeaderLink href='/contact' class='text-lg'>협찬문의</HeaderLink>
+		<HeaderLink href='/tags' class='text-lg'>Tags</HeaderLink>
+	</nav>
+</div>
+
+<script>
+	function initMobileMenu() {
+		const menu = document.getElementById('astro-header-drawer')
+		const menuButton = document.getElementById('astro-header-drawer-button')
+		
+		if (!menu || !menuButton) return
+		
+		// Toggle menu when button is clicked
+		menuButton.addEventListener('click', (e) => {
+			e.stopPropagation()
+			menu.classList.toggle('translate-x-full')
+		})
+		
+		// Close menu when clicking outside
+		document.addEventListener('click', (event) => {
+			const isClickInside = menu.contains(event.target as HTMLElement) || 
+			                      menuButton.contains(event.target as HTMLElement)
+			
+			if (!isClickInside && !menu.classList.contains('translate-x-full')) {
+				menu.classList.add('translate-x-full')
+			}
+		})
+		
+		// Close menu when clicking a link
+		const menuLinks = menu.querySelectorAll('a')
+		menuLinks.forEach(link => {
+			link.addEventListener('click', () => {
+				menu.classList.add('translate-x-full')
+			})
+		})
+	}
+	
+	// Run on initial load
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initMobileMenu)
+	} else {
+		initMobileMenu()
+	}
+	
+	// Re-run on page navigation
+	document.addEventListener('astro:page-load', initMobileMenu)
+</script>

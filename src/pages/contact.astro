@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import FadeIn from '../components/FadeIn.astro'
+---
+
+<BaseLayout title="Contact" description="Denosinfo 문의하기">
+
+<div class="min-h-screen flex flex-col lg:flex-row relative">
+  
+  <!-- Left Column: Inspiring Image (Sticky on Desktop) -->
+  <div class="lg:w-1/2 relative min-h-[400px] lg:h-screen lg:sticky lg:top-0 z-0">
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black w-full h-full"></div>
+      <div class="absolute inset-0 bg-[url('/images/hero-tech.png')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
+      <div class="absolute inset-0 bg-primary-dark/20 mix-blend-multiply"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/50"></div>
+    </div>
+    
+    <div class="absolute bottom-10 left-10 right-10 text-white z-10">
+      <FadeIn delay={0.2} direction="up">
+        <h1 class="text-4xl lg:text-5xl font-heading font-extrabold mb-4 leading-tight">
+          Let's Connect<br/>& Collaborate
+        </h1>
+        <p class="text-lg lg:text-xl text-white/90 font-light max-w-md">
+          새로운 프로젝트, 기술 교류, 그리고 재미있는 아이디어.<br/>
+          언제든 환영합니다.
+        </p>
+      </FadeIn>
+    </div>
+  </div>
+
+  <!-- Right Column: Content (Scrollable) -->
+  <div class="lg:w-1/2 bg-white dark:bg-[#0a0910] relative z-10">
+    <div class="max-w-2xl mx-auto px-6 py-20 lg:py-32">
+      
+      <FadeIn direction="up">
+        <div class="mb-16">
+          <span class="text-primary font-bold tracking-widest uppercase text-sm mb-2 block">Contact</span>
+          <h2 class="text-3xl font-heading font-bold mb-6 text-text-main dark:text-white">문의 및 제안</h2>
+          <p class="text-text-muted dark:text-gray-400 text-lg leading-relaxed">
+            협업 제안, 기술 질문, 혹은 가벼운 커피챗도 좋습니다.<br/>
+            자유롭게 연락주세요.
+          </p>
+        </div>
+      </FadeIn>
+
+      <!-- Category Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        <FadeIn delay={0.1} class="h-full">
+          <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
+            <div class="text-3xl mb-4">💻</div>
+            <h3 class="font-bold text-lg mb-2">Development</h3>
+            <p class="text-sm text-text-muted dark:text-gray-400">오픈소스 프로젝트 협업, 코드 리뷰, 기술 자문</p>
+          </div>
+        </FadeIn>
+        
+        <FadeIn delay={0.2} class="h-full">
+          <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
+            <div class="text-3xl mb-4">🤖</div>
+            <h3 class="font-bold text-lg mb-2">AI & Tech</h3>
+            <p class="text-sm text-text-muted dark:text-gray-400">최신 기술 트렌드 토론, AI 활용 사례 공유</p>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.3} class="h-full">
+          <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
+            <div class="text-3xl mb-4">🚗</div>
+            <h3 class="font-bold text-lg mb-2">Automotive</h3>
+            <p class="text-sm text-text-muted dark:text-gray-400">자동차 시승기, 메카닉 관련 이야기</p>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.4} class="h-full">
+          <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
+            <div class="text-3xl mb-4">☕️</div>
+            <h3 class="font-bold text-lg mb-2">Coffee Chat</h3>
+            <p class="text-sm text-text-muted dark:text-gray-400">가벼운 네트워킹 및 소통</p>
+          </div>
+        </FadeIn>
+      </div>
+
+      <!-- Email CTA -->
+      <FadeIn direction="up">
+        <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden group border border-gray-100 dark:border-gray-700">
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-colors"></div>
+          
+          <h3 class="text-2xl font-bold mb-2">이메일 보내기</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-8 text-sm">확인 후 최대한 빠르게 회신 드리겠습니다.</p>
+          
+          <a href="mailto:contact@denosinfo.com" class="block w-full text-center py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-primary/20">
+            contact@denosinfo.com
+          </a>
+        </div>
+      </FadeIn>
+      
+    </div>
+  </div>
+</div>
+
+</BaseLayout>

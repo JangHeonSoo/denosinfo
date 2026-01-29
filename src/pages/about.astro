@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import FadeIn from '../components/FadeIn.astro'
+---
+
+<BaseLayout title="About Denosinfo" description="자동차, AI, 테크, 오픈소스, 여행 등 다양한 관심사를 기록하는 블로그입니다.">
+
+<!-- Hero Section with Parallax Effect -->
+<div class="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black w-full h-full"></div>
+    <div class="absolute inset-0 bg-[url('/images/hero-tech.png')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg-light dark:to-gray-950"></div>
+  </div>
+  
+  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-10">
+    <FadeIn delay={0.2} direction="up">
+      <h1 class="text-5xl md:text-7xl font-heading font-extrabold mb-6 text-white drop-shadow-lg tracking-tight">
+        DENOS<span class="text-primary">INFO</span>
+      </h1>
+    </FadeIn>
+    <FadeIn delay={0.4} direction="up">
+      <p class="text-xl md:text-3xl text-white/90 font-light leading-relaxed drop-shadow-md">
+        Technology, Automotive & <span class="text-primary font-bold">Life</span><br/>
+        <span class="text-lg md:text-xl mt-4 block opacity-80">개인의 취향과 지식이 모이는 공간</span>
+      </p>
+    </FadeIn>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+
+  <!-- Intro Story -->
+  <div class="max-w-3xl mx-auto text-center mb-32">
+    <FadeIn direction="up">
+      <h2 class="text-3xl md:text-4xl font-heading font-bold mb-8 leading-snug">
+        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">탐구하고, 기록하고, 공유합니다.</span>
+      </h2>
+    </FadeIn>
+    
+    <div class="space-y-6 text-lg md:text-xl text-text-muted dark:text-gray-300 leading-relaxed">
+      <FadeIn delay={0.2} direction="up">
+        <p>
+          Denosinfo는 저의 지극히 주관적인 관심사를 다루는 <strong>개인 블로그</strong>입니다.<br/>
+          최신 자동차 트렌드부터 AI 기술, 그리고 때때로 떠나는 여행의 기록까지.
+        </p>
+      </FadeIn>
+      <FadeIn delay={0.4} direction="up">
+        <p>
+          깊이 있는 기술 분석부터 가벼운 일상의 생각까지,<br/>
+          <strong class="text-primary">다양한 시각</strong>으로 세상을 바라보고 기록합니다.
+        </p>
+      </FadeIn>
+    </div>
+  </div>
+
+  <!-- Bento Grid Layout -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
+    
+    <!-- Large Card: Automotive (2x2) -->
+    <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-3xl shadow-xl min-h-[400px] bg-gray-900">
+      <FadeIn class="h-full" delay={0.1}>
+        <!-- Placeholder for Car Image -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-purple-900/50"></div> 
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+          <span class="text-primary font-bold tracking-wider mb-2">PASSION</span>
+          <h3 class="text-3xl md:text-4xl font-heading font-bold !text-white mb-2">Automotive</h3>
+          <p class="text-white/90 text-lg">내연기관의 감성부터 전기차의 혁신까지, 자동차의 모든 것</p>
+        </div>
+      </FadeIn>
+    </div>
+
+    <!-- AI & Tech (1x1 top-right) -->
+    <div class="relative group overflow-hidden rounded-3xl shadow-xl min-h-[250px] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+      <FadeIn class="h-full flex flex-col" delay={0.2}>
+        <div class="p-8 flex flex-col justify-center h-full">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl">🤖</span>
+            <h3 class="text-2xl font-heading font-bold">AI & Tech</h3>
+          </div>
+          <p class="text-base text-text-muted dark:text-gray-400">
+            LLM, 생성형 AI, 그리고 급변하는 테크 트렌드를 분석합니다.
+          </p>
+        </div>
+      </FadeIn>
+    </div>
+
+    <!-- Dev (1x1 bottom-right) -->
+    <div class="relative group overflow-hidden rounded-3xl shadow-lg bg-[#f8f9fa] dark:bg-gray-800 p-8 border border-gray-100 dark:border-gray-700 flex flex-col justify-center">
+      <FadeIn delay={0.3}>
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-2xl font-heading font-bold">Development</h3>
+          <span class="text-4xl">💻</span>
+        </div>
+        <p class="text-text-muted dark:text-gray-400">오픈소스 활동과<br/>개발 노하우 공유</p>
+      </FadeIn>
+    </div>
+
+    <!-- Travel (3x1 Full Width) -->
+    <div class="md:col-span-3 relative group overflow-hidden rounded-3xl shadow-lg bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 p-8 border border-primary/10">
+      <FadeIn delay={0.4}>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="text-2xl font-heading font-bold text-primary-dark dark:text-primary">Travel & Life</h3>
+              <span class="text-3xl">✈️</span>
+            </div>
+            <p class="text-text-muted dark:text-gray-300">새로운 곳에서의 영감과 일상의 기록</p>
+          </div>
+          <div class="md:text-right">
+             <span class="text-lg md:text-xl font-bold text-secondary">Digital Nomad</span>
+             <span class="block text-sm opacity-70">Lifestyle</span>
+          </div>
+        </div>
+      </FadeIn>
+    </div>
+
+  </div>
+
+  <!-- Contact CTA -->
+  <div class="text-center pb-10">
+    <FadeIn direction="up">
+      <h2 class="text-3xl font-heading font-bold mb-6">궁금한 점이 있으신가요?</h2>
+      <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-primary rounded-full hover:bg-primary-dark hover:scale-105 shadow-lg shadow-primary/30">
+        문의하기 →
+      </a>
+    </FadeIn>
+  </div>
+
+</div>
+
+</BaseLayout>

@@ -1,0 +1,16 @@
+export default class DaysView extends React.Component<any, any, any> {
+    static defaultProps: {
+        isValidDate: () => boolean;
+        renderDay: (props: any, date: any) => JSX.Element;
+    };
+    constructor(props: any);
+    constructor(props: any, context: any);
+    render(): JSX.Element;
+    renderNavigation(): JSX.Element;
+    renderDayHeaders(): JSX.Element;
+    renderDays(): JSX.Element[];
+    renderDay(date: any, startOfMonth: any, endOfMonth: any): any;
+    renderFooter(): JSX.Element;
+    _setDate: (e: any) => void;
+}
+import React from "react";

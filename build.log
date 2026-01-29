@@ -1,0 +1,24 @@
+
+> blog-template@1.1.0 build /Users/heonsoojang/Dev/denosinfo
+> astro build
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+18:16:51 [content] Syncing content
+18:16:51 [content] Synced content
+18:16:51 [types] Generated 94ms
+18:16:51 [build] output: "static"
+18:16:51 [build] directory: /Users/heonsoojang/Dev/denosinfo/dist/
+18:16:51 [build] Collecting build info...
+18:16:51 [build] ✓ Completed in 125ms.
+18:16:51 [build] Building static entrypoints...
+18:16:51 [ERROR] [vite] x Build failed in 836ms
+[vite]: Rollup failed to resolve import "moment" from "/Users/heonsoojang/Dev/denosinfo/src/components/fit.jsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+  Stack trace:
+    at viteWarn (file:///Users/heonsoojang/Dev/denosinfo/node_modules/.pnpm/vite@5.4.21_@types+node@25.0.10_terser@5.46.0/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:65855:17)
+    at onRollupWarning (file:///Users/heonsoojang/Dev/denosinfo/node_modules/.pnpm/vite@5.4.21_@types+node@25.0.10_terser@5.46.0/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:65885:5)
+    at file:///Users/heonsoojang/Dev/denosinfo/node_modules/.pnpm/rollup@4.57.0/node_modules/rollup/dist/es/shared/node-entry.js:20969:13
+    at ModuleLoader.handleInvalidResolvedId (file:///Users/heonsoojang/Dev/denosinfo/node_modules/.pnpm/rollup@4.57.0/node_modules/rollup/dist/es/shared/node-entry.js:21686:26)
+ ELIFECYCLE  Command failed with exit code 1.

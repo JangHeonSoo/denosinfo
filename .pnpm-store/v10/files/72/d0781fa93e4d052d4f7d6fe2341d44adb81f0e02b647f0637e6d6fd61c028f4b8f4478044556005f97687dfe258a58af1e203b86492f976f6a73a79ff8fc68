@@ -1,0 +1,17 @@
+export default class YearsView extends React.Component<any, any, any> {
+    static defaultProps: {
+        renderYear: (props: any, year: any) => JSX.Element;
+    };
+    constructor(props: any);
+    constructor(props: any, context: any);
+    render(): JSX.Element;
+    renderNavigation(): JSX.Element;
+    renderYears(): JSX.Element[];
+    renderYear(year: any): any;
+    getViewYear(): number;
+    getSelectedYear(): any;
+    disabledYearsCache: {};
+    isDisabledYear(year: any): any;
+    _updateSelectedYear: (event: any) => void;
+}
+import React from "react";

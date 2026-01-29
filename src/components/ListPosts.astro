@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import PostCard from '@/components/PostCard'
+import { cn } from '@/utils'
+
+type Props = {
+	posts: CollectionEntry<'blog'>[]
+	FirstBig?: boolean
+}
+
+const { posts, FirstBig = false } = Astro.props
+---
+
+<section
+<section class='grid grid-cols-list gap-10 pb-20'>
+	{
+		posts.map((post, index) => (
+			<PostCard
+				id={post.id}
+				data={post.data}
+				slug={post.slug}
+				readTime={post.readTime}
+			/>
+		))
+	}
+</section>

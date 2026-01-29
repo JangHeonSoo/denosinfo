@@ -1,0 +1,23 @@
+---
+import { cn, sluglify, getCategoryTitleFromSlug } from '@/utils'
+
+const { name = 'View All', activeCategory } = Astro.props
+const currentPath = Astro.url.pathname
+const categoryTitle = getCategoryTitleFromSlug(name.toLowerCase())
+
+const isActive =
+	activeCategory?.toLocaleLowerCase() === categoryTitle ||
+	(currentPath === '/' && name === 'View All')
+---
+
+<a
+	href={name === 'View All' ? '/' : sluglify(`/${name.toLowerCase()}/1`)}
+	class={cn(
+		`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-sm`,
+		isActive
+			? `bg-primary text-white shadow-lg shadow-primary/30`
+			: `bg-white dark:bg-gray-800 text-text-muted dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/30`
+	)}
+>
+	{categoryTitle}
+</a>
