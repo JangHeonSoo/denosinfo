@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout'
-import FadeIn from '../../components/FadeIn.astro'
+import FadeIn from '@/components/FadeIn'
 import { getPosts } from '@/utils'
 
 // Get all posts and count tag frequencies
@@ -13,112 +13,81 @@ posts.forEach(post => {
 	})
 })
 
-// Convert to array and sort by count
-const sortedTags = Array.from(tagCounts.entries())
+// Convert to array and sort by count calling it 'tags' for easier mapping
+const tags = Array.from(tagCounts.entries())
 	.sort((a, b) => b[1] - a[1])
+    .map(([tag, count]) => ({ name: tag, count }))
 
-// Calculate font sizes based on frequency (Updated for Word Cloud)
-const maxCount = Math.max(...Array.from(tagCounts.values()))
-const minCount = Math.min(...Array.from(tagCounts.values()))
-
-const getFontSize = (count: number) => {
-	if (maxCount === minCount) return 32
-	const ratio = (count - minCount) / (maxCount - minCount)
-	return Math.round(16 + ratio * 48) // 16px to 64px range
-}
-
-const getOpacity = (count: number) => {
-    if (maxCount === minCount) return 1
-    const ratio = (count - minCount) / (maxCount - minCount)
-    return 0.4 + (ratio * 0.6) // 0.4 to 1.0 opacity
-}
 ---
 
 <BaseLayout title='Tags'>
     
     <!-- Hero Section -->
-    <div class="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden mb-20">
-        <div class="absolute inset-0 z-0">
-             <img src="/images/tags-hero.png" alt="Tags Hero" class="w-full h-full object-cover" />
-             <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm"></div>
-             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-bg-light dark:to-[#0a0910]"></div>
-        </div>
-        
-        <div class="relative z-10 text-center px-4">
-            <FadeIn delay={0.2} direction="up">
-                <span class="block text-primary font-bold tracking-widest uppercase mb-4">Explore Topics</span>
-                <h1 class="text-5xl md:text-7xl font-heading font-extrabold mb-6 text-text-main dark:text-white tracking-tight">
-                    태그로 보는<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">농장 이야기</span>
+    <div class="relative py-20 mb-12 bg-gradient-to-br from-bg-light to-white dark:from-[#0f172a] dark:to-[#1e293b] overflow-hidden">
+        <div class="absolute inset-0 opacity-10 dark:opacity-20 pattern-grid-lg"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <FadeIn delay={0.1} direction="up">
+                <span class="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary font-bold text-sm mb-6 tracking-wide uppercase">
+                    Topics & Interests
+                </span>
+                <h1 class="text-4xl md:text-5xl font-heading font-black mb-6 text-gray-900 dark:text-white">
+                    Explore by <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Category</span>
                 </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10">
+                    Find articles that match your interests from our collection of {posts.length} stories.
+                </p>
+
+                <!-- Search Input -->
+                <div class="max-w-md mx-auto relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="tag-search" 
+                        placeholder="Search topics..." 
+                        class="w-full pl-11 pr-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none shadow-lg text-gray-900 dark:text-white placeholder-gray-400"
+                    >
+                </div>
             </FadeIn>
         </div>
     </div>
 
-
-	<div class="max-w-6xl mx-auto px-4 pb-20">
-		
+	<div class="max-w-7xl mx-auto px-4 pb-24">
         <FadeIn delay={0.3} direction="up">
-            <div class="bg-white dark:bg-gray-800/50 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 md:p-12 relative overflow-hidden">
-                
-                <!-- Background Decoration -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2"></div>
+            <div id="no-tags-found" class="hidden text-center py-20">
+                <p class="text-gray-500 text-lg">No topics found matching your search.</p>
+            </div>
 
-                <div class='flex justify-center flex-wrap gap-x-6 gap-y-8 items-center content-center relative z-10' id="tag-cloud">
-                    {
-                        sortedTags.map(([tag, count], index) => {
-                            const size = getFontSize(count);
-                            const isLarge = size > 24;
-                            return (
-                                <a
-                                    href={`/tags/${tag}`}
-                                    class={`
-                                        tag-item group relative inline-flex items-center justify-center
-                                        transition-all duration-500 ease-out
-                                        hover:scale-110 hover:z-20
-                                        ${isLarge ? 'font-black' : 'font-medium'}
-                                    `}
-                                    style={`
-                                        font-size: ${size}px;
-                                        opacity: ${getOpacity(count)};
-                                        color: ${isLarge ? 'var(--color-primary)' : 'inherit'};
-                                        animation: float ${3 + Math.random() * 2}s ease-in-out infinite;
-                                        animation-delay: ${Math.random() * 2}s;
-                                    `}
-                                    data-tag={tag.toLowerCase()}
-                                    title={`${count} posts`}
-                                >
-                                    <span class={`
-                                        ${isLarge ? 'text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary' : 'text-text-main dark:text-gray-300'}
-                                        group-hover:text-primary transition-colors
-                                    `}>
-                                        #{tag}
-                                    </span>
-                                </a>
-                            )
-                        })
-                    }
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="tag-grid">
+                {tags.map((tag) => (
+                    <a 
+                        href={`/tags/${tag.name.toLowerCase()}`}
+                        class="tag-item group relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col justify-between h-32 overflow-hidden"
+                        data-tag={tag.name.toLowerCase()}
+                    >
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                             <svg class="w-16 h-16 text-primary rotate-12" fill="currentColor" viewBox="0 0 24 24"><path d="M7 7h10v10H7z" fill="none"/><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors mb-1 break-words">
+                                #{tag.name}
+                            </h3>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-auto relative z-10">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
+                                {tag.count} {tag.count === 1 ? 'post' : 'posts'}
+                            </span>
+                            <span class="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </span>
+                        </div>
+                    </a>
+                ))}
             </div>
         </FadeIn>
-
-		<FadeIn delay={0.5} direction="up">
-			<div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 text-center border border-primary/10">
-                    <div class="text-4xl font-bold text-primary mb-2">{sortedTags.length}</div>
-                    <div class="text-sm text-text-muted dark:text-gray-400 font-medium">총 태그</div>
-                </div>
-                 <div class="bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-2xl p-6 text-center border border-secondary/10">
-                    <div class="text-4xl font-bold text-secondary mb-2">{posts.length}</div>
-                    <div class="text-sm text-text-muted dark:text-gray-400 font-medium">총 포스트</div>
-                </div>
-                 <div class="col-span-2 bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 flex items-center justify-center border border-gray-100 dark:border-gray-700">
-                    <p class="text-text-muted dark:text-gray-400 text-sm">
-                        가장 인기 있는 태그: <span class="font-bold text-primary text-lg ml-2">#{sortedTags[0]?.[0] || '없음'}</span>
-                    </p>
-                </div>
-			</div>
-		</FadeIn>
 	</div>
 </BaseLayout>
 
@@ -136,31 +105,20 @@ const getOpacity = (count: number) => {
                 const tagText = item.getAttribute('data-tag') || '';
                 
                 if (tagText.includes(searchTerm)) {
-                    item.style.display = 'inline-flex';
-                    item.style.opacity = '1';
-                    item.style.transform = 'scale(1)';
-                    item.style.filter = 'blur(0px)';
+                    item.style.display = 'flex'; // Restore flex for grid
+                    if(item.parentElement) item.parentElement.classList.remove('hidden'); // Ensure parent isn't hidden if we wrapped
+                    
+                    // Simple animation reset
+                    item.animate([
+                        { transform: 'scale(0.95)', opacity: 0.5 },
+                        { transform: 'scale(1)', opacity: 1 }
+                    ], { duration: 200, fill: 'forwards' });
+
                     hasVisibleTags = true;
                 } else {
-                    item.style.opacity = '0.1';
-                    item.style.transform = 'scale(0.8)';
-                    item.style.filter = 'blur(2px)';
-                    // Optional: completely hide if you prefer, but dimming looks cooler for cloud
-                    if (searchTerm.length > 0) item.style.display = 'none'; 
-                    else item.style.display = 'inline-flex'; // Restore on clear
+                    item.style.display = 'none';
                 }
             });
-
-            // If search is empty, restore original styles (random opacity/float) is tricky
-            // Simpler approach: Just reset opacity/display, animation handles the rest
-            if (searchTerm.length === 0) {
-                 tagItems.forEach((item) => {
-                    item.style.display = 'inline-flex';
-                    item.style.opacity = ''; // Revert to inline style from server
-                    item.style.transform = '';
-                    item.style.filter = '';
-                 });
-            }
 
             if (noResults) {
                 noResults.classList.toggle('hidden', hasVisibleTags);
@@ -170,13 +128,8 @@ const getOpacity = (count: number) => {
 </script>
 
 <style>
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes pulse-slow {
-        0%, 100% { opacity: 0.5; transform: scale(1) translateX(33%) translateY(-33%); }
-        50% { opacity: 0.8; transform: scale(1.1) translateX(33%) translateY(-33%); }
+    .pattern-grid-lg {
+        background-image: radial-gradient(currentColor 1px, transparent 1px);
+        background-size: 24px 24px;
     }
 </style>

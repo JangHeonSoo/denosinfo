@@ -2,8 +2,36 @@
 const today = new Date()
 ---
 
-<footer class='flex justify-center items-center w-full px-16 h-28 border-t-2 dark:border-gray-700'>
-	<p class='text-text-muted dark:text-gray-400'>
-		&copy; {today.getFullYear()} <strong class='text-primary'>Denosinfo</strong>. All rights reserved.
-	</p>
+<footer class='w-full py-10 mt-20 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0f172a]'>
+    <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center text-center">
+        <a class='flex items-center gap-2 mb-6 group' href='/'>
+            <div class="w-6 h-6 rounded bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">
+                D
+            </div>
+			<span class="text-lg font-heading font-bold text-gray-900 dark:text-white tracking-tight">
+                DENOS<span class='text-primary'>INFO</span>
+            </span>
+		</a>
+        
+        <p class='text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed'>
+            Exploring the future of Technology, Automotive advancements,<br class="hidden sm:block" />
+            and the Lifestyle of a digital nomad.
+        </p>
+        
+        <nav class="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium text-gray-600 dark:text-gray-300">
+            <a href="/" class="hover:text-primary transition-colors">Home</a>
+            <a href="/blog" class="hover:text-primary transition-colors">Blog</a>
+            <a href="/about" class="hover:text-primary transition-colors">About</a>
+            <a href="/contact" class="hover:text-primary transition-colors">Contact</a>
+            <a href="/tags" class="hover:text-primary transition-colors">Topics</a>
+        </nav>
+
+        <div class="flex items-center gap-4 mb-8">
+            <!-- Add Social Icons here if needed, for now placeholders or from siteConfig -->
+        </div>
+
+        <p class='text-xs text-gray-400 dark:text-gray-500'>
+            &copy; {today.getFullYear()} <strong class='text-gray-900 dark:text-white'>Denosinfo</strong>. All rights reserved.
+        </p>
+    </div>
 </footer>

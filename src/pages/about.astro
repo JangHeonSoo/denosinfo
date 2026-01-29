@@ -8,19 +8,19 @@ import FadeIn from '../components/FadeIn.astro'
 <!-- Hero Section with Parallax Effect -->
 <div class="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
   <div class="absolute inset-0 z-0">
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black w-full h-full"></div>
-    <div class="absolute inset-0 bg-[url('/images/hero-tech.png')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg-light dark:to-gray-950"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-bg-dark to-black w-full h-full"></div>
+    <div class="absolute inset-0 bg-[url('/images/hero-tech-us.png')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg-light dark:to-[#0a0910]"></div>
   </div>
   
   <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-10">
     <FadeIn delay={0.2} direction="up">
-      <h1 class="text-5xl md:text-7xl font-heading font-extrabold mb-6 text-white drop-shadow-lg tracking-tight">
+      <h1 class="text-5xl md:text-7xl font-heading font-extrabold mb-6 text-white drop-shadow-xl tracking-tight">
         DENOS<span class="text-primary">INFO</span>
       </h1>
     </FadeIn>
     <FadeIn delay={0.4} direction="up">
-      <p class="text-xl md:text-3xl text-white/90 font-light leading-relaxed drop-shadow-md">
+      <p class="text-xl md:text-3xl text-white/90 font-light leading-relaxed drop-shadow-lg">
         Technology, Automotive & <span class="text-primary font-bold">Life</span><br/>
         <span class="text-lg md:text-xl mt-4 block opacity-80">개인의 취향과 지식이 모이는 공간</span>
       </p>
@@ -33,7 +33,7 @@ import FadeIn from '../components/FadeIn.astro'
   <!-- Intro Story -->
   <div class="max-w-3xl mx-auto text-center mb-32">
     <FadeIn direction="up">
-      <h2 class="text-3xl md:text-4xl font-heading font-bold mb-8 leading-snug">
+      <h2 class="text-3xl md:text-4xl font-heading font-bold mb-8 leading-snug text-gray-900 dark:text-white">
         <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">탐구하고, 기록하고, 공유합니다.</span>
       </h2>
     </FadeIn>
@@ -76,7 +76,7 @@ import FadeIn from '../components/FadeIn.astro'
         <div class="p-8 flex flex-col justify-center h-full">
           <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl">🤖</span>
-            <h3 class="text-2xl font-heading font-bold">AI & Tech</h3>
+            <h3 class="text-2xl font-heading font-bold text-gray-900 dark:text-white">AI & Tech</h3>
           </div>
           <p class="text-base text-text-muted dark:text-gray-400">
             LLM, 생성형 AI, 그리고 급변하는 테크 트렌드를 분석합니다.
@@ -89,7 +89,7 @@ import FadeIn from '../components/FadeIn.astro'
     <div class="relative group overflow-hidden rounded-3xl shadow-lg bg-[#f8f9fa] dark:bg-gray-800 p-8 border border-gray-100 dark:border-gray-700 flex flex-col justify-center">
       <FadeIn delay={0.3}>
         <div class="flex justify-between items-start mb-4">
-          <h3 class="text-2xl font-heading font-bold">Development</h3>
+          <h3 class="text-2xl font-heading font-bold text-gray-900 dark:text-white">Development</h3>
           <span class="text-4xl">💻</span>
         </div>
         <p class="text-text-muted dark:text-gray-400">오픈소스 활동과<br/>개발 노하우 공유</p>
@@ -109,7 +109,7 @@ import FadeIn from '../components/FadeIn.astro'
           </div>
           <div class="md:text-right">
              <span class="text-lg md:text-xl font-bold text-secondary">Digital Nomad</span>
-             <span class="block text-sm opacity-70">Lifestyle</span>
+             <span class="block text-sm opacity-70 text-gray-600 dark:text-gray-400">Lifestyle</span>
           </div>
         </div>
       </FadeIn>
@@ -120,7 +120,7 @@ import FadeIn from '../components/FadeIn.astro'
   <!-- Contact CTA -->
   <div class="text-center pb-10">
     <FadeIn direction="up">
-      <h2 class="text-3xl font-heading font-bold mb-6">궁금한 점이 있으신가요?</h2>
+      <h2 class="text-3xl font-heading font-bold mb-6 text-gray-900 dark:text-white">궁금한 점이 있으신가요?</h2>
       <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-primary rounded-full hover:bg-primary-dark hover:scale-105 shadow-lg shadow-primary/30">
         문의하기 →
       </a>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@/layouts/BaseLayout'
+import ListPosts from '@/components/ListPosts'
+import FadeIn from '@/components/FadeIn'
+import { getTags, getPostByTag } from '@/utils'
+
+export async function getStaticPaths() {
+	const tags = await getTags()
+
+	return tags.map((tag) => ({
+		params: { tag },
+		props: { tag }
+	}))
+}
+
+const { tag } = Astro.props
+
+const posts = await getPostByTag(tag)
+---
+
+<BaseLayout title={tag}>
+    <!-- Section Header -->
+    <div class="relative py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-[#0a0910] mb-8">
+         <div class="max-w-4xl mx-auto px-4 text-center">
+            <FadeIn delay={0.1} direction="up">
+                <p class="text-sm font-bold text-primary uppercase tracking-widest mb-3">Topic</p>
+                <h1 class="text-4xl md:text-5xl font-heading font-black text-gray-900 dark:text-white mb-4">
+                    #{tag}
+                </h1>
+                <p class="text-gray-500 dark:text-gray-400">
+                    A collection of {posts.length} articles about {tag}
+                </p>
+            </FadeIn>
+         </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-20">
+        <FadeIn delay={0.2} direction="up">
+	        <ListPosts posts={posts} />
+        </FadeIn>
+
+        <div class="text-center mt-12">
+            <a href="/tags" class="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all">
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                View all topics
+            </a>
+        </div>
+    </div>
+</BaseLayout>

@@ -40,7 +40,7 @@ interface SiteConfig {
 			apiKey: string
 			dryRun: boolean
 			continueOnFailure: boolean
-			queries: string
+			queries: any
 		}
 	}
 	lang: string
@@ -69,9 +69,9 @@ export const siteConfig: SiteConfig = {
 		commentsEnabled: true,
 		commentsProps: {
 			repo: 'JangHeonSoo/denosinfo',
-			repoId: 'R_kgDORDA_Iw',
-			category: 'General',
-			categoryId: 'DIC_kwDORDA_I84C1kMb',
+			repoId: 'R_kgDORD8Vdw',
+			category: 'Announcements',
+			categoryId: 'DIC_kwDORD8Vd84C1mNX',
 			mapping: 'pathname',
 			strict: '0',
 			reactionsEnabled: '1',

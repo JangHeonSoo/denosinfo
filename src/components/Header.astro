@@ -24,33 +24,41 @@ const SOCIALNETWORKS = [
 ].filter(network => siteConfig.social.github || siteConfig.social.twitter)
 ---
 
-<header class='fixed top-0 left-0 right-0 w-full h-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-50 border-b border-black/5 dark:border-white/10'>
-	<div class='w-full h-full px-5 md:px-8 lg:px-12 flex justify-between items-center'>
-		<a class='text-2xl font-heading font-bold text-primary-dark dark:text-primary tracking-tight' href='/'>
-			DENOS<span class='text-secondary'>INFO</span>
+<header class='fixed top-0 left-0 right-0 w-full h-20 bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl z-50 border-b border-gray-200/50 dark:border-white/5 transition-all duration-300'>
+	<div class='w-full h-full px-5 md:px-8 lg:px-12 flex justify-between items-center max-w-7xl mx-auto'>
+		<a class='flex items-center gap-2 group' href='/'>
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
+                D
+            </div>
+			<span class="text-xl font-heading font-extrabold text-gray-900 dark:text-white tracking-tight">
+                DENOS<span class='text-primary'>INFO</span>
+            </span>
 		</a>
 
 		<nav class='hidden md:flex items-center gap-8'>
-			<HeaderLink href='/' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
-				홈
+			<HeaderLink href='/' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+				Home
 			</HeaderLink>
-			<HeaderLink href='/about' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
+            <HeaderLink href='/blog' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+				Blog
+			</HeaderLink>
+			<HeaderLink href='/tags' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+				Topics
+			</HeaderLink>
+            <HeaderLink href='/about' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				About
 			</HeaderLink>
-			<HeaderLink href='/contact' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
-				협찬문의
-			</HeaderLink>
-			<HeaderLink href='/tags' class='text-text-main dark:text-gray-300 font-medium hover:text-primary dark:hover:text-primary transition-colors'>
-				Tags
+			<HeaderLink href='/contact' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+				Contact
 			</HeaderLink>
 			
-			<div class='flex items-center gap-3'>
+			<div class='flex items-center gap-4 pl-4 border-l border-gray-200 dark:border-gray-800/50'>
 				<Search />
 				<ToggleTheme />
 			</div>
 		</nav>
 
-		<button id='astro-header-drawer-button' type='button' class='md:hidden'>
+		<button id='astro-header-drawer-button' type='button' class='md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'>
 			<MenuIcon />
 			<span class='sr-only'>Show Menu</span>
 		</button>
@@ -60,13 +68,19 @@ const SOCIALNETWORKS = [
 <!-- Mobile Menu -->
 <div
 	id='astro-header-drawer'
-	class='md:hidden fixed top-20 right-0 w-64 h-screen bg-white dark:bg-gray-800 shadow-xl transform translate-x-full transition-transform duration-300 z-40'
+	class='md:hidden fixed top-20 right-0 w-full sm:w-80 h-[calc(100vh-5rem)] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border-l border-gray-200 dark:border-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 z-40 ease-in-out'
 >
-	<nav class='flex flex-col p-6 gap-4'>
-		<HeaderLink href='/' class='text-lg'>홈</HeaderLink>
-		<HeaderLink href='/about' class='text-lg'>About</HeaderLink>
-		<HeaderLink href='/contact' class='text-lg'>협찬문의</HeaderLink>
-		<HeaderLink href='/tags' class='text-lg'>Tags</HeaderLink>
+	<nav class='flex flex-col p-8 gap-6 h-full overflow-y-auto'>
+		<HeaderLink href='/' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Home</HeaderLink>
+        <HeaderLink href='/blog' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Blog</HeaderLink>
+        <HeaderLink href='/tags' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Topics</HeaderLink>
+		<HeaderLink href='/about' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>About</HeaderLink>
+		<HeaderLink href='/contact' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Contact</HeaderLink>
+        
+        <div class="mt-auto flex items-center justify-between pt-8">
+            <span class="font-bold text-gray-500">Theme</span>
+            <ToggleTheme />
+        </div>
 	</nav>
 </div>
 
@@ -81,6 +95,13 @@ const SOCIALNETWORKS = [
 		menuButton.addEventListener('click', (e) => {
 			e.stopPropagation()
 			menu.classList.toggle('translate-x-full')
+            
+            // Toggle body scroll
+            if (!menu.classList.contains('translate-x-full')) {
+                document.body.style.overflow = 'hidden'
+            } else {
+                document.body.style.overflow = ''
+            }
 		})
 		
 		// Close menu when clicking outside
@@ -90,6 +111,7 @@ const SOCIALNETWORKS = [
 			
 			if (!isClickInside && !menu.classList.contains('translate-x-full')) {
 				menu.classList.add('translate-x-full')
+                document.body.style.overflow = ''
 			}
 		})
 		
@@ -98,6 +120,7 @@ const SOCIALNETWORKS = [
 		menuLinks.forEach(link => {
 			link.addEventListener('click', () => {
 				menu.classList.add('translate-x-full')
+                document.body.style.overflow = ''
 			})
 		})
 	}
