@@ -10,7 +10,7 @@ import rehypeKatex from 'rehype-katex'
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://astro-blog-template.maulana.id/', // Write here your website url
+	site: 'https://denosinfo.com', // Write here your website url
 	i18n: {
 		locales: ['ko', 'en'],
 		defaultLocale: 'ko',
