@@ -1,2 +1,27 @@
 [build]
   command = 'pnpm build'
+
+[[redirects]]
+  from = "/"
+  to = "/ko"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/ko/blog/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/tags/*"
+  to = "/ko/tags/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/about"
+  to = "/ko/about"
+  status = 301
+
+[[redirects]]
+  from = "/contact"
+  to = "/ko/contact"
+  status = 301
