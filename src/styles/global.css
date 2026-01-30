@@ -21,6 +21,11 @@
 		@apply text-zinc-800 dark:text-zinc-100 !important;
 	}
 
+	.prose del,
+	.prose s {
+		text-decoration: none;
+	}
+
 	html.dark .shiki,
 	html.dark .shiki span {
 		color: var(--shiki-dark) !important;
