@@ -5,6 +5,7 @@
   from = "/"
   to = "/ko"
   status = 301
+  force = true
 
 [[redirects]]
   from = "/blog/*"
