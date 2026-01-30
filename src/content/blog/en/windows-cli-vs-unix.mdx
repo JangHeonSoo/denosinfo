@@ -1,0 +1,691 @@
+---
+title: 'Using CLI on Windows? PowerShell vs Unix Terminal - A Developer’s Perspective'
+description: 'Comparing the philosophy, performance, and practical utility of Windows PowerShell and Unix-based terminals in modern development environments.'
+pubDate: 2026-01-30
+category: 'Tech'
+tags: ['Windows', 'Unix', 'CLI', 'PowerShell', 'Terminal', 'WSL2', 'DevTools']
+heroImage: '/images/cli-coding-strings.png'
+---
+
+# Using CLI on Windows? PowerShell vs Unix Terminal - A Developer’s Perspective
+
+## Getting Started
+
+Thought `npm install` would just work. Permission error pops up. They say use sudo... oh wait. This is Windows.
+
+These days, using AI coding tools like Cursor and OpenCode, I've naturally shifted to CLI-first development. Used to fire up Eclipse, IntelliJ IDEA, or VS Code and click around with the mouse. Not anymore. One terminal window is enough.
+
+Using a MacBook made me realize - from a developer's standpoint, macOS can do so much more. What makes that possible is the Terminal. The CLI. `brew install`, `git clone`, `npm run`... everything happens in the terminal.
+
+Of course Windows has one too. PowerShell...
+
+But really. Can it compete with Unix-based terminals? Got curious, so I looked into it.
+
+## Historical Background is Different
+
+### Unix/Linux: CLI is Fundamental
+
+Unix-based operating systems were designed CLI-first from the beginning. There's know-how accumulated since the 1970s. Bash came out in 1989, with decades-proven tools built-in by default. `grep`, `awk`, `sed`, `find`... these are Unix's DNA.
+
+macOS is the same. Built on Unix foundations through NeXTSTEP and OPENSTEP, it provides powerful Unix shells by default. Terminal.app alone can run zsh, bash, ksh, tcsh - all of them.
+
+### Windows: Added Later
+
+Windows, on the other hand, was GUI-first. There was CLI in the DOS days, but when Windows came, it went GUI-centric. CMD (Command Prompt) was... honestly trash. Anyone who's made batch files knows. That torturous syntax.
+
+So Microsoft created PowerShell in 2006. "Let's make a modern shell too!" But the approach was completely different. Not text pipes, but object pipes. Based on .NET Framework.
+
+The problem? Having to maintain two shells simultaneously. CMD stays for backward compatibility, PowerShell pushed as new automation tool... This is Windows's "dual-shell strategy".
+
+## Philosophy is Different
+
+### Unix: Everything is a file, everything is text
+
+Unix philosophy is simple:
+
+1. Make small tools
+2. Connect via text streams
+3. Combine with pipes
+
+Example. Finding errors in log files, counting, and sorting:
+
+```bash
+cat app.log | grep "ERROR" | wc -l | sort
+```
+
+Each command receives text and outputs text. Simple. This is the way proven over 50 years.
+
+### PowerShell: Everything is an object
+
+PowerShell is different. It handles objects:
+
+```powershell
+Get-Process | Where-Object {$_.CPU -gt 50} | Select-Object Name, CPU
+```
+
+Here `Get-Process` doesn't return a string but a **Process object**. It has properties (Name, CPU) and methods. The power of `.NET`.
+
+Advantage? No text parsing needed. Don't need to know `awk` or `sed`. Just access object properties and you're done.
+
+Disadvantage? Heavy. Slower than Bash. Uses more memory too.
+
+## Differences You Feel in Real Use
+
+### 1. Package Managers
+
+**macOS: Homebrew**
+
+Installing dev tools on Mac is really easy:
+
+```bash
+brew install git node python
+brew install --cask docker visual-studio-code
+```
+
+Done. Homebrew has been around since 2009, with a massive ecosystem. Can add third-party repos with `brew tap`. Even installs fonts:
+
+```bash
+brew tap homebrew/cask-fonts
+brew install --cask font-fira-code
+```
+
+**Windows: Chocolatey? Scoop? Winget?**
+
+Windows is... complicated. Three competing.
+
+**Chocolatey**:
+- Oldest (since 2011)
+- Large package repository
+- But requires admin privileges
+- Executes PowerShell scripts (potential security issues)
+
+```powershell
+choco install git nodejs python
+```
+
+**Scoop**:
+- Developer-friendly
+- No admin privileges needed! (installs to `~/scoop/` by default)
+- Many Unix-style tools
+- Doesn't pollute PATH (uses shims)
+
+```powershell
+scoop install git nodejs python
+```
+
+**Winget**:
+- Microsoft official
+- Built-in from Windows 10 1809
+- But package count is...
+
+Struggled with this: Installed dev tools with Scoop but OBS Studio plugins couldn't find the path. Not in default install path (`C:\Program Files`). Ended up reinstalling with Chocolatey.
+
+Found out later: Scoop is optimized for "portable" apps. CLI tools and dev tools use Scoop, GUI applications use Chocolatey.
+
+### 2. Command Style
+
+**Unix: Short and cryptic**
+
+```bash
+ls -la | grep "config" | awk '{print $9}'
+```
+
+First time seeing this, no idea what it means. But once familiar, it's fast. `ls`, `cd`, `mv`, `cp`... commands made to minimize typing.
+
+**PowerShell: Verb-Noun structure**
+
+```powershell
+Get-ChildItem | Where-Object {$_.Name -like "*config*"} | Select-Object Name
+```
+
+Long. But readable. `Get-Process`, `Start-Service`, `New-Item`... there's a pattern. IntelliSense works great.
+
+But PowerShell also supports Unix command aliases:
+
+```powershell
+ls  # alias for Get-ChildItem
+cd  # alias for Set-Location
+cp  # alias for Copy-Item
+```
+
+### 3. Scripting
+
+**Bash: God of Text Processing**
+
+Extract IP addresses from log file, remove duplicates and count:
+
+```bash
+grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b' access.log | sort | uniq -c | sort -nr
+```
+
+One line done. The combination of `grep`, `awk`, `sed` is truly powerful.
+
+But complex logic... if statement indentation is hell:
+
+```bash
+if [ -f "$file" ]; then
+    if [ -r "$file" ]; then
+        echo "File is readable"
+    fi
+fi
+```
+
+**PowerShell: Closer to a Programming Language**
+
+```powershell
+if (Test-Path $file) {
+    if (Test-Path $file -PathType Leaf) {
+        Write-Host "File is readable"
+    }
+}
+```
+
+Syntax is more intuitive. Familiar to those who've used C# or JavaScript. Can use try-catch for error handling.
+
+A 25-line Bash script might become 3 lines in PowerShell. Thanks to objects.
+
+### 4. The Arrival of WSL2
+
+Often thought "why doesn't this work?" Trying to run `make` on Windows doesn't work, no `rsync`, running Bash scripts throws errors.
+
+That's why WSL2 (Windows Subsystem for Linux 2) came out.
+
+**What is WSL2**
+
+WSL1 translated Linux system calls to Windows API. It was an emulation layer. Slow, compatibility wasn't great.
+
+WSL2 is different:
+- Runs a **real Linux kernel**
+- Hyper-V based lightweight virtualization
+- Can access Windows file system (`/mnt/c/`)
+- Perfect integration with VS Code Remote extension
+
+Installation is simple:
+
+```powershell
+wsl --install
+wsl --set-default-version 2
+wsl --install -d Ubuntu-20.04
+```
+
+**Real Usage Experience**
+
+Docker is much faster on WSL2. Not as fast as native Linux, but perceptually no big difference.
+
+Node.js development also done in WSL2. `npm install` faster than Windows, symbolic links no problem.
+
+But networking is complex. localhost behaves differently between inside WSL and Windows sometimes.
+
+Struggled with this: Working on git repo in WSL2, opening in Windows shows all files as modified. Line ending differences. Fixed with `.gitattributes` config.
+
+Found out later: Mixing WSL2 file system and Windows file system drops I/O performance. Better to work inside WSL and only view from Windows.
+
+### 5. Terminal App Itself is Different
+
+**macOS: Terminal.app + iTerm2**
+
+Default Terminal.app isn't bad. But iTerm2 is on another level:
+
+- Split panes (horizontal/vertical)
+- Hotkey window (instant popup with shortcut)
+- Instant replay (rewind terminal history)
+- Triggers (react to text patterns)
+- Unlimited scrollback
+
+zsh + oh-my-zsh combination is really powerful:
+
+```bash
+# .zshrc config
+ZSH_THEME="agnoster"
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+```
+
+Auto-completion is amazing. Git branch visible at a glance, suggests commands too.
+
+**Windows: Windows Terminal**
+
+Modern terminal Microsoft made in 2019:
+
+- Tab, split pane support
+- GPU-accelerated text rendering
+- Supports PowerShell, CMD, WSL all
+- Quake mode (fixed to top of screen)
+- Command Palette (Ctrl+Shift+P)
+
+Settings via JSON file modification:
+
+```json
+{
+    "profiles": {
+        "defaults": {
+            "font": {
+                "face": "Cascadia Code",
+                "size": 11
+            },
+            "colorScheme": "One Half Dark"
+        }
+    }
+}
+```
+
+Has Scratchpad feature too. Can write long commands beforehand and paste.
+
+But doesn't have unique features like iTerm2's Instant Replay.
+
+### 6. PATH Environment Variable Management
+
+**Unix: Simple**
+
+Add one line to `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export PATH="$HOME/bin:$PATH"
+```
+
+Separated by colon (`:`). Current directory (`.`) not in PATH by default. For security.
+
+**Windows: GUI Hell**
+
+Control Panel → System → Advanced System Settings → Environment Variables... click click click.
+
+Separated by semicolon (`;`). Current directory automatically searched.
+
+Possible in PowerShell too:
+
+```powershell
+$env:PATH += ";C:\MyTools"
+```
+
+But this only lasts for the session. For permanent, need to modify registry.
+
+### 7. Symbolic Links
+
+**Unix: Just Works**
+
+```bash
+ln -s /path/to/target /path/to/link
+```
+
+Done. No permissions needed.
+
+**Windows: Permission War**
+
+Requires admin privileges by default. Because security they say...
+
+Solutions:
+1. Turn on Developer Mode
+2. Give user permission in Local Security Policy
+3. Run as administrator (not recommended)
+
+```powershell
+# Admin PowerShell
+New-Item -ItemType SymbolicLink -Path "C:\link" -Target "C:\target"
+```
+
+Got permission error using `npm link` in Node.js project. Turning on Developer Mode fixed it.
+
+Found out later: symlinks work fine inside WSL2. Only need permission when creating on Windows file system.
+
+## Development Workflow Comparison
+
+### macOS/Linux: One Terminal is Enough
+
+Typical development workflow:
+
+1. Launch iTerm2 (Cmd+Space → "iTerm")
+2. Open tmux session:
+   ```bash
+   tmux new -s myproject
+   ```
+3. Create split panes (Ctrl+b %)
+4. Edit code with Vim
+5. Run tests
+   ```bash
+   npm test
+   ```
+6. Git commit
+   ```bash
+   git add . && git commit -m "fix: bug" && git push
+   ```
+
+Everything possible with keyboard. Don't use mouse. Fast.
+
+### Windows: Many Choices
+
+**Option 1: PowerShell + Windows Terminal**
+
+```powershell
+# Split pane (Alt+Shift+-)
+cd C:\projects\myapp
+npm test
+git add . ; git commit -m "fix: bug" ; git push
+```
+
+But... PowerShell doesn't support `&&`. Must use `;`.
+
+**Option 2: WSL2 + Windows Terminal**
+
+```bash
+# Open WSL2 tab
+cd /home/user/projects/myapp
+npm test
+git add . && git commit -m "fix: bug" && git push
+```
+
+Use Linux commands as-is. Comfortable.
+
+**Option 3: Git Bash**
+
+MinGW based. Supports some Bash commands. But limited:
+- No package manager
+- Limited symbolic links
+- Performance worse than WSL2
+
+**Selection Criteria**
+
+- Windows tool automation? → PowerShell
+- Cross-platform development? → WSL2
+- Just quick Git work? → Git Bash
+
+## Performance Comparison
+
+### Speed Test
+
+**Bash**:
+- Lightweight
+- Fast text processing
+- Fast file operations
+
+**PowerShell**:
+- Heavy
+- Object creation overhead
+- Slower than Bash for large-scale file operations
+
+Comment seen on Reddit: "Ran same task in PowerShell and Bash, Bash was way faster. Uses less CPU and RAM too."
+
+But PowerShell has advantages. Windows API access is overwhelming. WMI, registry, Active Directory... PowerShell is essential for handling these.
+
+### WSL2 I/O Performance
+
+WSL1 had I/O bottleneck. Git operations were extremely slow.
+
+WSL2 is much better. Because real Linux kernel. But still slower than native Linux.
+
+Tip: Working inside WSL2 file system is fast. Accessing Windows file system (`/mnt/c/`) gets slow.
+
+## Cross-Platform Scripting
+
+PowerShell Core (v6+) runs on Linux, macOS too:
+
+```bash
+# On macOS/Linux
+brew install powershell
+pwsh
+```
+
+But... reason to use it?
+
+**Pros**:
+- Object pipes powerful
+- JSON, CSV processing easy
+- Same script on Windows, Linux, macOS
+
+**Cons**:
+- Bash more universal
+- Bash better for Linux system management
+- Windows features like WMI don't work on Linux
+
+In practice, use both:
+- Windows management: PowerShell
+- Linux server management: Bash
+- Data processing: Python
+
+## CLI in the AI Coding Era
+
+Cursor, OpenCode, GitHub Copilot CLI... CLI-based AI tools increasing.
+
+**Why CLI?**
+
+1. No context switching (no going back and forth to IDE)
+2. Git workflow integration (automatic commit messages)
+3. Multi-file editing automation
+4. Terminal native (keyboard only)
+
+**CLI Coding Agents**:
+
+- **Claude Code**: Best reasoning, made by Anthropic
+- **Cursor CLI**: VS Code integration
+- **Gemini CLI**: Google AI
+- **OpenCode**: Flexible model selection
+- **Aider**: Git-centered workflow
+
+Example:
+
+```bash
+# Claude Code
+claude "refactor this function to use async/await"
+
+# Automatically modifies files, tests, commits
+```
+
+Why possible? Victory of Unix philosophy. Combine small tools, communicate via text, connect with pipes. AI follows this pattern.
+
+On Windows too, possible with WSL2 + AI CLI tools combination.
+
+## Practical Tips: Which to Use?
+
+### Situation-Based Recommendations
+
+**Pure Windows Development (C#, .NET, Azure)**
+→ PowerShell + Windows Terminal
+
+Reasons:
+- Windows API access essential
+- Active Directory, Exchange management
+- Azure CLI good compatibility with PowerShell
+
+**Web Development (Node.js, Python, Ruby)**
+→ WSL2 + Windows Terminal
+
+Reasons:
+- npm, pip faster
+- Use Bash scripts as-is
+- Good Docker performance
+- Same as deployment environment
+
+**Cross-Platform Tool Development**
+→ PowerShell Core (conditional)
+
+Reasons:
+- Same code on Windows, Linux, macOS
+- Object pipes powerful
+- But Bash more universal
+
+**DevOps / Infrastructure Management**
+→ Mixed use
+
+Reasons:
+- Windows servers: PowerShell
+- Linux servers: Bash
+- Automation scripts: Python
+
+### If Mac Developer Moves to Windows?
+
+1. **Install WSL2 first**:
+   ```powershell
+   wsl --install -d Ubuntu-20.04
+   ```
+
+2. **Install Windows Terminal**:
+   - Download from Microsoft Store
+   - Set WSL profile as default
+
+3. **Install Scoop**:
+   ```powershell
+   iwr -useb get.scoop.sh | iex
+   scoop install git nodejs python
+   ```
+
+4. **VS Code Remote-WSL extension**:
+   - Edit files inside WSL with VS Code
+   - Use WSL terminal too
+
+5. **oh-my-zsh setup**:
+   ```bash
+   # Inside WSL
+   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+   ```
+
+This creates environment almost identical to macOS.
+
+### If Windows Developer Masters PowerShell?
+
+1. **Install PowerShell 7**:
+   ```powershell
+   winget install Microsoft.PowerShell
+   ```
+
+2. **PSReadLine module**:
+   - Enhanced command history
+   - Improved auto-completion
+
+3. **Posh-Git**:
+   - Git status in prompt
+   - Tab completion support
+
+4. **Windows Terminal customization**:
+   - Quake mode setup
+   - Keyboard shortcut mapping
+   - Theme application
+
+5. **Chocolatey/Scoop**:
+   - Choose package manager
+   - Environment restoration via script
+
+## Conclusion
+
+"Is PowerShell more powerful than Bash?"
+
+**The question itself is wrong.**
+
+They were made with different philosophies. Bash is a 50-year-old text processing tool. PowerShell is a .NET-based object automation engine.
+
+**Developer Perspective Summary:**
+
+**Unix/macOS CLI Advantages:**
+- Light and fast
+- Best text processing
+- Massive ecosystem (30+ years)
+- Same as deployment environment (most servers are Linux)
+- Simple package management (Homebrew)
+- Free symbolic links
+
+**Windows CLI Advantages:**
+- Powerful object pipes
+- Easy Windows API access
+- .NET Framework integration
+- Essential for Active Directory, Exchange management
+- Can use both with WSL2
+
+**My Choice?**
+
+Develop on MacBook. Terminal + zsh + oh-my-zsh. This is comfortable. Install anything with Homebrew, automate with Bash scripts, manage sessions with tmux.
+
+But if must use Windows? WSL2 + Windows Terminal combination. Take advantages of both worlds. PowerShell... only use for Windows management tasks.
+
+**Final Answer:**
+
+Are Unix-based terminals and PowerShell "equal?"
+
+No. **They're different**.
+
+Unix is art of text processing and pipe combinations. PowerShell is essential tool for Windows automation.
+
+Learn both. Not a choice but tools. Use what fits the situation.
+
+CLI becomes more important in vibe coding era. AI generates commands, but developers must know what those commands do.
+
+CLI mastery is still developer fundamentals.
+
+---
+
+**Reference: Code Examples**
+
+### Bash Script Example (Backup Automation)
+
+```bash
+#!/bin/bash
+# backup.sh - File backup script
+
+BACKUP_DIR="/backup"
+SOURCE_DIR="/home/user/projects"
+DATE=$(date +%Y%m%d_%H%M%S)
+ARCHIVE="backup_${DATE}.tar.gz"
+
+echo "Starting backup: $SOURCE_DIR"
+tar -czf "${BACKUP_DIR}/${ARCHIVE}" "$SOURCE_DIR"
+
+if [ $? -eq 0 ]; then
+    echo "Backup complete: ${BACKUP_DIR}/${ARCHIVE}"
+    # Delete backup files older than 7 days
+    find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +7 -delete
+else
+    echo "Backup failed!" >&2
+    exit 1
+fi
+```
+
+### PowerShell Script Example (System Monitoring)
+
+```powershell
+# monitor.ps1 - System resource monitoring
+
+$cpuThreshold = 80
+$memoryThreshold = 90
+
+# Check CPU usage
+$cpu = Get-Counter '\Processor(_Total)\% Processor Time' | 
+    Select-Object -ExpandProperty CounterSamples | 
+    Select-Object -ExpandProperty CookedValue
+
+if ($cpu -gt $cpuThreshold) {
+    Write-Warning "High CPU usage: $($cpu.ToString('F2'))%"
+    
+    # Output top 5 processes
+    Get-Process | Sort-Object CPU -Descending | 
+        Select-Object -First 5 Name, CPU, WorkingSet
+}
+
+# Check memory usage
+$os = Get-CimInstance Win32_OperatingSystem
+$memoryUsed = ($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) / 
+              $os.TotalVisibleMemorySize * 100
+
+if ($memoryUsed -gt $memoryThreshold) {
+    Write-Warning "High memory usage: $($memoryUsed.ToString('F2'))%"
+}
+```
+
+### tmux Configuration Example (.tmux.conf)
+
+```bash
+# Change prefix key (Ctrl+b → Ctrl+a)
+unbind C-b
+set -g prefix C-a
+bind C-a send-prefix
+
+# Split pane shortcuts
+bind | split-window -h
+bind - split-window -v
+
+# Mouse support
+set -g mouse on
+
+# Status bar settings
+set -g status-bg colour235
+set -g status-fg colour136
+```
+
+This is the reality of Windows CLI vs Unix CLI from a developer's perspective.
+
+#Windows #Unix #CLI #PowerShell #Terminal #WSL2 #DevTools
