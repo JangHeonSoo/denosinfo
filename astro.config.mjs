@@ -15,7 +15,7 @@ export default defineConfig({
 		locales: ['ko', 'en'],
 		defaultLocale: 'ko',
 		routing: {
-			prefixDefaultLocale: true
+			prefixDefaultLocale: false
 		}
 	},
 	devToolbar: {
