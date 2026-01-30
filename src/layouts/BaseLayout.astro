@@ -26,13 +26,13 @@ const { title, description, image, articleDate } = Astro.props
 	</head>
 
 	<body class='bg-bg-light text-text-main dark:bg-[#0a0910] dark:text-white'>
+		<Header />
 		<main
 			class='px-5 sm:mx-auto sm:px-8 lg:px-0 antialiased max-w-7xl grid gap-12 pt-20 overflow-hidden md:overflow-visible'
 		>
-			<Header />
 			<slot />
-			<Footer />
 		</main>
+		<Footer />
 		<style>
 			body {
 				margin-left: calc(100vw - 100%); /* prevent layout shift */
