@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import { getPosts, filterPostsByCategory, getPostByTag } from '@/utils'
+import { DEFAULT_LOCALE, filterPostsByCategory, getPostByTag, getPosts } from '@/utils'
 import PostCard from '@/components/PostCard'
 
 interface Props {
@@ -21,19 +21,21 @@ const {
 	sortOrder = 'desc',
 	displayAsRows = false
 } = Astro.props
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
 
 // Fetch posts based on filters
-let posts = Astro.props.posts
-debugger
+let posts = Astro.props.posts as CollectionEntry<'blog'>[] | undefined
 if (posts) {
 	// don't filter
 } else if (category) {
-	posts = await filterPostsByCategory(category)
+	posts = await filterPostsByCategory(category, locale)
 } else if (tag) {
-	posts = await getPostByTag(tag)
+	posts = await getPostByTag(tag, locale)
 } else {
-	posts = await getPosts()
+	posts = await getPosts(undefined, locale)
 }
+
+posts = posts ?? []
 
 // Apply limit
 posts = posts.slice(0, limit)

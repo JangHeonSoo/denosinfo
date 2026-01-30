@@ -17,14 +17,16 @@ type Props = {
 
 const { data, readTime, headings, id } = Astro.props
 const { title, description, pubDate, heroImage, tags, comments, category } = data
+const safePubDate = pubDate ?? new Date()
+const heroImageSrc = typeof heroImage === 'string' ? heroImage : heroImage?.src
 
-const articleDate = pubDate.toISOString()
+const articleDate = safePubDate.toISOString()
 ---
 
 <BaseLayout
 	title={title}
 	description={description}
-	image={heroImage?.src}
+	image={heroImageSrc}
 	articleDate={articleDate}
 >
 	<article class='min-w-full md:py-4 sm:max-w-none md:max-w-none'>
@@ -37,7 +39,7 @@ const articleDate = pubDate.toISOString()
                     </span>
                 )}
 				<div class='flex items-center gap-2 text-gray-500 font-medium'>
-                    <FormattedDate date={pubDate} />
+					<FormattedDate date={safePubDate} />
                     <span>•</span>
                     <span>{readTime}</span>
                 </div>
@@ -52,10 +54,10 @@ const articleDate = pubDate.toISOString()
 				{tags.map((tag) => <Tag tag={tag} />)}
 			</div>
 
-            {heroImage && (
-                <div class='relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl my-8 md:my-10 group'>
+			{heroImageSrc && (
+				<div class='relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl my-8 md:my-10 group'>
 					<Image
-						src={heroImage}
+						src={heroImageSrc}
 						width={1200}
 						height={600}
 						quality={100}

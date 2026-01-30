@@ -1,10 +1,18 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout'
 import FadeIn from '@/components/FadeIn'
-import { getPosts } from '@/utils'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, getLocalePrefix, getPosts } from '@/utils'
+
+export async function getStaticPaths() {
+	return SUPPORTED_LOCALES.map((lang) => ({
+		params: { lang }
+	}))
+}
 
 // Get all posts and count tag frequencies
-const posts = await getPosts()
+const locale = Astro.params.lang ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+const posts = await getPosts(undefined, locale)
 const tagCounts = new Map<string, number>()
 
 posts.forEach(post => {
@@ -62,7 +70,7 @@ const tags = Array.from(tagCounts.entries())
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="tag-grid">
                 {tags.map((tag) => (
                     <a 
-                        href={`/tags/${tag.name.toLowerCase()}`}
+                        href={`${localePrefix}/tags/${tag.name.toLowerCase()}`}
                         class="tag-item group relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col justify-between h-32 overflow-hidden"
                         data-tag={tag.name.toLowerCase()}
                     >

@@ -1,27 +1,41 @@
 ---
 import type { CollectionEntry } from 'astro:content'
 
-import { cn, getCategoryName, sluglify } from '@/utils'
+import {
+	DEFAULT_LOCALE,
+	cn,
+	getCategoryName,
+	getLocalePrefix,
+	sluglify,
+	stripLocaleFromSlug
+} from '@/utils'
 import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
 
 type Props = {
 	posts: CollectionEntry<'blog'>[]
 }
 
 const { posts } = Astro.props
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+const resolveHeroImage = (image?: string | ImageMetadata) =>
+	typeof image === 'string' ? image : image?.src
 ---
 
 <section class={cn(`flex flex-col md:flex-row sm:justify-between gap-8`)}>
 	{
 		posts.length > 0 ? (
-			posts.map((post) => {
-				const categorySlug = sluglify(getCategoryName(post.data.category).toLowerCase())
-				return (
-					<div class='flex flex-wrap gap-2'>
-						{post.data.heroImage ? (
+		posts.map((post) => {
+			const categorySlug = sluglify(getCategoryName(post.data.category).toLowerCase())
+			const postSlug = stripLocaleFromSlug(post.slug, locale)
+			const heroImageSrc = resolveHeroImage(post.data.heroImage)
+			return (
+				<div class='flex flex-wrap gap-2'>
+						{heroImageSrc ? (
 							<div class='min-h-full'>
 								<Image
-									src={post.data.heroImage}
+									src={heroImageSrc as string}
 									width={200}
 									height={200}
 									format='webp'
@@ -31,7 +45,7 @@ const { posts } = Astro.props
 							</div>
 						) : null}
 						<header class='flex justify-center items-center'>
-							<a class='font-medium  hover:underline' href={`/${categorySlug}/${post.slug}/`}>
+						<a class='font-medium  hover:underline' href={`${localePrefix}/${categorySlug}/${postSlug}/`}>
 								{post.data.title}
 							</a>
 						</header>

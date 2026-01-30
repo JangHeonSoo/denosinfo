@@ -11,16 +11,21 @@ import rehypeKatex from 'rehype-katex'
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://astro-blog-template.maulana.id/', // Write here your website url
+	i18n: {
+		locales: ['ko', 'en'],
+		defaultLocale: 'ko',
+		routing: {
+			prefixDefaultLocale: true
+		}
+	},
 	devToolbar: {
 		enabled: false
 	},
 	server: {
-		port: 3000,
+		port: 3000
 	},
 	vite: {
-		assetsInclude: [
-			'**/*.fit',
-		],
+		assetsInclude: ['**/*.fit']
 	},
 	markdown: {
 		remarkPlugins: [remarkReadingTime, RemarkMermaidClient, remarkMath],
@@ -34,7 +39,7 @@ export default defineConfig({
 	},
 	integrations: [
 		react({
-			experimentalReactChildren: true,
+			experimentalReactChildren: true
 		}),
 		// starlight({
 		//     title: 'astro-blog-template',
@@ -62,6 +67,6 @@ export default defineConfig({
 		tailwind()
 	],
 	experimental: {
-		contentLayer: true,
-	},
+		contentLayer: true
+	}
 })

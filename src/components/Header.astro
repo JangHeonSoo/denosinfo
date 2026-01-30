@@ -7,6 +7,7 @@ import Search from '@/components/Search'
 import TagIcon from './icons/TagIcon.astro'
 import ToggleTheme from './ToggleTheme.astro'
 import { siteConfig } from '@/data/site.config'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, getLocalePrefix } from '@/utils'
 
 // ADD YOUR SOCIAL NETWORKS HERE
 const SOCIALNETWORKS = [
@@ -22,11 +23,22 @@ const SOCIALNETWORKS = [
 		icon: TwitterIcon
 	}
 ].filter(network => siteConfig.social.github || siteConfig.social.twitter)
+
+const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(currentLocale)
+const currentPath = Astro.url.pathname
+
+const buildLocalePath = (targetLocale: string) => {
+	const segments = currentPath.split('/').filter(Boolean)
+	const hasLocalePrefix = SUPPORTED_LOCALES.includes(segments[0] as typeof SUPPORTED_LOCALES[number])
+	const rest = hasLocalePrefix ? segments.slice(1) : segments
+	return `/${[targetLocale, ...rest].join('/')}`
+}
 ---
 
 <header class='fixed top-0 left-0 right-0 w-full h-20 bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl z-50 border-b border-gray-200/50 dark:border-white/5 transition-all duration-300'>
 	<div class='w-full h-full px-5 md:px-8 lg:px-12 flex justify-between items-center max-w-7xl mx-auto'>
-		<a class='flex items-center gap-2 group' href='/'>
+		<a class='flex items-center gap-2 group' href={`${localePrefix}/`}>
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
                 D
             </div>
@@ -36,23 +48,37 @@ const SOCIALNETWORKS = [
 		</a>
 
 		<nav class='hidden md:flex items-center gap-8'>
-			<HeaderLink href='/' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+			<HeaderLink href={`${localePrefix}/`} class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				Home
 			</HeaderLink>
-            <HeaderLink href='/blog' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+			<HeaderLink href={`${localePrefix}/blog`} class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				Blog
 			</HeaderLink>
-			<HeaderLink href='/tags' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+			<HeaderLink href={`${localePrefix}/tags`} class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				Topics
 			</HeaderLink>
-            <HeaderLink href='/about' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+			<HeaderLink href={`${localePrefix}/about`} class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				About
 			</HeaderLink>
-			<HeaderLink href='/contact' class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
+			<HeaderLink href={`${localePrefix}/contact`} class='text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors'>
 				Contact
 			</HeaderLink>
 			
 			<div class='flex items-center gap-4 pl-4 border-l border-gray-200 dark:border-gray-800/50'>
+				<div class='flex items-center gap-2 text-xs font-bold uppercase tracking-wider'>
+					{SUPPORTED_LOCALES.map((locale: (typeof SUPPORTED_LOCALES)[number]) => (
+						<a
+							href={buildLocalePath(locale)}
+							class={
+								locale === currentLocale
+									? 'text-primary'
+									: 'text-gray-500 hover:text-primary'
+							}
+						>
+							{locale.toUpperCase()}
+						</a>
+					))}
+				</div>
 				<Search />
 				<ToggleTheme />
 			</div>
@@ -68,19 +94,38 @@ const SOCIALNETWORKS = [
 <!-- Mobile Menu -->
 <div
 	id='astro-header-drawer'
-	class='md:hidden fixed top-20 right-0 w-full sm:w-80 h-[calc(100vh-5rem)] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border-l border-gray-200 dark:border-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 z-40 ease-in-out'
+	class='md:hidden fixed top-20 right-0 w-[78vw] max-w-xs h-[calc(100vh-5rem)] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border-l border-gray-200 dark:border-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 z-40 ease-in-out'
 >
-	<nav class='flex flex-col p-8 gap-6 h-full overflow-y-auto'>
-		<HeaderLink href='/' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Home</HeaderLink>
-        <HeaderLink href='/blog' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Blog</HeaderLink>
-        <HeaderLink href='/tags' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Topics</HeaderLink>
-		<HeaderLink href='/about' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>About</HeaderLink>
-		<HeaderLink href='/contact' class='text-2xl font-bold border-b border-gray-100 dark:border-gray-800 pb-4'>Contact</HeaderLink>
+	<nav class='flex flex-col p-6 gap-5 h-full overflow-y-auto'>
+		<HeaderLink href={`${localePrefix}/`} class='text-xl font-bold border-b border-gray-100 dark:border-gray-800 pb-3'>Home</HeaderLink>
+		<HeaderLink href={`${localePrefix}/blog`} class='text-xl font-bold border-b border-gray-100 dark:border-gray-800 pb-3'>Blog</HeaderLink>
+		<HeaderLink href={`${localePrefix}/tags`} class='text-xl font-bold border-b border-gray-100 dark:border-gray-800 pb-3'>Topics</HeaderLink>
+		<HeaderLink href={`${localePrefix}/about`} class='text-xl font-bold border-b border-gray-100 dark:border-gray-800 pb-3'>About</HeaderLink>
+		<HeaderLink href={`${localePrefix}/contact`} class='text-xl font-bold border-b border-gray-100 dark:border-gray-800 pb-3'>Contact</HeaderLink>
         
-        <div class="mt-auto flex items-center justify-between pt-8">
-            <span class="font-bold text-gray-500">Theme</span>
-            <ToggleTheme />
-        </div>
+		<div class="mt-auto flex flex-col gap-6 pt-8">
+			<div class="flex items-center justify-between">
+				<span class="font-bold text-gray-500">Language</span>
+				<div class="flex items-center gap-3 text-sm font-bold uppercase">
+					{SUPPORTED_LOCALES.map((locale: (typeof SUPPORTED_LOCALES)[number]) => (
+						<a
+							href={buildLocalePath(locale)}
+							class={
+								locale === currentLocale
+									? 'text-primary'
+									: 'text-gray-500 hover:text-primary'
+							}
+						>
+							{locale.toUpperCase()}
+						</a>
+					))}
+				</div>
+			</div>
+			<div class="flex items-center justify-between">
+				<span class="font-bold text-gray-500">Theme</span>
+				<ToggleTheme />
+			</div>
+		</div>
 	</nav>
 </div>
 

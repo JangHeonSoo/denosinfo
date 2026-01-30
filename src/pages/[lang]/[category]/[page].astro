@@ -4,43 +4,54 @@ import ListPosts from '@/components/ListPosts'
 import ListCategories from '@/components/ListCategories'
 import TitlePage from '@/components/TitlePage'
 import {
-	sluglify,
-	unsluglify,
+	DEFAULT_LOCALE,
+	SUPPORTED_LOCALES,
 	getCategories,
 	getCategoryName,
 	getCategoryTitleFromSlug,
 	getIndexPageByCategory,
-	getPosts
+	getPosts,
+	sluglify,
+	unsluglify
 } from '@/utils'
 import { siteConfig } from '@/data/site.config'
 import Pagination from '@/components/Pagination'
 import Code from '@/components/mdx/Code'
 import SButton from '@/components/mdx/SButton'
-import { components } from '../../components/mixins/AutoImportComponents'
+import { components } from '../../../components/mixins/AutoImportComponents'
 
 export async function getStaticPaths({ paginate }: any) {
-	const categories = await getCategories()
-	const allPosts = await getPosts()
+	const localizedPages = await Promise.all(
+		SUPPORTED_LOCALES.map(async (locale) => {
+			const categories = await getCategories(locale)
+			const allPosts = await getPosts(undefined, locale)
 
-	return categories.flatMap((category: string) => {
-		const sluglifyNameCategory = sluglify(category!.toLowerCase())
-		const filteredPosts = allPosts.filter(
-			(post) => sluglify(getCategoryName(post.data.category).toLowerCase()) === sluglifyNameCategory
-		)
+			return categories.flatMap((category: string) => {
+				const sluglifyNameCategory = sluglify(category!.toLowerCase())
+				const filteredPosts = allPosts.filter(
+					(post) =>
+						sluglify(getCategoryName(post.data.category).toLowerCase()) === sluglifyNameCategory
+				)
 
-		return paginate(filteredPosts, {
-			params: {
-				category: sluglify(category.toLowerCase())
-			},
-			pageSize: siteConfig.paginationSize
+				return paginate(filteredPosts, {
+					params: {
+						lang: locale,
+						category: sluglify(category.toLowerCase())
+					},
+					pageSize: siteConfig.paginationSize
+				})
+			})
 		})
-	})
+	)
+
+	return localizedPages.flat()
 }
 const params = Astro.params
+const locale = params.lang ?? DEFAULT_LOCALE
 const { page } = Astro.props
 
 const categoryTitle = getCategoryTitleFromSlug(params.category!.toLowerCase())
-const indexPage = await getIndexPageByCategory(params.category!.toLowerCase())
+const indexPage = await getIndexPageByCategory(params.category!.toLowerCase(), locale)
 const posts = page.data
 ---
 

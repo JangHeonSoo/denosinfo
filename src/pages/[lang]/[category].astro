@@ -1,0 +1,29 @@
+---
+import {
+	DEFAULT_LOCALE,
+	SUPPORTED_LOCALES,
+	getCategories,
+	getLocalePrefix,
+	sluglify
+} from '@/utils'
+export async function getStaticPaths() {
+	const localizedCategories = await Promise.all(
+		SUPPORTED_LOCALES.map(async (locale) => {
+			const categories = await getCategories(locale)
+			return categories.flatMap((category: string) => ({
+				params: {
+					lang: locale,
+					category: sluglify(category.toLowerCase())
+				}
+			}))
+		})
+	)
+
+	return localizedCategories.flat()
+}
+const params = Astro.params
+const locale = params.lang ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+// Encode the URL to handle non-ASCII characters (like Korean) in redirect headers
+return Astro.redirect(encodeURI(`${localePrefix}/${params.category}/1`))
+---

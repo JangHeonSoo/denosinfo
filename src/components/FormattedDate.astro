@@ -1,14 +1,18 @@
 ---
+import { DEFAULT_LOCALE } from '@/utils'
+
 export interface Props {
 	date: Date
 }
 
 const { date } = Astro.props
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const dateLocale = locale === 'en' ? 'en-US' : 'ko-KR'
 ---
 
 <time class='text-sm font-bold text-opacity-60' datetime={date.toISOString()}>
 	{
-		date.toLocaleDateString('en-us', {
+		date.toLocaleDateString(dateLocale, {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric'

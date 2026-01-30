@@ -6,10 +6,13 @@ import ProviderTheme from '@/components/ProviderTheme'
 import ProviderAnimations from '@/components/ProviderAnimations'
 import Mermaid, { MermaidModule } from '../components/mermaid'
 import { siteConfig } from '@/site-config'
+import { DEFAULT_LOCALE, getLocaleLanguageTag } from '@/utils'
 const { title, description, image, articleDate } = Astro.props
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const htmlLang = getLocaleLanguageTag(locale)
 ---
 
-<html lang={siteConfig.lang} class='scroll-smooth'>
+<html lang={htmlLang} class='scroll-smooth'>
 	<head>
 		<BaseHead title={title} description={description} ogImage={image} articleDate={articleDate} />
 		<ProviderTheme />

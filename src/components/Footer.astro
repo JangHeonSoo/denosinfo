@@ -1,10 +1,14 @@
 ---
+import { DEFAULT_LOCALE, getLocalePrefix } from '@/utils'
+
 const today = new Date()
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
 ---
 
 <footer class='w-full py-10 mt-20 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0f172a]'>
     <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center text-center">
-        <a class='flex items-center gap-2 mb-6 group' href='/'>
+        <a class='flex items-center gap-2 mb-6 group' href={`${localePrefix}/`}>
             <div class="w-6 h-6 rounded bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">
                 D
             </div>
@@ -19,11 +23,11 @@ const today = new Date()
         </p>
         
         <nav class="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium text-gray-600 dark:text-gray-300">
-            <a href="/" class="hover:text-primary transition-colors">Home</a>
-            <a href="/blog" class="hover:text-primary transition-colors">Blog</a>
-            <a href="/about" class="hover:text-primary transition-colors">About</a>
-            <a href="/contact" class="hover:text-primary transition-colors">Contact</a>
-            <a href="/tags" class="hover:text-primary transition-colors">Topics</a>
+            <a href={`${localePrefix}/`} class="hover:text-primary transition-colors">Home</a>
+            <a href={`${localePrefix}/blog`} class="hover:text-primary transition-colors">Blog</a>
+            <a href={`${localePrefix}/about`} class="hover:text-primary transition-colors">About</a>
+            <a href={`${localePrefix}/contact`} class="hover:text-primary transition-colors">Contact</a>
+            <a href={`${localePrefix}/tags`} class="hover:text-primary transition-colors">Topics</a>
         </nav>
 
         <div class="flex items-center gap-4 mb-8">

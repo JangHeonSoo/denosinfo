@@ -1,9 +1,23 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
-import FadeIn from '../components/FadeIn.astro'
+import BaseLayout from '@/layouts/BaseLayout'
+import FadeIn from '@/components/FadeIn'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, getLocalePrefix } from '@/utils'
+
+export async function getStaticPaths() {
+	return SUPPORTED_LOCALES.map((lang) => ({
+		params: { lang }
+	}))
+}
+
+const locale = Astro.params.lang ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+const isEn = locale === 'en'
+const metaDescription = isEn
+	? 'A personal blog about cars, AI, tech, open source, and travel.'
+	: '자동차, AI, 테크, 오픈소스, 여행 등 다양한 관심사를 기록하는 블로그입니다.'
 ---
 
-<BaseLayout title="About Denosinfo" description="자동차, AI, 테크, 오픈소스, 여행 등 다양한 관심사를 기록하는 블로그입니다.">
+<BaseLayout title="About Denosinfo" description={metaDescription}>
 
 <!-- Hero Section with Parallax Effect -->
 <div class="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
@@ -22,7 +36,9 @@ import FadeIn from '../components/FadeIn.astro'
     <FadeIn delay={0.4} direction="up">
       <p class="text-xl md:text-3xl text-white/90 font-light leading-relaxed drop-shadow-lg">
         Technology, Automotive & <span class="text-primary font-bold">Life</span><br/>
-        <span class="text-lg md:text-xl mt-4 block opacity-80">개인의 취향과 지식이 모이는 공간</span>
+        <span class="text-lg md:text-xl mt-4 block opacity-80">
+          {isEn ? 'A space where personal tastes and knowledge gather' : '개인의 취향과 지식이 모이는 공간'}
+        </span>
       </p>
     </FadeIn>
   </div>
@@ -34,21 +50,41 @@ import FadeIn from '../components/FadeIn.astro'
   <div class="max-w-3xl mx-auto text-center mb-32">
     <FadeIn direction="up">
       <h2 class="text-3xl md:text-4xl font-heading font-bold mb-8 leading-snug text-gray-900 dark:text-white">
-        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">탐구하고, 기록하고, 공유합니다.</span>
+        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          {isEn ? 'Explore, record, and share.' : '탐구하고, 기록하고, 공유합니다.'}
+        </span>
       </h2>
     </FadeIn>
     
     <div class="space-y-6 text-lg md:text-xl text-text-muted dark:text-gray-300 leading-relaxed">
       <FadeIn delay={0.2} direction="up">
         <p>
-          Denosinfo는 저의 지극히 주관적인 관심사를 다루는 <strong>개인 블로그</strong>입니다.<br/>
-          최신 자동차 트렌드부터 AI 기술, 그리고 때때로 떠나는 여행의 기록까지.
+          {isEn ? (
+            <>
+              Denosinfo is a <strong>personal blog</strong> about my highly subjective interests.<br />
+              From the latest automotive trends to AI and the occasional travel log.
+            </>
+          ) : (
+            <>
+              Denosinfo는 저의 지극히 주관적인 관심사를 다루는 <strong>개인 블로그</strong>입니다.<br />
+              최신 자동차 트렌드부터 AI 기술, 그리고 때때로 떠나는 여행의 기록까지.
+            </>
+          )}
         </p>
       </FadeIn>
       <FadeIn delay={0.4} direction="up">
         <p>
-          깊이 있는 기술 분석부터 가벼운 일상의 생각까지,<br/>
-          <strong class="text-primary">다양한 시각</strong>으로 세상을 바라보고 기록합니다.
+          {isEn ? (
+            <>
+              From deep technical analysis to light daily thoughts,<br />
+              I document the world through <strong class="text-primary">multiple perspectives</strong>.
+            </>
+          ) : (
+            <>
+              깊이 있는 기술 분석부터 가벼운 일상의 생각까지,<br />
+              <strong class="text-primary">다양한 시각</strong>으로 세상을 바라보고 기록합니다.
+            </>
+          )}
         </p>
       </FadeIn>
     </div>
@@ -65,7 +101,11 @@ import FadeIn from '../components/FadeIn.astro'
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
           <span class="text-primary font-bold tracking-wider mb-2">PASSION</span>
           <h3 class="text-3xl md:text-4xl font-heading font-bold !text-white mb-2">Automotive</h3>
-          <p class="text-white/90 text-lg">내연기관의 감성부터 전기차의 혁신까지, 자동차의 모든 것</p>
+          <p class="text-white/90 text-lg">
+            {isEn
+              ? 'From the soul of ICE to EV innovation, everything about cars.'
+              : '내연기관의 감성부터 전기차의 혁신까지, 자동차의 모든 것'}
+          </p>
         </div>
       </FadeIn>
     </div>
@@ -78,9 +118,11 @@ import FadeIn from '../components/FadeIn.astro'
             <span class="text-3xl">🤖</span>
             <h3 class="text-2xl font-heading font-bold text-gray-900 dark:text-white">AI & Tech</h3>
           </div>
-          <p class="text-base text-text-muted dark:text-gray-400">
-            LLM, 생성형 AI, 그리고 급변하는 테크 트렌드를 분석합니다.
-          </p>
+            <p class="text-base text-text-muted dark:text-gray-400">
+              {isEn
+                ? 'I analyze LLMs, generative AI, and fast-shifting tech trends.'
+                : 'LLM, 생성형 AI, 그리고 급변하는 테크 트렌드를 분석합니다.'}
+            </p>
         </div>
       </FadeIn>
     </div>
@@ -92,7 +134,13 @@ import FadeIn from '../components/FadeIn.astro'
           <h3 class="text-2xl font-heading font-bold text-gray-900 dark:text-white">Development</h3>
           <span class="text-4xl">💻</span>
         </div>
-        <p class="text-text-muted dark:text-gray-400">오픈소스 활동과<br/>개발 노하우 공유</p>
+        <p class="text-text-muted dark:text-gray-400">
+          {isEn ? (
+            <>Open-source work and<br />sharing development craft</>
+          ) : (
+            <>오픈소스 활동과<br />개발 노하우 공유</>
+          )}
+        </p>
       </FadeIn>
     </div>
 
@@ -105,7 +153,9 @@ import FadeIn from '../components/FadeIn.astro'
               <h3 class="text-2xl font-heading font-bold text-primary-dark dark:text-primary">Travel & Life</h3>
               <span class="text-3xl">✈️</span>
             </div>
-            <p class="text-text-muted dark:text-gray-300">새로운 곳에서의 영감과 일상의 기록</p>
+            <p class="text-text-muted dark:text-gray-300">
+              {isEn ? 'Inspiration from new places and daily life notes.' : '새로운 곳에서의 영감과 일상의 기록'}
+            </p>
           </div>
           <div class="md:text-right">
              <span class="text-lg md:text-xl font-bold text-secondary">Digital Nomad</span>
@@ -120,10 +170,12 @@ import FadeIn from '../components/FadeIn.astro'
   <!-- Contact CTA -->
   <div class="text-center pb-10">
     <FadeIn direction="up">
-      <h2 class="text-3xl font-heading font-bold mb-6 text-gray-900 dark:text-white">궁금한 점이 있으신가요?</h2>
-      <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-primary rounded-full hover:bg-primary-dark hover:scale-105 shadow-lg shadow-primary/30">
-        문의하기 →
-      </a>
+       <h2 class="text-3xl font-heading font-bold mb-6 text-gray-900 dark:text-white">
+         {isEn ? 'Have questions?' : '궁금한 점이 있으신가요?'}
+       </h2>
+       <a href={`${localePrefix}/contact`} class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-primary rounded-full hover:bg-primary-dark hover:scale-105 shadow-lg shadow-primary/30">
+         {isEn ? 'Contact me →' : '문의하기 →'}
+       </a>
     </FadeIn>
   </div>
 

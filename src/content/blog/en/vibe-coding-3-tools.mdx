@@ -1,0 +1,237 @@
+---
+title: 'My top 3 vibe-coding tools: Cursor, OpenCode, Google Antigravity'
+description: 'The shock of vibe coding after 15 years away. A hands-on comparison of Cursor, Antigravity, and OpenCode.'
+pubDate: 2026-01-30
+category: 'AI'
+tags: ['VibeCoding', 'AITools', 'OpenCode', 'Antigravity', 'Cursor']
+heroImage: '/images/post-vibe-coding.png'
+---
+
+# My top 3 vibe-coding tools: Cursor, OpenCode, Google Antigravity
+
+I spent 10 years coding hard, then five years as a manager. I fired up a MacBook after a long time because I wanted to build a few things again.
+
+I truly had not coded in ages.
+
+Coding? Maybe. Vibe coding was a shock.
+
+## If you just say it, the code appears
+
+At first I did not believe it. I heard, "You can just have AI code it," and thought, "Yeah right." Then I tried it, and it was real. But there was a problem: I did not know which tool to use.
+
+I dug through YouTube and Reddit and picked three.
+
+- **Cursor**: famous, so I tried it
+- **Google Antigravity**: made by Google
+- **OpenCode**: runs in the terminal
+
+Short answer: I ranked **OpenCode first**, **Google Antigravity second**, **Cursor third**.
+
+## Why that ranking happened
+
+### Context memory was the real battleground
+
+I was trying to build a simple full-stack app. Frontend input -> backend -> DB in GCE. When local processing finished, the data would flow back DB -> backend -> frontend.
+
+It did not sound complex. But then...
+
+**Cursor and Google Antigravity kept forgetting.**
+
+"We already agreed to handle it on the frontend like this, right?"
+"Uh... did we? Please explain again..."
+
+It was not once or twice. I kept repeating the same context. The irony was that explaining took longer than coding.
+
+### OpenCode was different
+
+I described what I wanted once, and OpenCode replied like this:
+
+```
+Frontend -> backend -> DB save
+Confirm local processing complete
+DB -> backend -> frontend sync
+
+Checkpoints:
+1. Validate API endpoints
+2. Verify local completion flag
+3. Connect frontend callback
+```
+
+It understood in one shot, built the steps, and highlighted checkpoints. When I asked follow-ups, it remembered everything: "Based on the frontend flow we discussed..."
+
+That was the real difference: **it did not lose context.**
+
+## The frustration with Google Antigravity
+
+Antigravity is unique because it controls the browser. It opens Chrome, views pages, clicks, takes screenshots.
+
+At first I thought, "This is neat." Then it got frustrating.
+
+Open browser... load page... take screenshot... verify...
+
+Watching it do all that made me feel I could do it faster myself.
+
+The worst part was permissions. I granted everything, but it kept asking.
+
+"Allow browser access?"
+"May I run console commands?"
+"Is it okay to read page data?"
+
+I understand the security angle, but doing that every time kills the flow.
+
+## What was wrong with Cursor
+
+Cursor is the most popular. It is VS Code-based and familiar.
+
+But in my experience, **context management was weak.**
+
+By the 10th message in the chat, it forgot earlier decisions.
+
+"So how did we decide to handle the frontend again?"
+
+You have to explain again. I tried adding context, using Rules files, and more. It still struggled.
+
+The bigger the project, the worse it got. It could not hold the whole picture and only saw fragments.
+
+So I had to break tasks into tiny pieces, meaning I had to keep the entire design in my head. That was exhausting.
+
+## The decisive difference
+
+| Tool               | Context memory | Speed    | Friction |
+| ------------------ | -------------- | -------- | -------- |
+| OpenCode           | ⭐⭐⭐⭐⭐     | ⭐⭐⭐⭐ | ⭐       |
+| Google Antigravity | ⭐⭐⭐         | ⭐⭐     | ⭐⭐⭐⭐ |
+| Cursor             | ⭐⭐           | ⭐⭐⭐⭐ | ⭐⭐⭐   |
+
+OpenCode runs in the terminal and integrates with LSP (Language Server Protocol), so it understands project structure, dependencies, and imports. That is probably why it keeps context.
+
+Antigravity's browser integration is powerful, but it gets in the way. Too many checks, too slow.
+
+Cursor is fast, but it keeps losing context. It is okay for short tasks, not long projects.
+
+## A real code example
+
+I asked OpenCode like this:
+
+```bash
+> When the frontend sends a POST, save in DB on the backend
+> When local processing finishes, GET it again and update the UI
+```
+
+It replied with this plan:
+
+```markdown
+## Implementation plan
+
+### 1. Frontend
+
+- POST /api/data
+- Check local completion flag
+- Poll GET /api/data
+
+### 2. Backend
+
+- POST endpoint: save to DB
+- GET endpoint: fetch from DB
+
+### 3. Checks
+
+- DB connection test
+- Local flag timing
+- Frontend polling interval
+```
+
+Then it created three files and filled in the code in one go.
+
+Cursor required five separate prompts: "Make the frontend," "Now the backend," "Also add this part on the frontend..." and so on.
+
+## My painful moments
+
+### OpenCode early setup mistake
+
+I got errors when setting the API key.
+
+```bash
+Error: API key not found
+```
+
+I had the key, so why? It turned out the env file should be `.opencode.json`, but I named it `.opencode`. I forgot the `.json` extension and wasted 30 minutes.
+
+That was my fault for skipping the docs, but a clearer error like "file not found" would have helped.
+
+### Google Antigravity permission hell
+
+Antigravity made me furious with its permissions.
+
+First run: install Chrome extension. Then click "Allow browser access." Then "Allow console execution."
+
+That was fine. But during real work, it kept asking again:
+
+"May I read this page data?"
+"Is it okay to fill this form?"
+
+I already allowed that!
+
+I searched for an "Always allow" setting, but it did not exist. I had to click every time.
+
+### Cursor context maze
+
+Cursor says context is key, so I used `/docs` for project info and `/rules` for coding rules.
+
+```
+/docs
+Project: GCE DB-connected app
+Stack: Node.js, Express, MySQL
+Dirs: src/frontend, src/backend
+
+/rules
+- Use functional components
+- async/await required
+- error handling with try/catch
+```
+
+It was clean, but by the fifth conversation it asked:
+
+"Was the backend Express?"
+
+I had already written it in docs.
+
+Later I learned you must @-mention files in the context panel to truly get it to understand. `/docs` alone was not enough.
+
+```
+@src/backend/server.js Use this file to add API endpoints
+```
+
+Only then did it understand. That was annoying.
+
+## When each tool is best
+
+To be fair, each has strengths.
+
+**OpenCode**: end-to-end design work, complex logic across multiple files, long projects where context loss is fatal.
+
+**Google Antigravity**: automated web testing, UI bug hunting, browser automation. But you need patience.
+
+**Cursor**: quick prototyping, small feature additions, for people who love VS Code. But you must break tasks into small pieces.
+
+## Conclusion: I chose OpenCode
+
+After coding again for the first time in 15 years, I realized we are in the era of coding with words.
+
+But tool choice matters. If it loses context, you lose time.
+
+From my experience:
+
+1. **OpenCode** - best context memory. Best for complex work.
+2. **Google Antigravity** - powerful browser control but too much friction.
+3. **Cursor** - fast but forgetful. Good for short tasks.
+
+Whatever you choose, vibe coding is real.
+
+After five years in management, it feels like the world completely changed. Coding is no longer about "how to write it" but "what to build."
+
+And honestly, coding again is fun.
+
+---
+
+_This post was written on a MacBook Air M4. It reflects real usage; OpenCode, Google Antigravity, and Cursor were all tested on the latest versions as of January 2026._

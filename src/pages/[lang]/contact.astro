@@ -1,9 +1,19 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
-import FadeIn from '../components/FadeIn.astro'
+import BaseLayout from '@/layouts/BaseLayout'
+import FadeIn from '@/components/FadeIn'
+import { SUPPORTED_LOCALES } from '@/utils'
+
+export async function getStaticPaths() {
+	return SUPPORTED_LOCALES.map((lang) => ({
+		params: { lang }
+	}))
+}
+
+const locale = Astro.params.lang ?? 'ko'
+const isEn = locale === 'en'
 ---
 
-<BaseLayout title="Contact" description="Denosinfo 문의하기">
+<BaseLayout title="Contact" description={isEn ? 'Get in touch with Denosinfo.' : 'Denosinfo 문의하기'}>
 
 <div class="min-h-screen flex flex-col lg:flex-row relative">
   
@@ -19,11 +29,21 @@ import FadeIn from '../components/FadeIn.astro'
     <div class="absolute bottom-10 left-10 right-10 text-white z-10">
       <FadeIn delay={0.2} direction="up">
         <h1 class="text-4xl lg:text-5xl font-heading font-extrabold mb-4 leading-tight">
-          Let's Connect<br/>& Collaborate
+          {isEn ? 'Let\'s Connect' : 'Let\'s Connect'}<br />
+          {isEn ? '& Collaborate' : '& Collaborate'}
         </h1>
         <p class="text-lg lg:text-xl text-white/90 font-light max-w-md">
-          새로운 프로젝트, 기술 교류, 그리고 재미있는 아이디어.<br/>
-          언제든 환영합니다.
+          {isEn ? (
+            <>
+              New projects, technical exchanges, and fun ideas.<br />
+              Always welcome.
+            </>
+          ) : (
+            <>
+              새로운 프로젝트, 기술 교류, 그리고 재미있는 아이디어.<br />
+              언제든 환영합니다.
+            </>
+          )}
         </p>
       </FadeIn>
     </div>
@@ -36,10 +56,21 @@ import FadeIn from '../components/FadeIn.astro'
       <FadeIn direction="up">
         <div class="mb-16">
           <span class="text-primary font-bold tracking-widest uppercase text-sm mb-2 block">Contact</span>
-          <h2 class="text-3xl font-heading font-bold mb-6 text-gray-900 dark:text-white">문의 및 제안</h2>
+          <h2 class="text-3xl font-heading font-bold mb-6 text-gray-900 dark:text-white">
+            {isEn ? 'Questions & Proposals' : '문의 및 제안'}
+          </h2>
           <p class="text-text-muted dark:text-gray-400 text-lg leading-relaxed">
-            협업 제안, 기술 질문, 혹은 가벼운 커피챗도 좋습니다.<br/>
-            자유롭게 연락주세요.
+            {isEn ? (
+              <>
+                Collaboration proposals, technical questions, or casual coffee chats.<br />
+                Reach out anytime.
+              </>
+            ) : (
+              <>
+                협업 제안, 기술 질문, 혹은 가벼운 커피챗도 좋습니다.<br />
+                자유롭게 연락주세요.
+              </>
+            )}
           </p>
         </div>
       </FadeIn>
@@ -50,7 +81,9 @@ import FadeIn from '../components/FadeIn.astro'
           <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
             <div class="text-3xl mb-4">💻</div>
             <h3 class="font-bold text-lg mb-2 text-gray-900 dark:text-white">Development</h3>
-            <p class="text-sm text-text-muted dark:text-gray-400">오픈소스 프로젝트 협업, 코드 리뷰, 기술 자문</p>
+            <p class="text-sm text-text-muted dark:text-gray-400">
+              {isEn ? 'Open-source collaboration, code reviews, technical consulting' : '오픈소스 프로젝트 협업, 코드 리뷰, 기술 자문'}
+            </p>
           </div>
         </FadeIn>
         
@@ -58,7 +91,9 @@ import FadeIn from '../components/FadeIn.astro'
           <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
             <div class="text-3xl mb-4">🤖</div>
             <h3 class="font-bold text-lg mb-2 text-gray-900 dark:text-white">AI & Tech</h3>
-            <p class="text-sm text-text-muted dark:text-gray-400">최신 기술 트렌드 토론, AI 활용 사례 공유</p>
+            <p class="text-sm text-text-muted dark:text-gray-400">
+              {isEn ? 'Discuss emerging tech trends and AI use cases' : '최신 기술 트렌드 토론, AI 활용 사례 공유'}
+            </p>
           </div>
         </FadeIn>
 
@@ -66,7 +101,9 @@ import FadeIn from '../components/FadeIn.astro'
           <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
             <div class="text-3xl mb-4">🚗</div>
             <h3 class="font-bold text-lg mb-2 text-gray-900 dark:text-white">Automotive</h3>
-            <p class="text-sm text-text-muted dark:text-gray-400">자동차 시승기, 메카닉 관련 이야기</p>
+            <p class="text-sm text-text-muted dark:text-gray-400">
+              {isEn ? 'Car reviews and mechanical discussions' : '자동차 시승기, 메카닉 관련 이야기'}
+            </p>
           </div>
         </FadeIn>
 
@@ -74,7 +111,9 @@ import FadeIn from '../components/FadeIn.astro'
           <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-colors h-full">
             <div class="text-3xl mb-4">☕️</div>
             <h3 class="font-bold text-lg mb-2 text-gray-900 dark:text-white">Coffee Chat</h3>
-            <p class="text-sm text-text-muted dark:text-gray-400">가벼운 네트워킹 및 소통</p>
+            <p class="text-sm text-text-muted dark:text-gray-400">
+              {isEn ? 'Light networking and casual chats' : '가벼운 네트워킹 및 소통'}
+            </p>
           </div>
         </FadeIn>
       </div>
@@ -84,8 +123,12 @@ import FadeIn from '../components/FadeIn.astro'
         <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden group border border-gray-100 dark:border-gray-700">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-colors"></div>
           
-          <h3 class="text-2xl font-bold mb-2">이메일 보내기</h3>
-          <p class="text-gray-600 dark:text-gray-400 mb-8 text-sm">확인 후 최대한 빠르게 회신 드리겠습니다.</p>
+          <h3 class="text-2xl font-bold mb-2">
+            {isEn ? 'Send an email' : '이메일 보내기'}
+          </h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-8 text-sm">
+            {isEn ? 'I will reply as soon as possible after reviewing.' : '확인 후 최대한 빠르게 회신 드리겠습니다.'}
+          </p>
           
           <a href="mailto:denosinfo@gmail.com" class="block w-full text-center py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-primary/20">
             denosinfo@gmail.com

@@ -1,17 +1,26 @@
 ---
-import { cn, sluglify, getCategoryTitleFromSlug } from '@/utils'
+import {
+	DEFAULT_LOCALE,
+	cn,
+	getCategoryTitleFromSlug,
+	getLocalePrefix,
+	sluglify
+} from '@/utils'
 
 const { name = 'View All', activeCategory } = Astro.props
 const currentPath = Astro.url.pathname
 const categoryTitle = getCategoryTitleFromSlug(name.toLowerCase())
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+const rootPath = `${localePrefix}/`
 
 const isActive =
 	activeCategory?.toLocaleLowerCase() === categoryTitle ||
-	(currentPath === '/' && name === 'View All')
+	((currentPath === rootPath || currentPath === localePrefix) && name === 'View All')
 ---
 
 <a
-	href={name === 'View All' ? '/' : sluglify(`/${name.toLowerCase()}/1`)}
+	href={name === 'View All' ? rootPath : `${localePrefix}${sluglify(`/${name.toLowerCase()}/1`)}`}
 	class={cn(
 		`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-sm`,
 		isActive
