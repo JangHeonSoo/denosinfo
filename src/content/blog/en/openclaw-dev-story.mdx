@@ -1,0 +1,464 @@
+---
+title: 'From Clawdbot to Moltbot to OpenClaw 🤦‍♂️'
+description: 'The naming rollercoaster of an open-source AI agent project and its powerful capabilities.'
+pubDate: 2026-01-31
+category: 'Tech'
+tags: ['OpenClaw', 'AI', 'Agent', 'OSS', 'LLM', 'Automation']
+heroImage: '/images/openclaw-hero.png'
+---
+
+# From Clawdbot to Moltbot to OpenClaw 🤦‍♂️
+
+I recently came across this hot project called Clawdbot, then suddenly it became Moltbot, and a few days later it rebranded again to OpenClaw.  
+OpenClaw (formerly Moltbot, formerly Clawdbot) ㅋㅋㅋㅋㅋㅋㅋㅋ
+
+It's been a while since I've seen an OSS project do a full identity crisis in public like this, and honestly it's kind of entertaining ㅋㅋㅋ  
+I mean, this kind of naming rollercoaster is pretty rare in the 2020s.  
+But despite the three name changes, the software itself has been growing steadily and quietly, which is both hilarious and kind of impressive.
+
+---
+
+## What OpenClaw actually does: not "just another chatbot"
+
+When I first heard about it, I assumed it was just "yet another AI chat UI."  
+But once you look at the architecture, it's much closer to an **agent gateway** that lives on your own infra.
+
+Quick summary from a dev's perspective:
+
+- It's a **self‑hosted personal AI assistant** that you run on your own machine, VPS, or even Cloudflare Workers.
+- You talk to it through channels you already use: WhatsApp, Telegram, web dashboard, terminal TUI, etc.
+- Under the hood it can talk to whatever LLM you prefer – Claude, OpenAI, Gemini, or a local model via Ollama.
+- It uses a **skill** system so it can send emails, manage your calendar, touch GitHub, access files, and more.
+
+If I had to compress it into one line:  
+> "An AI assistant that lives on your infra and actually does stuff – runs commands, hits APIs, sends emails, manages your calendar – all from a chat app."
+
+---
+
+## Mental model: Gateway + Channels + Skills + LLM
+
+The docs have diagrams, but I prefer a rough mental UML:
+
+- **Gateway**: the always-on backend.  
+  - It connects your channels (Telegram, web, TUI), your LLM provider, and your skills.
+- **Channels**: WhatsApp / Telegram / Web / TUI / Workers.  
+  - These are the entry points where humans talk.
+- **Skills**: GitHub, email, calendar, filesystem, etc.  
+  - These are the "hands and feet" that actually perform actions.
+- **LLM provider**: Anthropic, OpenAI, Gemini, local LLM.  
+  - This is the "brain" that decides what to do.
+
+The gateway sits in the middle and orchestrates:  
+"User just typed this in Telegram, let's call the calendar skill, then the email skill, using Claude as the planner."
+
+---
+
+## Setup & onboarding: the "why isn't this working?" arc
+
+### 1) Typical install path
+
+Most guides follow this path:
+
+1. Install Node.js 22+ on your machine or VPS.
+2. Install the OpenClaw (Moltbot/Clawdbot) gateway.
+3. Run the onboarding wizard.
+
+For example, guides often show a command like:
+
+```bash
+# Onboard + install as a daemon
+curl -fsSL https://openclaw.ai/install.sh | bash
+```
+
+That one command configures your LLM provider, sets up a workspace, links your chat channels, and registers a systemd service so the gateway stays up.  
+"Everything in one shot" always sounds nice, and always hides a couple of sharp edges.
+
+### 2) First gotcha: forgetting to set LLM keys
+
+During onboarding it asks which LLM you want to use (Claude/OpenAI/Gemini/etc.).  
+I lazily skipped the API keys thinking, "I'll add them later."
+
+Result: the Telegram bot silently "works" but never replies.  
+Messages arrive just fine, but every LLM call fails behind the scenes because there's no API key configured, so you end up with 0 responses and some sad error logs.
+
+After a good "why the hell is this bot so quiet?" moment,  
+the fix was obvious: set `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` env vars properly and restart.
+
+### 3) Second gotcha: losing the gateway token
+
+Some hosting guides generate an `OPENCLAW_GATEWAY_TOKEN` and tell you to store it somewhere safe because you'll need it to access the web interface.  
+Of course I did not store it anywhere.
+
+Later, when I opened the web UI, it politely asked me to enter the gateway token.  
+Cue the "oh… it was that token" realization.
+
+I ended up grepping through Docker logs to recover it.  
+Since then, tokens go straight into `.env` or a secret manager. No exceptions.
+
+---
+
+## Strengths from a developer's POV
+
+### 1) "My own infra, my own agent"
+
+- You can run it on your own machine, VPS, or Workers instead of some opaque SaaS.
+- You control the LLM keys, file access, and how far the bot's permissions go, including SSH if you dare.
+- That makes it much more appealing for internal repos, company docs, or private notes compared to cloud-only agent products.
+
+### 2) Skills as modular building blocks
+
+There's already an "awesome skills" repo with stuff for GitHub, Homebrew, iCloud Find My, HealthKit, media backup, and more.  
+Installation is straightforward:
+
+```bash
+# Install a skill via ClawdHub CLI
+npx clawdhub@latest install github-pr
+```
+
+Or just drop a folder into:
+
+- Global: `~/.openclaw/skills/`
+- Workspace: `<project>/skills/`
+
+Priority is workspace > local > bundled, so you can override or customize per-project.  
+From a dev standpoint, once you learn the skill interface, writing your own domain-specific skills becomes addictive.
+
+### 3) The UX of "no new UI"
+
+Because it lives inside WhatsApp, Telegram, or your terminal, you don't have to adopt yet another dashboard.  
+There's a TUI as well, so you can just SSH into your box and chat with your agent in the terminal.
+
+No new inbox, no new SaaS login, just more power in the tools you already open 50 times a day.
+
+---
+
+## Weaknesses / risks (the honest bits)
+
+### 1) Security and permissions are a minefield
+
+The same reason OpenClaw is powerful is also why it's scary.  
+Skills can send emails, schedule calendar events, manipulate git, touch your filesystem – all triggered from chat.
+
+If you:
+
+- Give it too much access
+- Implement skills with weak permission checks
+- Or get your chat channel compromised
+
+You could absolutely nuke a server or leak data in one unlucky interaction.  
+The project has already been through drama like repo hijacking and security scrutiny in the Clawdbot/Moltbot era.
+
+### 2) Branding confusion
+
+Right now you'll see "Clawdbot", "Moltbot", and "OpenClaw" scattered across docs, repos, and guides.  
+Even the skills list is still named `awesome-clawdbot-skills` with a note saying "Formerly known as Moltbot, originally Clawdbot."
+
+If you're coming in fresh, you end up cross-referencing 2–3 guides just to figure out which name maps to which phase.
+
+### 3) Context/token limitations
+
+Like any LLM-based agent, OpenClaw isn't magic when it comes to long sessions.  
+There are reports that when token usage hits around 85% of the model context window, the bot can become unresponsive or behave oddly.
+
+So if you plan to use it for long-running workflows with lots of memory, you need to design good summarization and truncation strategies.
+
+---
+
+## Scenario: Telegram → Notion calendar → email blast
+
+Let's build a concrete mental model:  
+When you send a message to a Telegram bot, it should:
+
+1. Receive the message.
+2. Parse it into a structured event.
+3. Create a calendar entry in Notion.
+4. Email the event details to teammates/friends.
+
+We'll pretend this lives inside an OpenClaw skill, but the pattern is generic enough to reuse anywhere.
+
+---
+
+## Step 1: Receiving Telegram messages
+
+You create a Telegram bot via BotFather and get a token.  
+Then a channel skill in OpenClaw exposes a webhook for Telegram to call, passing updates to the gateway.
+
+Here's a minimal Express-style webhook handler:
+
+```typescript
+// skills/telegram-notion-mail/index.ts
+import express from "express";
+import { handleMessage } from "./logic";
+
+const app = express();
+app.use(express.json());
+
+app.post("/telegram/webhook", async (req, res) => {
+  const update = req.body;
+
+  try {
+    const message = update?.message?.text ?? "";
+    const chatId = update?.message?.chat?.id;
+
+    if (!message || !chatId) {
+      return res.sendStatus(200);
+    }
+
+    await handleMessage({ message, chatId });
+
+    res.sendStatus(200);
+  } catch (e) {
+    console.error("telegram webhook error", e);
+    res.sendStatus(500);
+  }
+});
+
+export default app;
+```
+
+In a real OpenClaw skill, the framework wires this up to the gateway and handles auth/routing for you.
+
+---
+
+## Step 2: Using an LLM to extract event info
+
+Instead of hand-writing parsers, we let the LLM convert free text into a JSON event object.
+
+```typescript
+// skills/telegram-notion-mail/logic.ts
+import { createLLMClient } from "./llm";
+import { createNotionEvent } from "./notion";
+import { sendEventEmails } from "./mailer";
+
+type ParsedEvent = {
+  title: string;
+  date: string;      // YYYY-MM-DD
+  startTime?: string;
+  endTime?: string;
+  attendees?: string[];
+  location?: string;
+  note?: string;
+};
+
+export async function handleMessage({
+  message,
+  chatId,
+}: {
+  message: string;
+  chatId: number;
+}) {
+  const llm = createLLMClient(); // Anthropic/OpenAI/Gemini via OpenClaw config
+
+  const prompt = `
+You are an event parsing bot.
+Extract structured event info from the user's message and output ONLY JSON.
+
+Fields:
+- title: string
+- date: YYYY-MM-DD
+- startTime: HH:MM (optional)
+- endTime: HH:MM (optional)
+- attendees: array of strings (optional)
+- location: string (optional)
+- note: string (optional)
+
+Message: "${message}"
+`;
+
+  const raw = await llm.complete({
+    prompt,
+    maxTokens: 256,
+  });
+
+  let parsed: ParsedEvent;
+  try {
+    parsed = JSON.parse(raw.trim());
+  } catch (e) {
+    console.error("failed to parse LLM JSON", raw);
+    return;
+  }
+
+  const created = await createNotionEvent(parsed);
+  await sendEventEmails(parsed, created.shareUrl);
+}
+```
+
+This is the "agent" part in a nutshell: chat → LLM → structured intent → downstream APIs.
+
+---
+
+## Step 3: Creating a Notion calendar entry
+
+There are already bots out there that sync Telegram notes into Notion, so this pattern is well-trodden.  
+We just target a calendar database instead of a generic notes DB.
+
+```typescript
+// skills/telegram-notion-mail/notion.ts
+import { Client } from "@notionhq/client";
+
+const notion = new Client({
+  auth: process.env.NOTION_API_KEY, // store in env or secret manager
+});
+
+const NOTION_DATABASE_ID = process.env.NOTION_EVENT_DB_ID!;
+
+type ParsedEvent = {
+  title: string;
+  date: string;
+  startTime?: string;
+  endTime?: string;
+  attendees?: string[];
+  location?: string;
+  note?: string;
+};
+
+export async function createNotionEvent(event: ParsedEvent) {
+  const { title, date, startTime, endTime, attendees, location, note } = event;
+
+  const fullDate = startTime
+    ? `${date}T${startTime}:00`
+    : `${date}T09:00:00`;
+
+  const fullEnd = endTime
+    ? `${date}T${endTime}:00`
+    : undefined;
+
+  const res = await notion.pages.create({
+    parent: { database_id: NOTION_DATABASE_ID },
+    properties: {
+      Name: {
+        title: [{ text: { content: title } }],
+      },
+      Date: {
+        date: {
+          start: fullDate,
+          end: fullEnd,
+        },
+      },
+      Location: location
+        ? {
+            rich_text: [{ text: { content: location } }],
+          }
+        : undefined,
+      Attendees: attendees && attendees.length
+        ? {
+            multi_select: attendees.map((a) => ({ name: a })),
+          }
+        : undefined,
+    },
+    children: note
+      ? [
+          {
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              rich_text: [{ type: "text", text: { content: note } }],
+            },
+          },
+        ]
+      : [],
+  });
+
+  const shareUrl = `https://www.notion.so/${res.id.replace(/-/g, "")}`;
+
+  return { id: res.id, shareUrl };
+}
+```
+
+Common facepalm moments here:
+
+- Property names not matching your actual Notion DB (`Name` vs `Title`).
+- Using a text property where you expect a date property and getting vague 400 errors.
+
+That's the classic "why isn't this working?" → "oh, wrong property type" moment.
+
+---
+
+## Step 4: Emailing the event to your people
+
+OpenClaw already leans heavily into email automation (clearing your inbox, sending emails, etc.).  
+We'll implement a lightweight mailer skill using nodemailer.
+
+```typescript
+// skills/telegram-notion-mail/mailer.ts
+import nodemailer from "nodemailer";
+
+type ParsedEvent = {
+  title: string;
+  date: string;
+  startTime?: string;
+  endTime?: string;
+  attendees?: string[];
+  location?: string;
+  note?: string;
+};
+
+const EMAIL_FROM = process.env.MAIL_FROM!;
+const EMAIL_TO_LIST = (process.env.MAIL_TO_LIST ?? "")
+  .split(",")
+  .map((x) => x.trim())
+  .filter(Boolean);
+
+const transporter = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: Number(process.env.MAIL_PORT ?? 587),
+  secure: false,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
+
+export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
+  if (!EMAIL_TO_LIST.length) return;
+
+  const { title, date, startTime, endTime, location, note } = event;
+
+  const subject = `[Event] ${title} - ${date}`;
+  const timeRange = startTime
+    ? endTime
+      ? `${startTime} ~ ${endTime}`
+      : `${startTime} ~ (no end time)`
+    : "time TBD";
+
+  const html = `
+  <h2>New event created</h2>
+  <ul>
+    <li><b>Title</b>: ${title}</li>
+    <li><b>Date</b>: ${date}</li>
+    <li><b>Time</b>: ${timeRange}</li>
+    ${location ? `<li><b>Location</b>: ${location}</li>` : ""}
+  </ul>
+  <p>Notion link: <a href="${notionUrl}">${notionUrl}</a></p>
+  ${note ? `<p>Note: ${note}</p>` : ""}
+  `;
+
+  await transporter.sendMail({
+    from: EMAIL_FROM,
+    to: EMAIL_TO_LIST,
+    subject,
+    html,
+  });
+}
+```
+
+Again, you'll probably spend a few minutes wrestling with TLS/ports the first time.  
+But once it works, you get a nice "type it in Telegram and everyone gets an email" workflow.
+
+---
+
+## Quick summary: 4 key takeaways
+
+1. **OpenClaw is a self‑hosted agent, not just a UI**  
+   - It runs on your infra, talks to your LLM of choice, and connects to your tools via skills.
+
+2. **Skills make it easy to plug in your own domain logic**  
+   - There's already an ecosystem of skills, and adding your own is just dropping a folder in the right place.
+
+3. **Security is your problem now**  
+   - With great power comes the ability to accidentally rm -rf your own stuff via chat if you're careless with permissions.
+
+4. **Telegram → Notion → email is just channels + LLM parsing + two APIs**  
+   - Receive message, parse event via LLM, create Notion page, send emails, and you've got a surprisingly useful automation.
+
+#OpenClaw #AI #Agent #OSS #LLM #Automation
