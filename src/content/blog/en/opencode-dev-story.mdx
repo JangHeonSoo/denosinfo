@@ -1,0 +1,466 @@
+---
+title: 'OpenCode and Oh-My-OpenCode: The New Horizon of CLI Tools'
+description: 'Exploring OpenCode, the ultimate CLI tool for vibe coding, and its powerful extension Oh-My-OpenCode.'
+pubDate: 2026-02-02
+category: 'Development'
+tags: ['OpenCode', 'CLI', 'AI', 'CodingAgent', 'Sisyphus', 'OpenSource']
+heroImage: '/images/opencode-hero.png'
+---
+
+# OpenCode and Oh-My-OpenCode: The New Horizon of CLI Tools
+
+My subjective take: #1 **CLI** tool for vibe coding.
+
+Coding **AI** in a terminal might sound weird at first. Why abandon your **IDE** for a black screen? But once you try it, you'll get it. That feeling when your hands never leave the keyboard.
+
+**OpenCode** is an open-source **AI** coding agent. Terminal-based, free, and used by 650,000 developers monthly. Just type `opencode` and a **TUI** (Terminal User Interface) appears. That meants everything begins here.
+
+![Terminal TUI Interface](/images/terminal-tui.png)
+
+## Why Choose OpenCode
+
+**Claude Code** exists. **Cursor** exists. But **OpenCode** is different. First, **it supports 75+ LLMs you can freely swap**. **Claude** to **GPT** to **Gemini** to even local **Ollama** models. Not being locked to a vendor is more freedom than you'd think.
+
+**LSP** (Language Server Protocol) auto-loads. Open a **TypeScript** project, the **TypeScript** server attaches automatically. **Python**? **Pyright** attaches. 30+ languages supported. Go to definition, find references, type info. That **IDE** comfort, right in your terminal.
+
+Multi-session support. Run multiple agents simultaneously in the same project. Code with the **Build** agent while the **Plan** agent designs the next phase. Parallel work is possible.
+
+### Build and Plan: Two Faces
+
+**OpenCode** comes with two default agents. **Build** and **Plan**.
+
+**Build** has full access. Reads files, writes files, edits files, executes shell commands. It does the actual work. **Plan**, on the other hand, is read-only. Analyzes the codebase, suggests architecture, makes plans. Uses its brain without touching anything.
+
+Switch between them with one **Tab** key. Plan the strategy, then **Build** the implementation. That's **OpenCode**'s intended workflow.
+
+## What Makes Oh-My-OpenCode Different
+
+Here's where **Oh-My-OpenCode** enters. It's a plugin running on top of **OpenCode**. But it's not just a plugin. **It transforms "AI working solo" into "AI team collaborating"**.
+
+Developer **code-yeongyu** poured $24,000 worth of tokens into testing it. This isn't just a hobby project.
+
+### Sisyphus: The One Who Goes All the Way
+
+The heart of **Oh-My-OpenCode** is **Sisyphus**. Like the Greek myth, it never gives up. It's the main orchestrator.
+
+![Sisyphus Orchestrator](/images/sisyphus-agent.png)
+
+When a task comes in, **Sisyphus** breaks it down. Some go to **Oracle**, some to **Librarian**, some it handles directly. Each agent focuses only on its domain. They run in parallel in the background.
+
+There's something called **Todo Continuation Enforcer**. It prevents **AI** from stopping mid-task. If the to-do list isn't empty, it forces continuation. A mechanism to ensure completion.
+
+**Comment Checker** is interesting too. **AI** has a habit of over-commenting code. Like `// This function adds two numbers` for obvious stuff. **Comment Checker** filters this out. Keeps the code clean, as if written by a human.
+
+### Building the Expert Team
+
+**Oh-My-OpenCode** runs 7+ specialized agents.
+
+![AI Agent Team Collaboration](/images/agent-team.png)
+
+- **Oracle**: Architecture design, debugging strategy. Uses premium models like **Opus 4.5**.
+- **Librarian**: Multi-repository analysis. Finds docs, searches **GitHub**, fetches implementation examples. Runs on the free **GLM-4.7** model.
+- **Navigator**: Codebase exploration. Maps file structure and tracks dependencies.
+- **Implement**: Actual code writing. Follows patterns and maintains conventions.
+- **Document-writer**: Technical documentation. From **README** to **API** docs.
+- **Multimodal-looker**: **PDF**, image, diagram analysis. Extracts info from visual materials.
+
+Each does what it does best. Fast models for exploration, smart models for design, mid-tier models for implementation. Cost optimization happens automatically.
+
+## How to Install
+
+### Installing OpenCode
+
+Simplest method:
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+Package managers work too:
+
+```bash
+# macOS
+brew install anomalyco/tap/opencode
+
+# Windows
+scoop bucket add extras
+scoop install extras/opencode
+
+# Arch Linux
+paru -S opencode-bin
+```
+
+Check version:
+
+```bash
+opencode --version  # Must be 1.0.150+
+```
+
+### Adding Oh-My-OpenCode
+
+**Bun** is required:
+
+```bash
+# macOS/Linux
+curl -fsSL https://bun.sh/install | bash
+
+# Windows
+powershell -c "irm bun.sh/install.ps1|iex"
+```
+
+Then:
+
+```bash
+bunx oh-my-opencode install
+```
+
+A wizard appears. Three questions:
+
+1. Do you have **Claude Pro/Max**?
+2. Do you have **ChatGPT Plus/Pro**?
+3. Do you use **Google Gemini**?
+
+Answer honestly. Two config files are auto-generated:
+- `~/.config/opencode/opencode.json`
+- `~/.config/opencode/oh-my-opencode.json`
+
+### Authentication
+
+Login required for each provider:
+
+```bash
+# Claude
+opencode auth login
+# → Select Anthropic → OAuth authentication
+
+# ChatGPT
+opencode auth login
+# → Select OpenAI → Browser opens
+
+# Gemini
+opencode auth login
+# → Select Google → Antigravity OAuth
+
+# Check
+opencode auth list
+```
+
+## How to Actually Use It
+
+### Basic Workflow
+
+In your project folder:
+
+```bash
+opencode
+```
+
+The **TUI** launches. Reference files with `@`:
+
+```
+How is auth handled in @src/api.ts?
+```
+
+Shell commands with `!`:
+
+```
+!git log --oneline -10
+```
+
+Slash commands exist:
+
+- `/init` - Create **AGENTS.md** file. Define project context and rules.
+- `/models` - List models. Switch **LLMs** here.
+- `/compact` - Compress session. Save tokens.
+- `/undo` - Undo last action. **Git**-managed.
+- `/sessions` - Switch to another session.
+
+Switch agents with **Tab**. **Build** ↔ **Plan**. Keep typing without lifting your hands.
+
+### Leveraging Oh-My-OpenCode
+
+Start in normal mode and **Sisyphus** decides automatically. Which agent to use, what order. But you can specify directly:
+
+```
+@oracle suggest architecture for this part
+```
+
+Mention agents directly with `@`. Explicitly request a specific expert.
+
+There's an **ultrawork** keyword. Full auto mode. When you use it:
+
+- Parallel agent execution
+- Background tasks activated
+- **Todo Continuation Enforcer** engages
+- Automatic delegation to specialized agents
+- Runs until completion
+
+It's like saying "just do it." The agent explores, plans, implements, verifies. Developers only check the results.
+
+## LSP and Tools
+
+**OpenCode** provides 20+ built-in tools:
+
+- **bash**: Execute shell commands. `npm install`, `git status`, anything.
+- **edit**: Modify files with exact string replacement. Primary editing method.
+- **write**: Create new files or overwrite.
+- **read**: Read file contents. Can specify line ranges.
+- **grep**: Search content with regex. Fast.
+- **lsp**: Code intelligence. Definition, references, hover, symbol search.
+- **webfetch**: Fetch documentation from the web.
+
+**Oh-My-OpenCode** adds **AST-Grep**. Abstract Syntax Tree-based search. Not just text matching, it understands code structure. Especially powerful for refactoring.
+
+**LSP** auto-supports 30+ languages. Open a file and the corresponding language server attaches automatically. Diagnostics, type info, call hierarchy. **IDE**-level features.
+
+## The Cost Problem
+
+**AI** coding tools cost money. **Claude Sonnet** is $3-15 per 1M tokens. Use it 3 hours daily and you're at $50-150 monthly. With **Oh-My-OpenCode** running parallel agents, you exceed $200.
+
+This is where **OpenCode**'s vendor freedom shines. You can assign different models per agent:
+
+- **Sisyphus** (orchestrator): Cheap **DeepSeek** ($0.27/M tokens)
+- **Oracle** (architecture): Reasoning model **deepseek-reasoner**
+- **Librarian** (search): **GLM-4.7 Free** (free)
+- **Implement** (coding): **Claude Sonnet** or **MiniMax M2.1** ($0.30/M)
+
+Tiered deployment by task type. Cheap for exploration, expensive for design. This hybrid strategy is practical.
+
+**MiniMax M2.1** is particularly interesting. **Multi-SWE-Bench** 49.4%, surpassing **Claude 3.5 Sonnet** and **Gemini 1.5 Pro**. But the price is 8% of **Claude**'s. Cost efficiency maximized with 10B active parameters.
+
+## Dissecting the Config File
+
+**Oh-My-OpenCode** fine-tunes with `oh-my-opencode.json`:
+
+```json
+{
+  "agents": {
+    "sisyphus": {
+      "model": "anthropic/claude-opus-4.5",
+      "fallback": ["openai/gpt-5", "google/gemini-3-pro"]
+    },
+    "oracle": {
+      "model": "anthropic/claude-opus-4.5"
+    },
+    "librarian": {
+      "model": "zai-coding-plan/glm-4.7"
+    }
+  },
+  "categories": {
+    "quick": { "model": "opencode/gpt-5-nano" },
+    "unspecified-low": { "model": "zai-coding-plan/glm-4.7" }
+  },
+  "experimental": {
+    "aggressive_truncation": true
+  }
+}
+```
+
+There's a **fallback chain**. If the first model fails, it automatically tries the next. Availability guaranteed.
+
+Categories are task-type models. `quick` uses nano models for fast tasks, `unspecified-low` uses free models for simple work. Unspecified tasks are auto-optimized.
+
+## AGENTS.md: Project Memory
+
+Create **AGENTS.md** with `/init`. A file defining project context and rules. Commit it to **Git** for team-wide sharing.
+
+**AGENTS.md** has a 3-level hierarchy:
+
+1. **Global** (`~/.config/opencode/agents.md`): Personal coding style. Applied to all projects.
+2. **Project** (project root): Tech stack, architecture, project conventions.
+3. **Folder** (subdirectories): Component, utility-specific rules.
+
+**Codex** (or **OpenCode**) reads all three and merges them. Lower levels override higher levels. **Folder** > **Project** > **Global**.
+
+Once set up, no repeated explanations needed. The agent remembers project context. This saves more time than you'd think.
+
+## When OpenCode, When Oh-My-OpenCode
+
+**Use OpenCode when**:
+
+- Personal projects or small teams
+- Simple bug fixes, feature additions
+- Rapid prototyping
+- Cost minimization is key
+- Resource-constrained environments
+
+**Use Oh-My-OpenCode when**:
+
+- Complex architectures like microservices
+- Mixed tech stacks
+- Simultaneous design/implementation/debugging
+- Large team collaboration
+- Need for autonomous project completion
+
+**OpenCode** is lightweight and fast. **Oh-My-OpenCode** is heavy but powerful. Choose based on context.
+
+## MCP: Connecting to the Outside World
+
+**MCP** (Model Context Protocol) connects **OpenCode** to external services. **GitHub**, **Slack**, **Google Drive**, **Sentry**, etc. Add an **MCP** server and the agent directly queries that service's data.
+
+```json
+{
+  "mcp": {
+    "github": {
+      "type": "remote",
+      "url": "https://mcp.github.com",
+      "enabled": true
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.io",
+      "enabled": true
+    }
+  }
+}
+```
+
+OAuth authentication is automatic. Detect a 401 response and **OpenCode** opens a browser for authentication. Supports **Dynamic Client Registration** (RFC 7591).
+
+**Oh-My-OpenCode** actively leverages this. The **grep_app MCP** searches all of **GitHub** for example code. The **Librarian** agent uses this.
+
+But **MCP** consumes a lot of context. **GitHub MCP** especially drains tokens. Only enable what you need. Disable globally and selectively enable per agent works best.
+
+## Custom Commands and Skills
+
+**Commands** automate repetitive tasks. Create things like `/commit`, `/test`, `/review`. Define with **Markdown** files:
+
+```markdown
+---
+description: Run tests and generate coverage report
+---
+
+!npm test
+!npm run coverage
+
+Analyze the test results above and suggest improvements.
+```
+
+Save to `.opencode/commands/test.md` and run with `/test`.
+
+**Skills** are like **SOPs** (Standard Operating Procedures). Reference documents the agent loads when needed. Unlike commands, users don't invoke them directly. Agents decide when to use them.
+
+Differences:
+
+- **Commands**: User explicitly invokes. Autocomplete supported. Parameters passable.
+- **Skills**: Agent auto-loads when needed. Composable. Added to context only, not executed.
+
+In practice, logic goes in **Skills**, and **Commands** reference them like `use xyz skill. $ARGUMENTS`.
+
+## Permission Management
+
+By default, all tools are allowed. But `.env` files are denied by default. Security reason.
+
+Three permission values:
+
+- `allow`: Execute without approval
+- `ask`: User approval required
+- `deny`: Block execution
+
+Glob patterns supported:
+
+```json
+{
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "git *": "allow",
+      "rm *": "deny"
+    }
+  }
+}
+```
+
+Last matching rule wins. Dangerous commands like `rm -rf /` are explicitly denied.
+
+Per-agent permissions are configurable too. **Build** gets everything, **Plan** gets read-only. Separation like this.
+
+## Session Management and Sharing
+
+**OpenCode** maintains sessions. Context keeps accumulating. Remembers previous conversations.
+
+```bash
+# Continue previous session
+opencode --continue
+opencode -c
+
+# Specific session
+opencode --session abc123
+opencode -s abc123
+
+# New session
+/new
+```
+
+Compress sessions with `/compact`. Converts long conversation history to a summary. Switches to a new session while saving tokens.
+
+Share sessions with `/share`. Generate a link and send to teammates. They can see the same context.
+
+## Practical Tips
+
+### Leverage the Undo Stack
+
+`/undo` is stack-based. Multiple undos possible. `/redo` for recovery. **Git**-based, so accurate. Project must be a **Git** repo.
+
+Experiment wildly, break things, then just `/undo` multiple times. You can attempt things freely.
+
+### Plan First, Build Later
+
+Plan with the **Plan** agent first. Confirm the implementation direction, then switch to **Build**. This is **OpenCode**'s intended workflow.
+
+Jumping straight into **Build** risks losing direction. Drawing a roadmap with **Plan** first is safer.
+
+### Actively Use File References
+
+Use the `@` syntax. Fuzzy search works with partial file names. Multiple files can be referenced simultaneously.
+
+```
+Add a new endpoint referring to @api.ts @auth.ts
+```
+
+Context becomes precise. The agent doesn't wander.
+
+### External Editor Integration
+
+Set the `EDITOR` environment variable and `/editor` opens your editor:
+
+```bash
+export EDITOR="code --wait"  # VS Code
+export EDITOR="vim"           # Vim
+```
+
+Useful for long prompts. More comfortable than the terminal input box.
+
+## Limitations and Trade-offs
+
+No perfect tool exists. **OpenCode** is no exception.
+
+**Context window** is limited. No matter how well you manage sessions, you eventually hit token limits. Frequent compacting is necessary, and large projects are burdensome.
+
+**Oh-My-OpenCode** has **complex configuration**. Specify models for each of 7 agents, set **fallback** chains, categorize. Overwhelming at first. There's a learning curve.
+
+**Token consumption is high**. Running parallel agents racks up quickly. Without cost management, you'll be shocked by the bill. Worse if **Sisyphus** over-comments. **Comment Checker** exists but isn't perfect.
+
+**Agent coordination isn't always smooth**. Occasionally tasks duplicate or conflict. One agent fixes something, another agent reverts it. Depends on **Sisyphus**'s judgment, which isn't always optimal.
+
+**Local environment setup is tedious**. Install **OpenCode**, install **Bun**, authenticate, tweak config files. It's not "just works" like **Claude Code**'s web version. Need terminal familiarity. **JSON** editing can be a barrier.
+
+Still, there are reasons to use it. Vendor freedom, **LSP** integration, multi-session, open source. Combined, these offer sufficient value.
+
+## Closing Thoughts
+
+**OpenCode** is a terminal-native **AI** coding agent. Open source, no vendor lock-in, **LSP** support, multi-session. Provides a basic workflow with two agents: **Build** and **Plan**.
+
+**Oh-My-OpenCode** adds the team collaboration concept. **Sisyphus** conducts, 7 specialized agents work in parallel. Sees code structurally with **LSP** and **AST-Grep**, ensures completion with **Todo Enforcer**. Maintains existing workflows with **Claude Code** compatibility layer.
+
+Cost optimization is achieved through task-specific model allocation. Exploration with cheap **DeepSeek**, design with **Claude Opus**, search with free **GLM-4.7**. Hybrid strategy is practical in production.
+
+Configuration is complex but convenient once set up. Share project context with **AGENTS.md**, connect external services with **MCP**, automate repetitive tasks with custom commands.
+
+#1 **CLI** tool for vibe coding. My subjective take. But the data backs it up. 650,000 monthly users, $24,000 in token testing, 75 **LLM** support. Numbers don't lie.
+
+That feeling when your hands never leave the keyboard. Once you experience it, you'll know.
+
+---
+
+#OpenCode #OhMyOpenCode #CLI #AI #CodingAgent #Sisyphus #OpenSource #Development #Tech
