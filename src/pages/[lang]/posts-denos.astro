@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@/layouts/BaseLayout'
+import FadeIn from '@/components/FadeIn'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, getLocalePrefix, getPosts, stripLocaleFromSlug } from '@/utils'
+
+export async function getStaticPaths() {
+	return SUPPORTED_LOCALES.map((lang) => ({
+		params: { lang }
+	}))
+}
+
+const locale = Astro.params.lang ?? DEFAULT_LOCALE
+const localePrefix = getLocalePrefix(locale)
+const isEn = locale === 'en'
+const posts = await getPosts(undefined, locale)
+const pageTitle = isEn ? 'Post Index' : '글 목록'
+const pageDescription = isEn
+	? 'Index of published posts.'
+	: '현재 등록된 글 목록.'
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+	<section class="glass-card rounded-3xl p-8 md:p-10">
+		<FadeIn direction="up">
+			<div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+				<div>
+					<h1 class="text-3xl md:text-4xl font-heading font-extrabold text-gray-900 dark:text-white">
+						{pageTitle}
+					</h1>
+				</div>
+				<div class="text-sm font-semibold text-gray-600 dark:text-gray-300">
+					{isEn ? 'Total posts' : '전체 글'}: {posts.length}
+				</div>
+			</div>
+		</FadeIn>
+
+		<div class="divide-y divide-gray-200/70 dark:divide-gray-700/60">
+			{posts.map((post) => (
+				<article class="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+					<div>
+						<h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+							<a
+								href={`${localePrefix}/${post.collection}/${stripLocaleFromSlug(post.slug, locale)}`}
+								class="hover:text-primary transition-colors"
+							>
+								{post.data.title}
+							</a>
+						</h2>
+						<p class="text-sm text-gray-500 dark:text-gray-400">
+							{post.data.pubDate?.toLocaleDateString(locale, {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit'
+							})}
+						</p>
+					</div>
+					<span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+						{post.data.category ?? 'uncategorized'}
+					</span>
+				</article>
+			))}
+		</div>
+	</section>
+</BaseLayout>
