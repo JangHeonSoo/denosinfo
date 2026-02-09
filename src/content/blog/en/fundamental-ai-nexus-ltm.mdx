@@ -1,0 +1,83 @@
+---
+title: "LLMs Can't Read Spreadsheets — Why Fundamental AI Just Raised $255M"
+date: 2026-02-09
+category: 'ai-tech'
+author: denosinfo
+tags: [AI, LTM, Fundamental, NEXUS, EnterpriseAI, TabularData, DeepMind]
+description: "Ever asked ChatGPT to analyze an Excel file? If the results were underwhelming, it's not your fault. LLMs were never built for tabular data."
+heroImage: "/images/nexus_hero_spreadsheet_struggle_1770592483778.png"
+---
+
+# LLMs Can't Read Spreadsheets — Why Fundamental AI Just Raised $255M
+
+![Traditional LLMs struggling with spreadsheet data vs NEXUS solution](/images/nexus_hero_spreadsheet_struggle_1770592483778.png)
+
+Ever asked <strong>ChatGPT</strong> to analyze an Excel file? You paste in sales data, type "predict next quarter," and the response is... off. It references the wrong rows. Ignores relationships between columns. That's not a prompting problem. <strong>LLMs</strong> are structurally bad at tabular data.
+
+On February 5, 2026, a startup called <strong>Fundamental AI</strong> stepped out of stealth. Built by <strong>DeepMind</strong> alumni, they brought $255 million in Series A funding and a model called <strong>NEXUS</strong>. Here's the thing — it's not an <strong>LLM</strong>.
+
+<br/>
+
+## Why LLMs Fall Apart With Tables
+
+<strong>GPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong> — they're all built on transformers. Transformers process sequences left to right, capturing token relationships. Great for novels and code.
+
+Tables are a different beast. Picture an enterprise dataset: 100 columns, 500,000 rows. Non-linear relationships tangled across cells. No meaningful sequence. Feeding this to an <strong>LLM</strong> is like solving a calculus problem with a dictionary.
+
+The old-school approach wasn't much better. Companies used <strong>XGBoost</strong>, <strong>Random Forest</strong>, and similar ML algorithms. Every single use case required data scientists spending months on <strong>feature engineering</strong>. One model for churn prediction. Another for demand forecasting. Another for pricing. The list never ends.
+
+<br/>
+
+## NEXUS: A Foundation Model Built for Tables
+
+![Visualization of NEXUS architecture for structured data processing](/images/nexus_architecture_structure_1770592503215.png)
+
+<strong>Fundamental</strong>'s answer is <strong>NEXUS</strong>, which they're calling a <strong>Large Tabular Model (LTM)</strong> — a new category altogether. A few things stand out.
+
+<strong>No transformers.</strong> While virtually every AI company builds on transformer architecture, <strong>Fundamental</strong> went a completely different direction. They designed a custom architecture for the non-sequential nature of tabular data.
+
+<strong>Deterministic outputs.</strong> Same input, same output. Every time. No probabilistic variance. For finance, insurance, and healthcare — where consistency is non-negotiable — this is massive.
+
+<strong>One line of code.</strong> Connect it to your existing data stack, and <strong>NEXUS</strong> learns patterns and dependencies from raw data without manual <strong>feature engineering</strong>. CEO <strong>Jeremy Fraenkel</strong> claims it outperforms "what an entire team of data scientists could achieve over months."
+
+<br/>
+
+## The Numbers
+
+![Holographic chart showing business growth and reliability](/images/nexus_business_growth_1770592523708.png)
+
+$1.2 billion valuation. Aggressive for a Series A. They raised $30 million in seed funding plus $225 million in Series A, totaling $255 million.
+
+Before even going public, <strong>Fundamental</strong> signed multiple seven-figure contracts with <strong>Fortune 100</strong> companies. Use cases include demand forecasting, price prediction, and customer churn analysis. They've also partnered with <strong>AWS</strong> — training on <strong>Amazon SageMaker HyperPod</strong> and deploying through the AWS dashboard.
+
+<br/>
+
+## Why Now
+
+"Better analysis of tabular data" isn't a new goal. So why is this company getting attention right now?
+
+First, <strong>LLM</strong> fatigue is real. Enterprises adopted <strong>ChatGPT</strong>, then realized their most critical data lives in spreadsheets and databases — exactly where <strong>LLMs</strong> struggle. It took a year or two of production use to learn this lesson.
+
+Second, demand for predictability exploded. Regulated industries — finance, insurance, manufacturing — want deterministic predictions, not probabilistic guesses.
+
+Third, the infrastructure is ready. Cloud platforms like <strong>AWS</strong> and <strong>GCP</strong> made large-scale model training and deployment accessible. <strong>Fundamental</strong> built on top of that.
+
+<br/>
+
+## What This Means for Developers
+
+If you build data pipelines or serve <strong>ML models</strong>, tools like <strong>NEXUS</strong> signal a real shift.
+
+Time spent on <strong>feature engineering</strong> shrinks. You feed raw data directly. The need to build separate models per use case decreases. One <strong>foundation model</strong> handles diverse prediction tasks.
+
+This doesn't mean data scientists are obsolete. Data quality management, business context interpretation, result validation — still human territory. But the ratio flips: less grunt work, more judgment calls.
+
+<br/>
+
+## Zooming Out
+
+While the AI industry chants "bigger <strong>LLMs</strong>, longer context windows," <strong>Fundamental</strong> laid down a different board entirely. Not an AI that writes poetry — an AI that actually understands Excel.
+
+Honestly? This makes sense. Around 80% of enterprise data is tabular. If <strong>LLMs</strong> weren't the right tool for extracting value from it, a purpose-built model was inevitable.
+
+Whether <strong>NEXUS</strong> delivers on its promises needs more time to verify. But cracking the assumption that "<strong>LLM</strong> is the only answer" — that alone is worth something.
