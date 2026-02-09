@@ -1,0 +1,120 @@
+---
+title: "Differentiation in AI Accelerators Starts with HBM4 'Base Die', Not GPU"
+date: 2026-02-09
+category: 'ai-tech'
+author: denosinfo
+tags: [AI, HBM4, Semiconductor, BaseDie, SKHynix, Micron, NVIDIA, TSMC]
+description: "HBM4 is not just about memory speed. It marks a structural shift where memory becomes 'semi-ASIC' with the introduction of the base die. Analyzing how this changes the AI accelerator market landscape."
+heroImage: "/images/hbm4_structure_base_die_1770597612252.png"
+---
+
+Computation performance keeps rising. Bandwidth and supply are holding it back.
+
+HBM4 is not just a generational shift for speed. It is a turning point where memory becomes 'semi-ASIC'.
+
+<br/>
+
+## HBM4 Standard Creates "More Granular Memory", Not Just "Faster Memory"
+
+![Futuristic visualization of 2TB/s bandwidth](/images/hbm4_bandwidth_speed_v2_1770597721567.png)
+
+The core of HBM4 can be summarized in two numbers.
+Pin speed is 8Gb/s. I/O width is 2048-bit.
+
+This combination creates a JEDEC standard total bandwidth of up to 2TB/s per stack.
+
+This is not the end. HBM4 increases the number of channels from 16 to 32 (configured as 2 pseudo-channels per channel) and pushes the design towards finer access granularity to increase parallelism.
+
+This is why the difference is felt significantly in workloads like large-scale LLM training/inference, where "just adding more compute units" is not enough. Data needs to be split more finely and moved more frequently and simultaneously; if that path is narrow, the GPU starts idling.
+
+The message from the standard document is also clear. The HBM4 interface definition keeps backward compatibility with HBM3 controllers in mind. It states that a scenario of "handling HBM3 and HBM4 with one controller" is possible.
+
+The standard leaves the door open for scalability. The problem is that this door might narrow again during the productization process.
+
+<br/>
+
+## When Base Die Rises, HBM Becomes a "Module with Logic", Not a "Bundle of DRAM"
+
+![Visualization of HBM4 Base Die Structure](/images/hbm4_structure_base_die_1770597612252.png)
+
+HBM was never just a simple DRAM chip. Since the beginning, it involved stacking, packaging, and short connections from the side. And now, logic is laid at the bottom.
+
+This "bottom logic" is the Base Die (Logic Die). This is where complex realities like signal, power, test, and repair are sorted out. Consequently, as generations advance, HBM solidifies as a sum of "Logic Design + Packaging Manufacturing + Customer Platform Fit", not just DRAM performance.
+
+At this point, the numbers brought up by <strong>Micron</strong> are significant. The company states they have already shipped 12-high HBM4 customer samples, with bandwidth exceeding 2.8TB/s and pin speeds over 11Gbps.
+
+It is a declaration to differentiate by "exceeding" the JEDEC standard (max 2TB/s per stack, 8Gb/s), not just "meeting" it.
+
+A more important sentence follows. For HBM4E, they state they will provide the Base Logic Die as a "Customizable Option" as well as a standard type.
+
+This means HBM can look different for each customer. It is the moment HBM transforms from a modular component into a "part of the platform".
+
+<br/>
+
+## Standards Speak of Compatibility, But Customization Makes Multi-Sourcing Difficult
+
+![Ecosystem combining Memory, Foundry, and Custom Design](/images/hbm4_supply_chain_custom_v2_1770597734345.png)
+
+The language of standards is always optimistic. Compatible. Flexible. Easy to integrate.
+
+The language of reality is drier. Once customization enters, swapping becomes difficult.
+
+<strong>Reuters</strong> points out that with the emergence of customer-tailored "Base Dies" in HBM4, interchangeability between chips has become difficult.
+
+The core of a multi-vendor strategy is "the option to switch to Company B if Company A's supply gets driving". But if the Base Die splits by customer/platform, this option can disappear 'structurally', not just 'technically'.
+
+This connects to why the leading schedule of Korean companies shakes the market. <strong>SK Hynix</strong> announced they supplied 12-layer HBM4 samples to major customers as a "world's first", presenting over 2TB/s bandwidth and 36GB capacity, aiming for mass production in the second half of 2025 after certification.
+
+Fast sample supply preempts design slots. Once a design is locked in, it's hard to change. When that lock-in combines with a custom Base Die, the supply chain shifts from simple "price competition" to "platform lock-in".
+
+Ultimately, competition in the HBM4 era splits into two paths.
+It's not about who meets the standard first.
+It's about who enters the customer-specific design faster and raises the "switching cost".
+
+<br/>
+
+## The Flow of Money Changes: HBM4E Customization is a "Margin Option", Not a "Performance Option"
+
+HBM is memory that sells at a high price. The problem is not "how expensive". It is that "who takes the share of that value" is being redrawn.
+
+Looking at the numbers released by Micron, the atmosphere is readable. They state that in FY2025, data center business rose to 56% of total revenue (presenting 52% gross margin), and HBM revenue grew to about $2 billion quarterly, implying an $8 billion annualized run rate.
+
+In this market, HBM4E customization is defined as an "option to share price/margin", not a "technical option". The company explicitly states they expect HBM4E with custom Base Logic Die to yield higher gross margins than the standard type.
+
+It is also hard to leave out that <strong>TSMC</strong> enters as an axis making this custom possible. Micron notes they collaborate with this foundry in manufacturing the HBM4E Base Logic Die.
+
+It is a signal that memory maker competition does not end at "DRAM process scaling" but reorganizes to include logic, packaging, and the foundry ecosystem.
+
+Here, pressure from the accelerator side overlaps. Looking at the rack-scale system specs released by <strong>NVIDIA</strong>, based on GB200 NVL72, total HBM3E capacity reaches 13.4TB, and total bandwidth is marked at 576TB/s.
+
+At this class of system, it changes from "it would be nice if memory bandwidth increased a bit" to "we can't build the system without memory". HBM becomes the key to opening revenue, not just a raw material cost, and the structure becomes one where the side holding that key takes bargaining power and margins.
+
+<br/>
+
+## What Practitioners Need to Change
+
+HBM4 is not just a hardware team issue. It's not just a cloud team issue. It connects directly to the schedule and cost of the AI product team.
+
+First, the criteria for "Instance Selection" changes. Don't just look at the GPU generation; you must set the platform spec where memory capacity, bandwidth, and networking are bundled together as the standard. The reality that HBM bandwidth moves in TB/s units in rack-scale design shows how sensitive workloads have become to memory.
+
+Second, "Supply Risk" must be elevated to a Technical Risk. As Reuters pointed out, if the Base Die goes custom, mutual compatibility can become difficult, and at that moment, multi-sourcing collapses at the design stage, not on the contract.
+
+Procurement teams must move away from just asking about lead times. They must manage platform change costs, qualification periods, and the range of substitutable SKUs together.
+
+Third, "Memory Efficiency" becomes Cost Optimization, not Performance Optimization. Micron notes that use cases like KV cache tiering and vector database search/indexing in AI inference are pushing up data center storage demand.
+
+This can be read differently. It means how you design the memory/storage hierarchy has solidified as an axis determining inference cost. Cache policies, context length, compression/quantization, and batch strategies become "technologies to save HBM and power", not "technologies to save performance".
+
+Fourth, who gains and who loses becomes clear. Large accelerator designers and large clouds gain room to optimize performance, power, and cost in their favor through options like custom Base Dies. Memory makers try to turn that customization into margin.
+
+Conversely, teams with small volumes, startups, and organizations that need to switch hardware on short development cycles may see their options shrink. Because the door of compatibility opened by standards can close again under the name of custom.
+
+<br/>
+
+## References
+
+- <strong>JEDEC</strong> / <strong>Business Wire</strong>, "JEDEC® and Industry Leaders Collaborate to Release JESD270-4 HBM4 Standard: Advancing Bandwidth, Efficiency, and Capacity for AI and HPC" (2025.04.16)
+- SK hynix Newsroom, "SK hynix Supplies World's First 12-Layer HBM4 Samples" (2025.03.19)
+- Micron Investor Relations, "Micron's Fourth Quarter 2025 Financial Call – Q4 2025 Earnings Deck" (2025.09.23)
+- NVIDIA, "GB200 NVL72 Specs" (2026.02.09)
+- Reuters, "SK Hynix says readying HBM4 production after completing internal certification" (2025.09.12)
