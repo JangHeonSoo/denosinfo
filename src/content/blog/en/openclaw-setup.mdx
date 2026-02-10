@@ -1,0 +1,108 @@
+---
+title: "OpenClaw Operations Guide: Harder to Run Than to Install"
+date: 2026-02-09
+category: 'development'
+author: denosinfo
+tags: [OpenClaw, AI Agent, Telegram, Automation, Security, MacOS]
+description: "Installing OpenClaw is easy, but managing Gateway and Telegram permissions is tricky. We share operational know-how from solving LaunchAgent env var issues to securing skills and browser relay."
+heroImage: "/images/openclaw_gateway_architecture_1770617594667.png"
+---
+
+OpenClaw installation finishes quickly.
+The real difficulty rises with channels and permissions.
+
+Especially on macOS, the moment you run Gateway as a LaunchAgent, tokens and permissions get separated, causing accidents.
+This post organizes the actual blocking points from "Installation → Telegram Setting → Inbound Command → Browser Relay".
+
+<br/>
+
+## Establishing the Structure Where Gateway Resides
+
+![Visualization of 'Invisible Wall' between User Terminal and LaunchAgent Daemon](/images/openclaw_gateway_architecture_1770617594667.png)
+
+OpenClaw is not a tool that ends with a single CLI execution.
+It follows a structure where a Gateway resides to handle channel connections and agent execution.
+
+So even if `openclaw status` shows 'connected' right after installation, you must first check "who is the execution subject".
+The fact that terminal sessions and environments are separated when Gateway runs as LaunchAgent is the starting point of all subsequent problems.
+
+<br/>
+
+## Solving Why "export doesn't work" in LaunchAgent Environment
+
+Even if you run `export TELEGRAM_BOT_TOKEN=...` in the terminal, the Gateway launched by LaunchAgent doesn't know that value.
+Because of this separation, a pattern appears where `openclaw status` shows Telegram as ON but with `no token`.
+
+The fastest solution is to save the token in the config.
+OpenClaw allows handling channel settings via `openclaw config set channels.telegram.botToken ...`, and the documentation also requires this behavior for it to apply after Gateway restart.
+
+<br/>
+
+## Telegram DM Policy: Pairing and allowFrom are Key
+
+![Digital security gate verifying connection requests](/images/openclaw_security_pairing_v2_1770617629890.png)
+
+The default DM policy for Telegram channels is `pairing`.
+In this mode, if an unknown sender sends a DM, it only receives a pairing code, and messages are ignored until approval.
+
+Approval is handled via `openclaw pairing list telegram` and `openclaw pairing approve telegram <CODE>`.
+If you want to open DMs widely, there is a method using `channels.telegram.dmPolicy="open"`, but a validation rule attaches that `"*"` must be included in `channels.telegram.allowFrom`.
+
+From an operational perspective, the recommendation is simple.
+Even for a personal bot, starting with `pairing` and putting only approved user IDs into `allowFrom` is safe.
+Since the channel itself becomes execution permission, leaving DMs blindly open increases the accident radius.
+
+<br/>
+
+## ChatId Fixing is Stable for Sending Commands to Telegram
+
+OpenClaw's single exit command is `openclaw message send`.
+Telegram's `--target` takes the form of `chatId` or `@username`.
+
+The most solid method in the field is to secure the `chatId` once from the pairing log, and then fix the message transmission target to that number.
+Fixing it this way increases reproducibility by not relying on "abstract targets like 'last'".
+
+<br/>
+
+## Browser Automation Standards Set by Chrome Extension Relay
+
+![Digital bridge connecting browser extension to engine](/images/openclaw_browser_relay_v2_1770617644829.png)
+
+OpenClaw operates browser profiles in several ways.
+There is a method to launch a separate OpenClaw-managed browser, but in practice, the Extension Relay that attaches "my already logged-in Chrome tab" is strong.
+
+This method does not grab tabs automatically.
+The user attaches the tab via the extension icon, and OpenClaw identifies and controls that tab using the `targetId`.
+The installation flow is organized in the documentation as `openclaw browser extension install` → Developer mode ON in `chrome://extensions` → Load unpacked extension.
+
+<br/>
+
+## Start Recommended Skills with "Bundle allowlist" and Add External Skills Slowly
+
+Skills are useful for feature expansion, but they are an area with high supply chain risk.
+Recently, circumstances of massive malicious skill uploads to ClawHub were reported, and the core issue is that users effectively hand over local execution permissions.
+Therefore, the recommendation is not "install unconditionally" but "allow bundles only and expand gradually".
+
+OpenClaw supports a "bundle skill allowlist" via `skills.allowBundled`.
+Documentation examples show `gemini`, `peekaboo` in the bundle allowlist.
+The operational starting point looks like this in practice:
+
+- Set `skills.allowBundled` to expose only bundled skills first.
+- Operate external skills only from local directories like `skills.load.extraDirs` initially.
+- Even if installation is needed, isolate skills that require "command copy-paste" first.
+
+This approach is slower than features.
+Instead, it reduces critical risks like account hijacking or local file leakage.
+One must not forget that local execution is both OpenClaw's strength and weakness.
+
+<br/>
+
+## References
+
+- OpenClaw Docs, "Telegram" (2026.02.09)
+- OpenClaw Docs, "Browser (OpenClaw-managed)" (2026.02.09)
+- OpenClaw Docs, "Skills" (2026.02.09)
+- OpenClaw Docs, "Skills Config" (2026.02.09)
+- The Verge, "OpenClaw’s AI ‘skill’ extensions are a security nightmare" (2026.02.04)
+- Tom's Hardware, "Malicious OpenClaw ‘skill’ targets crypto users on ClawHub — 14 malicious skills were uploaded to ClawHub last month" (2026.02.01)
+- My experience
