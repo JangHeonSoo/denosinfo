@@ -1,0 +1,151 @@
+---
+title: "An FSD Chronicle: A Tesla Model X Owner's Version-by-Version Experience in Korea"
+date: 2026-02-10
+category: 'automotive'
+author: denosinfo
+tags: [Tesla, FSD, Autopilot, ModelX, Korea, AI, SelfDriving]
+description: "Three months, three major updates. A version-by-version review of Tesla FSD (Supervised) in Korea, from v14.1.4's brilliance to v14.2.2.2's struggles, and v14.2.2.4's recovery."
+heroImage: "/images/fsd_hero_pine_cropped_blurred_v3_1770682784611.png"
+---
+
+The first time FSD took over, my hands hovered an inch above the steering wheel for a solid ten minutes. November 23, 2025. The day Tesla's Full Self-Driving (Supervised) landed in South Korea via OTA. I'm a Model X AWD owner — one of the earliest in Korea to flip the switch.
+
+Three months. Three major updates. FSD went from genius to student driver, then clawed its way back halfway. Here's what each version actually felt like from behind the wheel, plus a developer's speculation on what Tesla tweaked under the hood.
+
+<br/>
+
+## Background: FSD Arrives in Korea
+
+South Korea became the seventh country worldwide to receive FSD (Supervised). On November 12, 2025, Tesla Korea posted a teaser on X: "FSD Supervised – Next Destination: Korea, Coming Soon," alongside a video of a Model S navigating Seoul's chaotic streets. Eleven days later, on November 23, the OTA went live.
+
+There was a catch. Only U.S.-built Model S and Model X with HW4 (AI4) hardware qualified. Over 80% of Teslas sold in Korea come from the Shanghai Gigafactory — those Model 3 and Model Y units still need separate Korean safety certification. The Korea-U.S. Free Trade Agreement let Fremont-built vehicles bypass that hurdle, and FSD slipped in through that gap.
+
+The FSD option costs around 9 million Korean won (roughly $6,500). Not cheap. But after experiencing v14.1.4, "worth every won" came to mind. After v14.2.2.2? "I want a refund" was closer to the truth.
+
+<br/>
+
+## v14.1.4 — "Does This Thing Actually Know Korean Roads?" (November 2025)
+
+![Authentic interior view of Tesla Model X dashboard during FSD operation](/images/fsd_driving_night_authentic_v4.png)
+
+The first FSD build for Korea. I was half excited, half terrified. Seoul is one of the toughest driving environments on the planet: narrow alleys, aggressive taxis, motorcycles weaving between lanes, pedestrians appearing from nowhere. Could an AI trained mostly on American roads handle this?
+
+Short answer: shockingly well.
+
+<strong>Mad Max mode</strong> earned its name. The vision system read a 60 km/h speed sign perfectly — then blew past it at 100 km/h when the road was clear. On highways, it was even bolder. I caught myself muttering "Is the Korean localization really this good?" more than once.
+
+<strong>Hurry mode</strong> wove through lanes with the confidence of a veteran Seoul driver. Lane changes were decisive, sometimes more aggressive than I'd be myself. See an opening in lane 3? It took it. No hesitation. I just sat there supervising. Hands in my lap.
+
+On Korea's narrow shared streets — the kind where pedestrians, bicycles, and cars coexist in uneasy proximity — the pedestrian detection sensitivity was dialed in just right. No phantom braking. The system felt like it understood the unwritten rules of Korean driving: be assertive but not reckless.
+
+My score: 9 out of 10.
+
+<br/>
+
+## v14.2.2.2 — "Where Did My Money Go?" (December 2025)
+
+
+The holiday season update. Build 2025.45.7. If v14.1.4 was love at first drive, this was the version that made me question every life choice that led to buying FSD.
+
+<strong>Mad Max mode drove like a student with a learner's permit.</strong> On a 110 km/h highway, it crawled at 80-90 km/h. Mad Max. The name is right there. The system became a slave to speed limit signs. If the sign said 80, it did 80 — even when every car around it was doing 120.
+
+Cars stacking up behind me. Horns. I had to keep my foot on the accelerator to maintain 110 on a 110-zone highway. This wasn't supervising anymore. This was remedial driving instruction.
+
+The release notes told part of the story. v14.2 overhauled Speed Profiles — five tiers now: SLOTH, CHILL, STANDARD, HURRY, MAD MAX. Each profile had what felt like a hard-coded speed ceiling relative to the posted limit. In the U.S., users complained that Hurry maxed out at just 10 mph over the limit. The gap between profiles was dramatic too: switching from Mad Max to Hurry triggered an abrupt deceleration that pitched you forward in your seat.
+
+In Korea, where highway flow regularly hits 120-130 km/h in a 110 zone, this was genuinely dangerous. My car became a rolling obstacle.
+
+Korean forums erupted. "Check the reviews before updating" became a mantra. I made the same vow. As the Korean saying goes: "The more urgent the task, the longer the detour." Next time, I'll take the detour via the forums.
+
+My score: 4 out of 10.
+
+<br/>
+
+## v14.2.2.4 — "Halfway Back" (February 2026)
+
+Build 2025.45.9. The latest release at the time of writing. After the v14.2.2.2 disaster, I hesitated before hitting update. Checked forums first this time.
+
+The verdict: not back to v14.1.4 glory, but a clear escape from v14.2.2.2 purgatory. Somewhere exactly between the two.
+
+Speed Profiles feel more flexible. Mad Max acknowledges surrounding traffic again. In a 110 km/h zone, it'll do 100-105. It won't surge to 120 like v14.1.4, but at least cars behind me aren't flashing their lights anymore.
+
+Lane changes are more proactive. In v14.2.2.2, the system would tailgate a slow vehicle for ages before reluctantly changing lanes. This version spots openings faster.
+
+It's not perfect. Speed sign misreads still pop up. Reddit threads report inconsistent highway speed management on this build too. But the trajectory is upward.
+
+My score: 6.5 out of 10.
+
+<br/>
+
+## Three Versions Compared
+
+| Category | v14.1.4 (Nov 2025) | v14.2.2.2 (Dec 2025) | v14.2.2.4 (Feb 2026) |
+|----------|--------------------|-----------------------|----------------------|
+| Speed behavior | Aggressive vs. posted limits | Well below posted limits | Near limits, slightly conservative |
+| Mad Max mode | Lived up to its name 200% | A contradiction in terms | About 60-70% of what it should be |
+| Lane changes | Bold and swift | Passive and slow | Moderate |
+| Speed sign handling | Accurate but flexible | Over-reliant to a fault | Still dependent, but improved |
+| Korean road adaptation | Excellent | Felt like raw U.S. defaults | Partially recovered |
+| Personal rating | 9/10 | 4/10 | 6.5/10 |
+
+<br/>
+
+## A Developer's Lens: What Did Tesla Tune?
+
+Everything from here is educated speculation. Tesla doesn't publish source code or training details. But the FSD architecture is well-documented enough, and the driving experience tells its own story.
+
+### End-to-End Neural Networks: Learning Behavior, Not Rules
+
+![Authentic exterior of a black Tesla Model X with falcon wing doors open](/images/fsd_final_exterior_extra_blurred_1770682472290.png)
+
+Since FSD v12, Tesla replaced over 300,000 lines of C++ with an end-to-end neural network pipeline. Forty-eight neural networks process 360-degree feeds from 8 cameras. A single training cycle burns roughly 70,000 GPU-hours on 1.5+ petabytes of driving data at Tesla's Cortex datacenter in Austin, Texas.
+
+The key insight: this system doesn't learn rules. It learns behavior. It watches millions of real human driving clips and statistically imitates what humans did in each scenario. Shadow mode runs the AI silently in the background, comparing its decisions to the human driver's actions, and auto-tags the mismatches for retraining.
+
+### v14.1.4: "The First Korean Dataset"
+
+My hypothesis: Tesla had been collecting shadow-mode data from Korean HW4 vehicles long before FSD launched. Even without FSD activated, these cars were shipping camera data back to Tesla's servers.
+
+Why v14.1.4 felt so good in Korea:
+
+- <strong>Region-specific fine-tuning was cleanly applied.</strong> Korean driving patterns — fast lane changes, actual speeds well above posted limits, aggressive merging — were likely reflected in the training data.
+- <strong>Speed Profile logic was traffic-flow-aware.</strong> The system referenced speed signs but weighted actual surrounding vehicle speeds in its decisions.
+- <strong>First-market leniency.</strong> Paradoxically, being the first deployment may have meant fewer conservative safety clamps. The policy layer that restricts how fast FSD can go relative to the speed limit may not have been tightened yet for Korea.
+
+### v14.2.2.2: "The Global Safety Clamp Strikes Back"
+
+v14.2 brought a major neural network vision encoder upgrade — higher resolution features, emergency vehicle detection, human gesture recognition. A Tesla engineer commented publicly that "this is not a small update," hinting at significant increases in model parameters or training volume.
+
+The problem wasn't the neural net. It was the speed policy layer.
+
+My hypothesis:
+
+- <strong>Speed ceiling logic shifted to a hard sign-dependent model.</strong> In v14.1.x, surrounding traffic flow had significant weight in speed decisions. v14.2 appears to have anchored each Speed Profile to a fixed offset from the posted limit: Hurry = limit + ~16 km/h, Standard = limit + ~8 km/h, with strict caps.
+- <strong>Regional fine-tuning was diluted by a global retrain.</strong> When you retrain a massive end-to-end model, previously well-tuned regional behaviors can regress toward the global mean. Korea's pattern of "sign says 60, everyone drives 80-100" got averaged out by America's more limit-compliant patterns.
+- <strong>Regulatory pressure forced deliberate conservatism.</strong> In October 2025, NHTSA launched a full investigation into 2.9 million FSD-equipped vehicles. It's plausible that Tesla made a policy decision: "Even Mad Max shouldn't significantly exceed posted limits."
+
+This is the most frustrating part from a developer's perspective. The neural network itself clearly improved — better vision encoder, new capabilities, smoother object handling. But a non-neural-net policy layer strangled the experience. It's like giving a smarter AI a shorter leash.
+
+### v14.2.2.4: "A Slightly Longer Leash"
+
+The release notes are virtually identical to v14.2.2.2. Same feature set. But the driving feel is noticeably different.
+
+My hypothesis:
+
+- <strong>Traffic flow weighting was increased again in Speed Profiles.</strong> The system is no longer anchored purely to signs; it considers surrounding vehicle speeds again. Not as aggressively as v14.1.4, but it's back in the equation.
+- <strong>Korean driving data fed back into retraining.</strong> Within one month of launch, Korean FSD vehicles accumulated over 1 million km of driving data. If even a fraction of this entered the training pipeline, Korean road behaviors would start re-influencing the model.
+- <strong>A minor version bump (14.2.2.2 → 14.2.2.4) means weight tuning, not architecture changes.</strong> The neural network structure stayed the same. Tesla likely adjusted the training data mix, tweaked reward function parameters, or modified the speed policy clamps.
+
+<br/>
+
+## Not a Conclusion
+
+FSD is not a finished product. It's living software. One OTA turns it into a genius; the next makes it a timid beginner. That's the nature of end-to-end neural network systems. With rule-based code, you can point to a function and say "this is the bug." With neural nets, you're searching through oceans of training data and weight matrices.
+
+As a Tesla owner, one thing is certain: the direction is right. What v14.1.4 showed was real. The challenge is consistency — and that's ultimately a war of data and engineering.
+
+I'll be waiting for the next update. But this time, I'm reading the forums first. Once bitten, twice shy.
+
+<br/>
+
+*This article reflects the personal experience and opinions of a Tesla Model X AWD owner in South Korea. FSD (Supervised) is a driver-assistance feature that requires active driver supervision at all times. It is not autonomous driving.*
