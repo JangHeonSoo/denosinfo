@@ -1,0 +1,282 @@
+---
+title: "Sitemap Submitted but Not Crawling: Identifying the Real Causes"
+date: 2026-02-13
+category: 'tech'
+author: denosinfo
+tags: [Sitemap, SEO, GoogleSearchConsole, WebIndexing, SearchOptimization]
+description: "Why is Google ignoring your sitemap? From technical XML errors to content quality and server speed, discover the 8 real reasons and how to fix them."
+heroImage: "/images/sitemap_hero_bot_scan_1770942587238.png"
+---
+
+You conscientiously submitted your sitemap.  
+Yet, the Search Console indexing graph remains flat.  
+It's that agonizing period where you start wondering, “Is Google just ignoring me?”
+
+Funny thing is, this situation is quite common.  
+The causes range from deceptively simple to frustratingly complex.  
+Knowing these cases will save you from the futile cycle of deleting and re-submitting your sitemap.
+
+![Intelligent search bot scanning digital sitemap tree structures](/images/sitemap_hero_bot_scan_1770942587238.png)
+
+<br/>
+
+## What This Article Covers
+
+- The real reasons why crawling or indexing fails despite sitemap submission.
+- Where to look within Google Search Console.
+- What constitutes a “normal” waiting period for new websites.
+
+<br/>
+
+## 0. Confirm Your Current Status First
+
+Let’s clear up a few misconceptions.
+
+1. <strong>Search Console → Indexing → Sitemaps</strong>  
+   - Status: Is it “Success,” “Couldn’t fetch,” or “Read error”?  
+   - “Last read” date: Is it recent or stuck in the past?
+
+2. <strong>Search Console → Indexing → Pages</strong>  
+   - Are the URLs in your sitemap grouped as:  
+     - “Discovered – currently not indexed”?  
+     - “Crawled – currently not indexed”?  
+     - Or entirely missing from the list?
+
+Usually, the situation falls into one of these three patterns:
+
+- <strong>Pattern A</strong>: Sitemap status is OK; pages are mostly “Discovered” → Google knows the URLs but has postponed crawling.
+- <strong>Pattern B</strong>: “Couldn’t fetch” or “Read error” → Issues with access or the sitemap file format.
+- <strong>Pattern C</strong>: Only a few pages indexed; most are quiet → A mix of quality, priority, and crawl budget issues.
+
+Now, let’s break down the causes.
+
+<br/>
+
+## 1. When the Sitemap File Itself is the Problem
+
+First, suspect if your sitemap is truly a <strong>“standard XML”</strong> file.
+
+Common failures:
+
+- XML syntax errors: unclosed tags or BOM issues.
+- Redirecting to HTML or serving HTML instead of XML.
+- Responding with 3xx/4xx/5xx instead of a 200 OK status.
+- Invalid domain or path submission (e.g., staging domain or local paths).
+
+How to check:
+
+- Open `https://yourdomain.com/sitemap.xml` directly in a browser.
+- Ensure the `Content-Type` header is `application/xml` or `text/xml`.
+- Use an XML validator tool to verify the format.
+- Check the Sitemap details in Search Console for specific error messages like “HTTP error” or “Incorrect XML.”
+
+On platforms like GitHub Pages, path casing (`sitemap.xml` vs `Sitemap.xml`) can often cause issues. Additionally, ensure your CDN/WAF layers aren't serving different responses to Googlebot.
+
+<br/>
+
+## 2. When robots.txt or noindex Blocks the Sitemap
+
+A frustratingly common oversight.
+
+- <strong>robots.txt</strong> is blocking the entire site.
+- Pages possess a `noindex` tag but are still included in the sitemap.
+
+Example scenario:
+```txt
+User-agent: *  
+Disallow: /  
+
+Sitemap: https://example.com/sitemap.xml  
+```
+In this scenario, you’ve basically said, <strong>“Here is my sitemap,”</strong> but followed it up with, <strong>“don’t you dare enter.”</strong>
+
+What to check:
+
+- In `https://yourdomain.com/robots.txt`:  
+  - Ensure `Disallow: /` isn't blocking everything.  
+  - Ensure no `Disallow` rule specific to `/sitemap.xml` exists.  
+- Open a few representational URLs from the sitemap and check for `<meta name="robots" content="noindex">`.  
+- Check if your canonical tags point elsewhere (indexing duplicate content).
+
+It's very common to forget to remove `noindex` or `Disallow` rules used during development when moving to production.
+
+<br/>
+
+## 3. New Site + Low Trust + Just a Matter of Time
+
+It might be a letdown, but often <strong>“it hasn't been seen yet, but it’s not broken.”</strong>
+
+Typical scenarios:
+
+- A completely new domain.
+- Near-zero external links and minimal brand searches.
+- Dozens of pages created all at once in the last 1–2 weeks.
+
+In these cases, you’ll see:
+
+- Sitemap status: Success.
+- Pages: “Discovered – currently not indexed” accumulates.
+- Last read date updates, but indexing graphs don't move.
+
+General SEO experience suggests:
+
+- For a new site, a 10-day wait after submission is often considered <strong>“within normal processing limits.”</strong>
+- It can take weeks or months if content volume is low and links are sparse.
+
+If it’s been 3 days: it’s likely normal. If 3–4 weeks pass and even core pages haven’t moved: it’s time to investigate other causes.
+
+<br/>
+
+## 4. Including Too Many 'Low-Value' URLs in the Sitemap
+
+A sitemap is a signal of <strong>“vital”</strong> URLs. Mixing in low-quality or ambiguous links dilutes that signal.
+
+Examples:
+
+- Internal search results or filter URLs (?sort=, ?page=, etc.).
+- Nearly empty tag, category, or archive pages.
+- Non-indexable pages like login, cart, or user profiles.
+- Soft-404 pages (empty pages returning 200 OK).
+
+The outcome:
+
+- Most URLs end up as <strong>“Crawled – currently not indexed”</strong> or simply “Not indexed.”
+- Trust in your sitemap’s overall quality decreases.
+
+Clean-up steps:
+
+- Remove non-indexable URLs from the sitemap.
+- Merge thin content pages or set them to `noindex` and exclude them.
+- Only keep URLs in the sitemap that you truly want to appear in search results.
+
+Prioritize quality over quantity. Fifty well-curated pages move faster than 1,000 generic ones.
+
+<br/>
+
+## 5. Crawl Budget Reduced by Server Speed or Errors
+
+![Professional high-tech infrastructure monitoring server performance and response times](/images/sitemap_server_response_macro_1770942602765.png)
+
+Googlebot is a visitor that consumes resources. If your server is unstable, it will visit less frequently.
+
+Major issues:
+
+- Excessive <strong>TTFB</strong> (Time to First Byte), often slower for bots.
+- Frequent 5xx errors (500, 502, 503).
+- Intermittent timeouts for the sitemap or internal URLs.
+
+Monitoring indicators:
+
+- Spikes in average response time in Search Console → Settings → Crawl Stats.
+- Frequent “HTTP error” or “Couldn't fetch” in Sitemap reports.
+- Server logs showing error patterns during Googlebot visits.
+
+Solutions:
+
+- Improve caching (CDN, reverse proxy, app-level cache).
+- Upgrade server specs relative to traffic.
+- Ensure WAF/security settings don't block Googlebot.
+
+A perfect sitemap won't help if your server is sluggish; Google will simply decide to <strong>“visit later.”</strong>
+
+<br/>
+
+## 6. Conflicts in Sitemap Path, Format, or Caching
+
+Sometimes you submit a sitemap, but Google isn't seeing the latest version.
+
+Typical cases:
+
+- Dual sitemaps (`/sitemap.xml` and `/sitemap_index.xml`) existing separately.
+- Conflicts between different CMS SEO plugins.
+- Caching plugins serving old XML versions to bots.
+
+Recommendations:
+
+- Establish <strong>one official</strong> sitemap URL (e.g., `https://example.com/sitemap_index.xml`).
+- Disable redundant sitemap generators.
+- Set sitemap paths as cache exceptions to ensure the XML is always fresh.
+
+<br/>
+
+## 7. Weak Internal Link Structure
+
+![3D network graph illustrating efficient page connections and connected hierarchy](/images/sitemap_internal_link_network_1770942618362.png)
+
+A sitemap is a companion to your site’s architecture, not a replacement. Google still prioritizes internal linking.
+
+The problem:
+
+- The sitemap has URLs, but nothing links to them on the actual site.
+- Orphan pages that are intended for ads but have no navigation links.
+
+From Google’s perspective: <strong>“It’s in the index, but it’s never mentioned in the book.”</strong>
+
+Improvement steps:
+
+- Fix core links in the menu, footer, or sidebar.
+- Naturally link to related services or articles within the body text.
+- Ensure clear hierarchies (Category → Post) to eliminate orphan pages.
+
+The sitemap says <strong>“this exists,”</strong> internal links say <strong>“this is useful.”</strong> You need both.
+
+<br/>
+
+## 8. Sitemap Read, Status: Under Evaluation
+
+The most common situation.
+
+You feel the sitemap isn't being read, but in reality, it was read, and the URLs are simply under evaluation.
+
+The signs:
+
+- Sitemap report: Success, “Last read” is recent.
+- Page report: “Discovered – currently not indexed” persists.
+
+This means: Google knows the URLs but doesn't find them <strong>“valuable enough to index immediately.”</strong>
+
+Resubmitting the sitemap won't help here. Instead:
+
+- Manually request indexing for the top 10–20 core URLs.
+- Enhance content (unique insights, real cases, FAQs, images).
+- Increase internal/external links to signal page importance.
+
+<br/>
+
+## Checklist for Action
+
+<strong>Phase 1: Technical Check (30–60 mins)</strong>
+
+- Verify Sitemap status in Search Console.
+- Open the XML in a browser to check headers and status codes.
+- Audit robots.txt and firewalls for bot blockages.
+
+<strong>Phase 2: Sitemap Optimization (1–2 days)</strong>
+
+- Remove low-value URLs (parameters, thin content).
+- Unify sitemap paths and set cache exceptions.
+
+<strong>Phase 3: Content and Structure Refinement (1–3 days)</strong>
+
+- Strengthen content on core indexable pages.
+- Improve internal link navigation to eliminate orphan pages.
+- Review server performance and logs.
+
+<strong>Phase 4: Monitoring (1–4 weeks)</strong>
+
+- Manually request indexing for core updates.
+- Monitor reports weekly.
+- Build natural external mentions/links.
+
+<br/>
+
+## One-Line Summary
+
+- A sitemap is a <strong>“hint,”</strong> not a <strong>“guarantee.”</strong>  
+- Silence for a few days is normal; silence for weeks usually indicates one of these 8 causes.
+
+Stop the loop of deleting and resubmitting; check your technicals once, then spend your time on content and links.
+
+---
+
+#Sitemap #SEO #GoogleSearchConsole #WebIndexing #SearchOptimization #WebStrategy #SearchEngineOptimization #DigitalMarketing #WebPerformance #InternalLinking #SitemapTroubleshooting

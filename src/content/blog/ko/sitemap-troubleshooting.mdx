@@ -1,0 +1,325 @@
+---
+title: "sitemap 제출했는데 며칠째 크롤링 안될 때: 실제 원인만 콕 집어서"
+date: 2026-02-13
+category: 'tech'
+author: denosinfo
+tags: [Sitemap, SEO, GoogleSearchConsole, WebIndexing, SearchOptimization]
+description: "사이트맵을 제출하고 기다려도 구글이 내 페이지를 크롤링하지 않는다면? 기술적 오류부터 품질 문제까지, 실제 원인 8가지를 콕 집어 정리했습니다."
+heroImage: "/images/sitemap_hero_bot_scan_1770942587238.png"
+---
+
+사이트맵까지 성실하게 제출했는데.  
+Search Console 색인 그래프는 미동도 없고.  
+“이쯤 되면 나만 무시하는 거 아닌가?” 싶은 그 시기.
+
+웃기는 얘기지만, 이 상황 꽤 흔하다.  
+게다가 원인도 생각보다 단순한 것부터 골치 아픈 것까지 다양하다.  
+그래도 케이스만 알면, 괜히 sitemap 삭제했다 다시 넣었다 하는 삽질은 줄일 수 있다.
+
+![디지털 사이트맵 구조를 정밀 스캔하는 지능형 검색 봇](/images/sitemap_hero_bot_scan_1770942587238.png)
+
+<br/>
+
+## 이 글에서 다루는 것
+
+- sitemap을 제출했는데도 크롤/색인이 안 되는 실제 원인들
+- Search Console에서 어디를 봐야 하는지
+- 새 사이트 기준으로 “며칠/몇 주”를 정상 범위로 볼 수 있는지
+
+<br/>
+
+## 0. 지금 정확히 무슨 상태인지부터 확인
+
+일단 오해부터 걷어내자.
+
+1. <strong>Search Console → 색인 → 사이트맵</strong>  
+   - 상태: 성공인지, 가져올 수 없음(Couldn’t fetch)인지, 읽을 수 없음인지  
+   - 마지막 읽기 날짜가 최근인지, 옛날에 멈춰 있는지
+
+2. <strong>Search Console → 색인 → 페이지</strong>  
+   - sitemap 안 URL들이  
+     - “발견됨 – 현재 색인이 생성되지 않음” 인지  
+     - “크롤됨 – 현재 색인이 생성되지 않음” 인지  
+     - 아예 목록에 안 보이는지  
+
+대략 이런 3가지 패턴으로 갈린다.
+
+- <strong>A안</strong>: 사이트맵 상태 OK + 페이지는 “발견됨”만 잔뜩 → URL은 알지만 본격 크롤 보류
+- <strong>B안</strong>: 가져올 수 없음/읽을 수 없음 → sitemap 파일 자체 접근/형식 문제
+- <strong>C안</strong>: 일부 페이지만 색인, 나머지는 조용 → 품질/우선순위 + 크롤 예산 섞인 상황
+
+이제 원인별로 찢어보자.
+
+<br/>
+
+## 1. sitemap 파일 자체가 문제일 때
+
+제일 먼저 의심해야 하는 건, sitemap이 진짜 <strong>“정상 XML”</strong>인지다.
+
+자주 나오는 문제들:
+
+- XML 문법 오류, 태그가 안 닫혀 있거나 BOM 문제
+- HTML로 리다이렉트되거나, XML 대신 HTML이 떨어지는 경우
+- 200 OK가 아니라 3xx/4xx/5xx 상태로 응답
+- 도메인/경로를 잘못 제출했거나(스테이징 도메인, /public/sitemap.xml 같은 것)
+
+체크 방법:
+
+- 브라우저에서 `https://도메인/sitemap.xml` 직접 열어보기
+- 응답 헤더의 `Content-Type` 이 `application/xml` 또는 `text/xml` 인지 확인
+- XML validator 도구로 형식 검증
+- Search Console 사이트맵 상세 화면에서 HTTP error, 잘못된 XML 같은 에러 메시지 확인
+
+GitHub Pages, 정적 호스팅에서는 경로 대소문자(sitemap.xml vs Sitemap.xml)로 꼬이는 경우도 많다.  
+CDN/WAF 레이어가 Googlebot 에게만 다른 응답을 주는 것도 한 번 의심해볼 만하고.
+
+<br/>
+
+## 2. robots.txt 나 noindex 가 sitemap 내용을 발로 차고 있을 때
+
+생각보다 자주 터지는 허무한 원인.
+
+- <strong>robots.txt</strong> 에서 / 전체 차단을 해 둔 상태
+- 페이지에 noindex 메타가 붙어 있는데 sitemap에는 포함해둔 경우
+
+예시 느낌:
+```txt
+User-agent: *  
+Disallow: /  
+
+Sitemap: https://example.com/sitemap.xml  
+```
+이러면 <strong>“sitemap 여기 있어요”</strong> 라고 써놓고  
+<strong>“근데 한 발짝도 들어오지 마요”</strong>라고 덧붙인 꼴이다.
+
+체크할 것:
+
+- `https://도메인/robots.txt` 에서  
+  - Disallow: / 전체 차단이 아닌지  
+  - /sitemap.xml 을 막는 Disallow 가 있는지  
+- sitemap 안 대표 URL 몇 개를 열어 `meta name="robots" content="noindex"` 가 있는지  
+- 캐논컬이 다른 페이지를 가리키고 있는지(비정규 URL을 sitemap에 넣은 경우)
+
+개발 단계에서 noindex 나 전체 Disallow 로 막아놨다가  
+실서버로 옮길 때 풀지 않고 그대로 가져오는 케이스, 진짜 많이 본다.
+
+<br/>
+
+## 3. 새 사이트 + 신뢰도 낮음 + 그냥 시간 문제
+
+조금 김 빠지는 얘기지만,  
+<strong>“아직 안 봤을 뿐, 고장난 건 아니다”</strong> 인 경우도 많다.
+
+대표 상황:
+
+- 완전 신규 도메인
+- 외부 링크 거의 0, 브랜드 검색도 거의 없음
+- 페이지 수는 몇십 개인데, 전부 최근 1–2주 안에 한꺼번에 생성
+
+이럴 때 나타나는 현상:
+
+- 사이트맵 상태는 성공
+- 페이지는 <strong>“발견됨 – 현재 색인이 생성되지 않음”</strong> 이 계속 누적
+- sitemap 마지막 읽기 날짜는 업데이트되지만, 색인 그래프는 거의 안 움직임
+
+SEO 포럼 후기들을 종합하면:
+
+- 새 사이트에서 sitemap 제출 후 10일 정도는  
+  <strong>“아직 처리 안 했음”</strong> 수준으로 보는 게 정상인 경우가 많다.
+- 몇 주~몇 달까지도 느리게 진행되는 사례가 적지 않다,  
+  특히 컨텐츠 양이 적고 링크가 없으면 더 그렇다.
+
+즉, 3일 기다렸는데 조용하다 → 아직 정상 구간일 수 있다.  
+3–4주가 지나도 핵심 페이지까지 전혀 안 움직인다 → 그때부터는 다른 원인을 의심할 타이밍.
+
+<br/>
+
+## 4. sitemap 안에 ‘색인하기 애매한 URL’을 너무 많이 넣은 경우
+
+sitemap은 <strong>“이 URL들은 중요해요”</strong>라는 신호다.  
+여기에 애매하거나 품질 낮은 URL이 떼로 섞이면 평가가 좋을 리가 없다.
+
+예시:
+
+- 내부 검색 결과, 필터 URL (?sort=, ?page=, ?filter= 등)
+- 거의 내용이 없는 태그/카테고리/아카이브 페이지
+- 로그인, 장바구니, 마이페이지 등 원래 색인 대상이 아닌 페이지
+- 내용은 비었는데 200 OK만 뿌리는 soft-404 페이지
+
+이렇게 되면:
+
+- sitemap 안 URL 상당수가 결국 <strong>“크롤됨 – 현재 색인이 생성되지 않음”</strong> 혹은 <strong>“색인 안 됨”</strong>으로 처리
+- sitemap 전체 퀄리티에 대한 신뢰도가 떨어질 수 있다
+
+그래서 필요한 정리:
+
+- 색인 필요 없는 URL은 sitemap에서 전부 제거 (특히 파라미터 페이지)
+- 얇은 페이지(thin content)는 하나로 합치거나 noindex + sitemap 제외
+- sitemap에는 진짜 검색에 노출되고 싶은 URL만 남겨두기
+
+양이 아니라 질.  
+1,000개 대충 넣는 것보다, 잘 만든 50–100개가 훨씬 빠르게 움직인다.
+
+<br/>
+
+## 5. 서버 응답 속도/에러 때문에 크롤 예산이 줄어든 상태
+
+![서버의 성능 상태와 응답 시간을 모니터링하는 전문적인 하이테크 인프라 뷰](/images/sitemap_server_response_macro_1770942602765.png)
+
+구글도 서버를 잡아끄는 입장이라,  
+<strong>“이 서버 살짝 불안하다”</strong> 싶으면 발걸음을 줄인다.
+
+주요 이슈:
+
+- <strong>TTFB</strong>가 과도하게 느리다 (특히 봇에서 더 느릴 수 있음)
+- 5xx 에러(500, 502, 503 등)가 자주 발생
+- sitemap이나 내부 URL에 간헐적인 타임아웃
+
+Search Console + 로그에서 볼 수 있는 것들:
+
+- 크롤 통계(설정 → 크롤 통계)에서 평균 응답 시간 급등
+- Sitemap 리포트에서 HTTP error 나 가져올 수 없음 이 종종 뜸
+- 서버/애플리케이션 로그에 Googlebot 유입 시 에러 로그가 찍히는 패턴
+
+해결 방향:
+
+- 캐시 설정 (CDN, reverse proxy, 앱 레벨 캐시)
+- 트래픽 대비 서버 스펙 점검
+- WAF/보안 설정에서 Googlebot 과 sitemap 경로를 막지 않았는지 확인
+
+sitemap만 예쁘게 만들어도  
+서버가 비실거리면 <strong>“이 집은 천천히 보자”</strong> 쪽으로 기운다.
+
+<br/>
+
+## 6. sitemap 경로/형식/캐시가 꼬여 있는 경우
+
+<strong>“sitemap 제출은 했는데, 그 sitemap이 최신이 아니다”</strong>는 상황도 종종 있다.
+
+대표 케이스:
+
+- `/sitemap.xml` 과 `/sitemap_index.xml` 두 개가 따로 존재
+- 워드프레스나 SEO 플러그인(예: Yoast, RankMath)이 각각 sitemap 생성
+- 캐시 플러그인이 sitemap을 캐싱해서, 옛날 버전이 계속 노출
+
+이러면:
+
+- Search Console에 제출한 sitemap과  
+  실제로 브라우저에서 보는 sitemap 내용이 다를 수 있다.
+- 마지막 읽기 날짜는 갱신되는데, URL 셋이 계속 엉뚱함
+
+정리 방법:
+
+- 최종적으로 쓸 sitemap URL을 한 개만 공식으로 정한다.  
+  예: `https://example.com/sitemap_index.xml`
+- 다른 자동 sitemap 기능은 꺼두거나, Search Console에 제출하지 않는다.
+- 캐시/리버스 프록시에서 sitemap 경로를 캐시 예외로 설정해 항상 최신 XML을 보이게 한다.
+
+추가로, sitemap_index.xml 내부에서  
+post-sitemap, page-sitemap 같은 서브 sitemap들이 모두 잘 열리는지도 같이 확인.
+
+<br/>
+
+## 7. 내부 링크 구조 때문에 ‘sitemap만 보고 있는’ 상태
+
+![웹사이트 내의 효율적인 페이지 연결과 계층 구조를 보여주는 3D 네트워크 그래프](/images/sitemap_internal_link_network_1770942618362.png)
+
+sitemap은 어디까지나 보조 수단이다.  
+구글은 여전히 내부 링크 구조를 강하게 본다.
+
+문제 패턴:
+
+- sitemap에는 URL이 잔뜩 있지만
+- 실제 사이트 내에서 그 페이지로 가는 링크가 거의 없음
+- 메뉴/푸터/본문 어디에서도 연결이 안 되고, 광고나 직링크로만 유입을 기대하는 랜딩 페이지
+
+이럴 때 구글 입장에서는  
+<strong>“목차에는 있는데, 책 내용에서는 언급조차 안 되네?”</strong>  
+라는 느낌이 들 수밖에 없다.
+
+개선 방향:
+
+- 메뉴/푸터/사이드바에 핵심 페이지들 링크 고정
+- 글 본문 안에서 관련 서비스/글로 자연스럽게 내부 링크 추가
+- 카테고리 → 글, 태그 → 글 구조로 계층을 정리해서 고아 페이지 제거
+
+sitemap은 <strong>“이런 페이지 있음”</strong> 알리기,  
+내부 링크는 <strong>“이 페이지가 여기서 이렇게 쓰인다”</strong> 설명하기에 가깝다.  
+둘 다 맞춰줘야 색인 우선순위가 올라간다.
+
+<br/>
+
+## 8. 사실 sitemap은 이미 읽었고, 지금은 URL 평가 중인 상태
+
+마지막으로 꽤 많은 상황 하나.
+
+우리는 <strong>“sitemap이 안 읽히는 것 같다”</strong>고 느끼는데,  
+실제로는 sitemap은 이미 읽었고, 개별 URL만 평가 보류 중인 경우다.
+
+신호들:
+
+- 사이트맵 리포트: 상태 성공, 마지막 읽기 날짜가 최근
+- 페이지 리포트:  
+  - “발견됨 – 현재 색인이 생성되지 않음”  
+  - “크롤됨 – 현재 색인이 생성되지 않음” 상태가 꾸준히 찍히는 중
+
+이건 요약하면:
+
+- sitemap을 통해 URL은 다 인지
+- <strong>“지금 당장 색인에 넣을 만큼 급하거나 가치 있다고 보이진 않는다”</strong> 쪽으로 판단
+
+이 단계에서는 sitemap을 다시 삭제/재제출한다고 해결되진 않는다.  
+대신 해야 할 것:
+
+- 핵심 URL 10–20개 골라 Search Console에서 URL 검사 → 색인 생성 요청
+- 해당 페이지 콘텐츠를 강화 (고유 정보, 사례, 숫자, 이미지, FAQ 등 추가)
+- 내부/외부 링크를 늘려서 <strong>“이 페이지 많이 쓰인다”</strong>는 신호 보내기
+
+즉, sitemap 문제가 아니라 페이지 자체의 매력도 문제다.
+
+<br/>
+
+## 현실적인 대응 순서 정리
+
+실제 작업 순서로 정리하면 이렇게 간다:
+
+<strong>1단계: 기술 체크 (오늘 30분~1시간)</strong>
+
+- Search Console → 사이트맵 상태: 성공인지, 가져올 수 없음인지
+- 브라우저에서 sitemap.xml 열어 XML/상태코드/Content-Type 확인
+- robots.txt, noindex, Disallow, 방화벽에서 sitemap/URL이 막혀 있지 않은지 재확인
+
+<strong>2단계: sitemap 다이어트 (오늘~내일)</strong>
+
+- 색인 필요 없는 URL(파라미터, 로그인, 장바구니, 얇은 페이지) 전부 제거
+- 중복/soft-404 페이지는 하나로 합치거나 noindex + sitemap 제외
+- sitemap 경로 한 개로 통일, 캐시 예외 설정
+
+<strong>3단계: 페이지/구조 손보기 (1~3일)</strong>
+
+- 검색에 꼭 노출됐으면 하는 핵심 페이지 리스트업 (10–50개)
+- 각 페이지에 고유한 콘텐츠, 실제 사례, 데이터, FAQ 추가
+- 메뉴/푸터/본문에 내부 링크를 충분히 연결해서 고아 페이지 제거
+- 서버 속도/에러 로그 확인, 최소한의 성능·안정성 확보
+
+<strong>4단계: 색인 요청 + 모니터링 (1~4주)</strong>
+
+- 핵심 URL은 발행/수정 후 URL 검사 → 색인 생성 요청
+- 주 1회 Search Console에서 색인/크롤/사이트맵 리포트 체크
+- 도메인/페이지가 외부에서 최소 몇 번이라도 자연스럽게 언급/링크되게 만들기
+
+<br/>
+
+## 진짜로 중요한 포인트 한 줄 요약
+
+- sitemap은 <strong>“색인 보장”</strong>이 아니라 <strong>“힌트”</strong>다.  
+- 며칠 조용하다고 해서 고장난 건 아닐 수 있다.  
+- 그래도 몇 주가 지나도 꿈쩍도 안 하면, 위 7–8가지 원인 중 최소 하나는 꼭 걸려 있다.
+
+그러니까, sitemap을 지우고 다시 넣는 루프에 빠지지 말고  
+한 번만 제대로 점검하고, 그 다음엔 콘텐츠와 링크에 시간을 쓰자.  
+결국 구글도, 사람이 쓰는 사이트를 더 좋아하니까.
+
+---
+
+#Sitemap #SEO #GoogleSearchConsole #WebIndexing #SearchOptimization #WebStrategy #SearchEngineOptimization #DigitalMarketing #WebPerformance #InternalLinking
