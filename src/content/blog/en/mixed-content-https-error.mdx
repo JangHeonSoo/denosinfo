@@ -1,0 +1,196 @@
+---
+title: "Fixing Mixed Content Issues Breaking CSS and Images After Enabling HTTPS"
+date: 2026-02-20
+category: 'tech'
+author: denosinfo
+tags: [HTTPS, MixedContent, SSLCertificate, WebSecurity, Troubleshooting]
+description: "Why does your website look broken after installing an SSL certificate? Find out how to fix Mixed Content errors and safely transition all HTTP resources to HTTPS."
+heroImage: "/images/mixed-content-hero.png"
+---
+
+You finally installed an SSL certificate and forced everything to HTTPS. The padlock shows up in the address bar. But when you load the page, all styling is gone. Buttons look naked, layouts collapse, images disappear. Open DevTools and you see a wall of <strong>"Mixed Content"</strong> warnings.
+
+In most cases, broken CSS and images after enabling HTTPS come from mixed content. The page itself loads over HTTPS, but some resources—images, stylesheets, scripts—still load over plain HTTP. Fix it once properly and future HTTPS migrations get much easier.
+
+<br/>
+
+## 1. Why mixed content breaks your CSS and images
+
+Mixed content happens when an <strong>"HTTPS page loads one or more resources over HTTP."</strong> The HTML document travels over an encrypted connection, but some assets inside it do not.
+
+Modern browsers increasingly block this behavior.
+
+- Scripts and CSS requested over HTTP from an HTTPS page are usually <strong>blocked outright</strong>.
+- Images and media used to be allowed but are now often auto-upgraded or blocked, depending on the browser.
+
+The result:
+
+- If your main stylesheet loads via HTTP, the browser blocks it and the page renders unstyled.
+- If images or background images load via HTTP, they fail to display or show up as broken in DevTools.
+
+<br/>
+
+## 2. First step: find which assets are still using HTTP
+
+Before fixing anything, identify <strong>exactly which resources still use HTTP</strong>.
+
+Three practical approaches:
+
+1. Browser DevTools
+   - Chrome: `F12` → Console to see "Mixed Content" warnings.
+   - Network tab: add the "Scheme" column to quickly see http vs https.
+2. Online scanners
+   - Tools like "Why No Padlock?" scan a URL and list HTTP assets causing mixed content.
+3. Code search
+   - Search your project for `http://` to find hard-coded URLs in templates, CSS, JS, or content.
+
+On WordPress and other CMS platforms, themes, plugins, and post content often contain many leftover `http://yourdomain` links.
+
+<br/>
+
+## 3. Replace hard-coded HTTP URLs with HTTPS or scheme-relative paths
+
+The foundational fix is simple: stop loading assets over HTTP.
+
+Change references like:
+
+- `http://example.com/style.css` → <strong>`https://example.com/style.css`</strong>
+- `<img src="http://example.com/img.png">` → <strong>`<img src="https://example.com/img.png">`</strong>
+- Or use scheme-relative URLs: `<img src="//example.com/img.png">`.
+
+Sucuri and MDN recommend two safe patterns:
+
+- For same-origin assets, use <strong>root-relative paths</strong> like `/img/logo.png`.
+- For external assets, use `//cdn.example.com/lib.js` or directly force HTTPS if supported.
+
+Real-world blog posts show that even a single `background-image: url(http://...)` in a CSS file can trigger mixed content and block that image from loading.
+
+<br/>
+
+## 4. Fix broken relative paths, especially in CSS and images
+
+![Visualizing a UI broken apart and glitching due to mixed content CSS issues](/images/broken-css-layout.png)
+
+After switching to HTTPS, some setups break because relative paths no longer match the deployed structure.
+
+Common issues:
+
+- CSS uses `../image/` but the compiled or deployed directory layout is different.
+- Templates reference `<img src="/image/test.png">` while the actual path is `/static/image/test.png`, <strong>causing 404s</strong>.
+
+A Korean case study fixed CSS issues by replacing fragile relative paths with absolute HTTPS paths (`https://domain/image/...`) in both CSS and HTML, then redeploying. When you migrate to HTTPS, it's a good opportunity to clean up and standardize your static asset paths.
+
+<br/>
+
+## 5. Upgrade insecure requests at the server or header level
+
+If manually updating every file is painful, you can enforce HTTPS for assets from the server or via security headers.
+
+### 5.1. Content-Security-Policy with upgrade-insecure-requests
+
+MDN and web.dev explain that sending a `Content-Security-Policy` header with `upgrade-insecure-requests` instructs browsers to automatically upgrade HTTP asset requests to HTTPS.
+
+Example header:
+
+```http
+Content-Security-Policy: upgrade-insecure-requests
+```
+
+With this in place, a tag like `<img src="http://example.com/img.png">` is <strong>transparently upgraded to `https://example.com/img.png`</strong>.
+
+Important caveat: the target server must actually support HTTPS. If it does not, auto-upgrading will just produce failed HTTPS requests instead of HTTP mixed content.
+
+### 5.2. Redirect and rewrite rules in Nginx/Apache
+
+At the web server or reverse proxy level, you can redirect HTTP requests to HTTPS.
+
+- Nginx: use a server block on port 80 with `return 301 https://$host$request_uri;`.
+- Apache: use `.htaccess` or vhost rules with `RewriteCond %{HTTPS} off` and a `RewriteRule` to the HTTPS URL.
+
+One AWS EC2 + Apache + Korean CMS (Gnuboard) example reported that CSS broke after SSL until they added redirect rules forcing all resource requests to HTTPS, which resolved the mixed content issue.
+
+<br/>
+
+## 6. Use CDN features like Cloudflare Automatic HTTPS Rewrites
+
+If you use Cloudflare or a similar CDN, built-in features can eliminate many mixed content issues with a few clicks.
+
+Cloudflare docs and recent mixed content guides recommend:
+
+- Enabling <strong>Automatic HTTPS Rewrites</strong> under SSL/TLS → Edge Certificates.
+- Optionally enabling <strong>Always Use HTTPS</strong> to redirect all requests to HTTPS.
+
+Automatic HTTPS Rewrites scans your HTML for HTTP URLs and attempts to load them over HTTPS instead. For WordPress, the Cloudflare plugin exposes the same option directly.
+
+Again, this assumes your origin server serves those assets over HTTPS. Cloudflare explicitly notes that all resources must be available over HTTPS for best results.
+
+<br/>
+
+## 7. Bulk HTTP → HTTPS replacement in WordPress and other CMSs
+
+On CMS-driven sites, the biggest offenders are often database entries.
+
+Typical steps:
+
+- Run a search-and-replace for <strong>`http://yourdomain.com` → `https://yourdomain.com`</strong> across the database using WP-CLI or a plugin like Better Search Replace.
+- Regenerate thumbnails if image URLs changed.
+- Clear all caching plugins.
+
+WordPress users on Reddit report good results by combining Better Search Replace with a plugin like "SSL Insecure Content Fixer," then clearing cache and waiting for changes to propagate. Some stubborn images may still require manual edits.
+
+<br/>
+
+## 8. When external resources do not support HTTPS
+
+Sometimes the hard truth is that your external resource is HTTP-only.
+
+When a third-party image, script, or font does not support HTTPS, your options are limited:
+
+- <strong>Download and serve</strong> the asset from your own HTTPS-enabled domain.
+- <strong>Replace it</strong> with a similar resource hosted on an HTTPS-capable CDN.
+- <strong>Drop the resource</strong> if neither option is acceptable.
+
+Security vendors like Sucuri warn that leaving mixed content in place increases the attack surface, so even "harmless" images should not remain HTTP-only long-term.
+
+<br/>
+
+## 9. Purge caches everywhere and retest
+
+If everything looks correct but the site still appears broken, <strong>caching is the usual suspect</strong>.
+
+- CDNs like Cloudflare may be serving cached responses that still reference HTTP assets.
+- Browser cache or service workers may hold outdated versions of your CSS or JS.
+
+Final cleanup checklist:
+
+- <strong>Purge all</strong> CDN and reverse proxy caches.
+- <strong>Clear or disable</strong> site-level caching plugins.
+- Test in an incognito window and force-refresh (Ctrl+F5).
+
+Only after this should you trust that what you see reflects the current configuration.
+
+<br/>
+
+## 10. Practical mixed content troubleshooting checklist
+
+To summarize, when CSS and images break right after enabling HTTPS, follow this order:
+
+1. <strong>Inspect mixed content warnings in DevTools.</strong>
+   - List all assets still requested over HTTP.
+2. <strong>Search and replace `http://yourdomain` in code and database.</strong>
+   - Convert to HTTPS or root-relative URLs.
+3. <strong>Add or adjust server headers.</strong>
+   - Consider `Content-Security-Policy: upgrade-insecure-requests`.
+   - Confirm HTTP→HTTPS redirects and correct static asset paths.
+4. <strong>Use CDN and plugins where appropriate.</strong>
+   - Cloudflare Automatic HTTPS Rewrites; CMS plugins for insecure content.
+5. <strong>Replace or self-host HTTP-only third-party assets.</strong>
+6. <strong>Clear all caches and test again in a clean browser session.</strong>
+
+Once this pipeline is in place, future SSL rollouts become far less painful.
+
+<br/>
+
+---
+
+#HTTPS #MixedContent #SSLCertificate #WebSecurity #WebHosting #WebsiteOptimization
