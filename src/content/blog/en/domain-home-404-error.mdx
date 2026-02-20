@@ -1,0 +1,181 @@
+---
+title: "How to Fix 404 on Your Homepage After Connecting a Domain"
+date: 2026-02-20
+category: 'tech'
+author: denosinfo
+tags: [404Error, DomainConnection, WebHosting, DNS, Troubleshooting]
+description: "A complete guide on diagnosing and fixing a 404 Page Not Found error that appears right after connecting a custom domain to your web server."
+heroImage: "/images/domain-404-hero.png"
+---
+
+You finally connected your custom domain. DNS records look fine, the server seems to be running. You type `https://yourdomain.com` with a little smile. Then you get slapped with a 404. <strong>"Page Not Found."</strong>
+
+In many cases, this isn't a deep server failure. The domain and the server are both alive, but the link between them is misaligned. This guide breaks down the most common reasons why your homepage shows a 404 right after connecting a domain—and how to fix each one.
+
+<br/>
+
+## 1. Domain is pointing to the wrong place (DNS / nameserver issue)
+
+First question: is the domain actually pointing to the correct server?
+
+Typical scenarios:
+
+- You migrated to a new host but left the nameservers pointing to the old provider.
+- The A record still targets your old server's IP.
+- You updated `www.yourdomain.com` but forgot to update the root (`@`) record.
+
+404 tutorials emphasize that when you move hosting, you must <strong>update nameservers and DNS</strong> so that the domain points to the new server where `index.php`, `.htaccess`, and other core files live. If the domain hits a server that does not know your site, that server will correctly return 404.
+
+Quick checks:
+
+- Run `nslookup yourdomain.com` to see the current A record.
+- Confirm the IP matches your actual hosting server, not an old or placeholder address.
+
+<br/>
+
+## 2. No homepage at `/` or it lives under a different path
+
+Sometimes the domain and DNS are fine, but the web server simply cannot find a default document for `/`.
+
+Common patterns:
+
+- No `index.html` or `index.php` in the web root directory.
+- The real homepage lives at `/home` or `/main`, but `/` has no route or redirect.
+- In a CMS (HubSpot, Squarespace, etc.), no page is set as the homepage or the page is disabled.
+
+HubSpot community threads on domain 404 errors often recommend removing the content slug (e.g., `home`) so the homepage maps directly to `/`, then republishing the page. Squarespace helpers say that if the domain is "connected" but shows 404, you should check that a page is actually marked <strong>"Set as homepage"</strong> and enabled.
+
+If you manage the server yourself, verify:
+
+- The web root directory (e.g., `/var/www/html`, `/home/user/public_html`) contains a default document.
+- The web server config includes something like `index index.html index.php;` for the site.
+
+<br/>
+
+## 3. Wrong DocumentRoot or web root path
+
+The domain points to your server, but the server points to the wrong folder. When the `DocumentRoot` or `root` directive is misconfigured, the server looks in an empty or unrelated directory and returns 404.
+
+Example: your build files live in `/home/user/project/build`, but Apache's `DocumentRoot` is still `/var/www/html`. Requests to `/` will hit `/var/www/html`, find nothing, and return 404.
+
+Nginx guides describe 404 situations caused by incorrect use of `root` vs `alias`.
+
+- `root` attaches the full location path.
+- `alias` attaches only the part after the location.
+
+If these are misused, Nginx might look for `/usr/share/nginx/html/context-path/index.html` instead of `/usr/share/nginx/html/index.html`, causing 404s.
+
+Checks:
+
+- Apache: ensure each `<VirtualHost>` block has the <strong>correct `DocumentRoot`</strong> for your project.
+- Nginx: confirm `server { root ... }` and any `location`/`alias` settings match your file layout.
+
+<br/>
+
+## 4. Virtual host / server block does not match your domain
+
+When hosting multiple domains on one server, the wrong virtual host may be answering your request.
+
+Typical misconfigurations:
+
+- `ServerName` or `server_name` does not match the actual domain.
+- The default vhost/server block catches all requests and returns 404.
+- Control panel settings (e.g., DirectAdmin) cause hostname vs domain conflicts.
+
+One real-world case: a setup with nginx as a reverse proxy in front of Apache returned 404 only for a single domain; the root cause was a DirectAdmin config where the server's hostname matched the domain and caused a conflict.
+
+If you host multiple domains, verify:
+
+- Apache: each `<VirtualHost>` has the correct `ServerName`, `ServerAlias`, and `DocumentRoot`.
+- Nginx: `server_name yourdomain.com www.yourdomain.com;` is correctly defined for that site.
+
+<br/>
+
+## 5. Application routing or rewrite rules are broken
+
+![Visualization of abstract network routing and connection errors](/images/network-routing-issue.png)
+
+For frameworks like Laravel, Symfony, Spring, or React/Vue SPAs, routing and URL rewriting must be configured properly. If not, even `/` can yield a 404.
+
+In Laravel + Nginx deployments, for example, if `/` requests are not rewritten to `index.php`, all pretty URLs may return 404. Sometimes `https://domain.com/index.php/some-route` works while `https://domain.com/some-route` does not.
+
+To fix:
+
+- Confirm your `.htaccess` or Nginx config contains the <strong>correct rewrite rules</strong> for your framework.
+- On WordPress, re-save the Permalinks settings to regenerate `.htaccess`.
+
+<br/>
+
+## 6. Cache or CDN still serving an old 404
+
+If you already fixed DNS and server configs but still see 404, a cache layer might be serving stale responses.
+
+Possible culprits:
+
+- CDN (Cloudflare, Fastly, etc.) caching a previous 404 response.
+- Browser cache or a service worker serving an outdated offline page.
+
+404 troubleshooting guides advise <strong>purging CDN caches</strong> and clearing browser cache/cookies after making changes related to routing or index files. Only then should you test the homepage again.
+
+<br/>
+
+## 7. Platform-specific "homepage" settings (site builders)
+
+On hosted builders like Wix, Squarespace, Google Sites, and HubSpot, domain connection and homepage selection are separate steps.
+
+From user reports:
+
+- Domain status shows "Connected" or "Success," but no page is set as the homepage.
+- The intended homepage is still in draft or private mode.
+- `www.domain.com` works but the bare domain (`domain.com`) returns 404.
+
+If you use such a platform, review:
+
+- Site settings → Domains → primary and root domain mapping.
+- Page settings → which page is <strong>set as the homepage</strong>, and whether it's published.
+- DNS or registrar settings: redirect `domain.com` to `www.domain.com` if required by the platform.
+
+<br/>
+
+## 8. Not a real 404: another error wrapped in a 404 page
+
+Sometimes the app returns a friendly 404 page even when the underlying error is something else: 500, 502, 403, etc.
+
+To detect this, inspect:
+
+- Network tab in the browser dev tools for the actual status code.
+- Web server error logs for 403/500/502 or permission issues.
+- Application logs for uncaught exceptions.
+
+Knowing the real HTTP status code often changes the direction of debugging entirely.
+
+<br/>
+
+## 9. A simple step-by-step checklist
+
+Despite the many possible causes, a short checklist can narrow things down quickly.
+
+1. <strong>DNS</strong>
+   - `nslookup yourdomain.com` and verify the IP.
+   - Fix A/AAAA records or nameservers if they point elsewhere.
+2. <strong>Web root and homepage</strong>
+   - Ensure `index.html`/`index.php` exists in the correct web root.
+   - Check Nginx/Apache `root`/`DocumentRoot` and `index` directives.
+3. <strong>Routing and rewrites</strong>
+   - Verify `.htaccess` or Nginx rewrite rules for your framework.
+   - On WordPress, re-save Permalinks to regenerate `.htaccess`.
+4. <strong>Builder/platform settings</strong>
+   - Confirm a homepage is set and published.
+   - Ensure both `www` and naked domains route correctly.
+5. <strong>Cache</strong>
+   - Purge CDN caches and clear browser cache, then retest.
+
+<br/>
+
+Following these steps usually reveals why "domain connected" still results in a 404 homepage.
+
+<br/>
+
+---
+
+#404Error #DomainSetup #DNS #Troubleshooting #WebHosting #WebsiteOptimization
