@@ -1,0 +1,160 @@
+---
+title: "Oh-My-OpenCode 는 어떻게 동작하는걸까"
+date: 2026-02-22
+category: 'ai'
+author: denosinfo
+tags: [OpenCode, OhMyOpenCode, AIAgent, LLM, DeveloperTools, Automation, ASTGrep, MCP]
+description: "마치 주니어 개발자가 시니어급 오케스트레이션 역할을 하는 팀장이 되는 마법. Oh My OpenCode의 구조부터 LSP/AST 도구 통합, 그리고 ultrawork 기능까지 그 작동 원리를 파헤쳐봅니다."
+heroImage: "/images/omo-orchestration-hero.png"
+---
+
+OpenCode를 처음 켜 보면, 왠지 든든한 AI 페어 프로그래머를 한 명 고용한 느낌이다. 그런데 oh-my-opencode를 얹는 순간, 분위기가 아예 바뀐다. 혼자 일하던 개발자가, 갑자기 여러 명의 시니어 엔지니어가 붙은 팀장이 된 느낌이다.
+
+사실 oh-my-opencode는 "새로운 모델"이 아니다. OpenCode 위에 올라가는 에이전트 하네스, 일종의 오케스트레이션 레이어다. 이 레이어가 OpenCode 한 개를 여러 개의 전문 에이전트로 쪼개서, LSP·AST 도구·MCP 같은 기능을 한꺼번에 끌어다 쓰도록 만들어 준다. 그래서 체감이 다르게 느껴지는 것이다.
+
+<br/>
+
+## 1. 기본 구조: OpenCode 위에 올라간 에이전트 하네스
+
+oh-my-opencode의 구조를 한 줄로 요약하면 <strong>"OpenCode 위에서 돌아가는 배터리 포함(Batteries-Included) 에이전트 하네스"</strong>다. 핵심은 OpenCode의 CLI와 세션을 그대로 사용하면서, 그 위에 여러 개의 서브 에이전트와 도구 체인을 얹는 구조다.
+
+공식 README와 사용기들을 기준으로 구성 요소를 정리하면 대략 이렇게 나뉜다.
+
+- <strong>Sisyphus</strong>: 메인 에이전트. 큰 작업을 쪼개서 서브 에이전트에게 분배하고, 끝까지 밀어붙이는 역할.
+- <strong>Sub Agents</strong>: Oracle, Librarian, Explore, Frontend 등 역할별 전문가 에이전트들.
+- <strong>도구 레이어</strong>: LSP, AST-Grep, 파일 시스템, Git, 세션 히스토리 검색 등.
+- <strong>호환성 레이어</strong>: Claude Code 설정/명령 체계를 그대로 읽어와 OpenCode 형식으로 변환하는 레이어.
+
+실행 자체는 OpenCode CLI가 담당한다. 예를 들어
+
+```bash
+opencode
+```
+
+로 기본 TUI를 띄운 뒤, oh-my-opencode 플러그인이 주입돼 있으면, 내부적으로는 Sisyphus와 여러 서브 에이전트가 함께 돌아간다.
+
+<br/>
+
+## 2. Sisyphus: "끝까지 밀어붙이는" 메인 에이전트
+
+oh-my-opencode의 심장은 Sisyphus라는 메인 에이전트다. README에는 "The Batteries-Included Agent that codes like you"라는 설명이 붙어 있다. 이름 그대로, 단일 요청 한 번 던지고 끝나는 에이전트가 아니라, 작업이 끝날 때까지 계속 밀어붙이는 타입이다.
+
+이 에이전트가 하는 일은 대략 네 가지다.
+
+- <strong>작업 쪼개기</strong>: 사용자의 프롬프트(또는 ultrawork 같은 키워드)를 분석해서, 설계·리서치·구현·테스트 등으로 나눈다.
+- <strong>서브 에이전트 호출</strong>: 아키텍처는 Oracle, 코드 탐색은 Explore, 문서 검색은 Librarian 같은 식으로 역할을 위임한다.
+- <strong>재시도·전략 전환</strong>: 한 접근이 막히면 다른 도구나 다른 전략으로 다시 시도한다. 데모에서도 "작업이 안 되면 다른 전략으로 피벗한다"는 설명이 나온다.
+- <strong>Todo Continuation</strong>: 중간에 응답이 끊겨도, 남은 할 일 목록을 기반으로 다시 이어서 작업하게 만든다.
+
+그래서 "한 번 시도해 보고 아니다 싶으면 포기"하던 기존 에이전트와 달리, 목표에 도달할 때까지 집요하게 리트라이하는 패턴을 보여 준다.
+
+<br/>
+
+## 3. 서브 에이전트: Oracle, Librarian, Explore… 실제 팀처럼 나눠 일한다
+
+단일 LLM이 모든 역할을 다 하려면, 프롬프트가 점점 길어지고 맥락도 뒤섞인다. oh-my-opencode는 역할을 쪼개 버린다.
+
+문서와 가이드에서 소개하는 대표 서브 에이전트는 다음과 같다.
+
+- <strong>Oracle</strong>: 아키텍처 분석, 코드 리뷰, 리팩터링 전략 제안.
+- <strong>Librarian</strong>: 문서·코드베이스 검색, 레거시 코드 이해 보조.
+- <strong>Explore</strong>: 빠른 코드 검색, 심볼 추적.
+- <strong>Frontend/Backend 등 역할별 에이전트</strong>: 특정 레이어의 구현을 집중적으로 담당.
+- <strong>Background Agents</strong>: `run_in_background: true` 옵션으로 백그라운드에서 돌릴 수 있는 작업들.
+
+특히 `call_omo_agent`라는 도구를 통해 다른 서브 에이전트를 호출할 수 있고, 이때 `run_in_background` 플래그를 켜면 결과를 기다리지 않고 다른 일로 넘어갈 수 있다. 여러 에이전트가 병렬로 돌아가면서, 실제 팀이 각자 모듈을 나눠 개발하는 것과 비슷한 구조가 된다.
+
+<br/>
+
+## 4. LSP·AST-Grep 통합: IDE가 쓰던 도구를 에이전트가 같이 쓴다
+
+![AST Tree Visualization](/images/omo-ast-tools.png)
+
+일반적인 AI 코딩 도구는 "파일 읽기 + 자연어 생성" 정도에서 멈추는 경우가 많다. oh-my-opencode는 여기서 한 발 더 나간다. IDE나 개발자가 쓰던 정적 분석·검색 도구를 에이전트 쪽으로 끌어온다.
+
+문서에 정리된 대표 도구는 다음과 같다.
+
+- <strong>LSP 기반 기능</strong>: 정의로 이동, 참조 찾기, 심볼 검색, 진단 오류 조회, 리팩터링(code action, rename 등).
+- <strong>AST-Grep</strong>: 25개 이상의 언어에 대해 AST 기반 패턴 검색·치환(검색과 교체를 코드 구조 단위로 수행).
+- <strong>세션 히스토리 검색</strong>: 과거 대화·수정 내역을 토큰 낭비 없이 다시 찾아 쓸 수 있는 기능.
+
+README에는 기존 grep/glob 도구를 대체하고, 타임아웃 없는 AST-Grep 도구를 기본 제공한다고 나온다. 핵심 아이디어는 <strong>"왜 IDE의 모든 도구를 사람만 쓰고, 에이전트는 못 쓰게 하는가?"</strong>라는 질문이다. oh-my-opencode는 이 장벽을 없애서, 에이전트가 직접 LSP·AST 도구를 호출해 더 정확한 수정을 하게 만든다.
+
+<br/>
+
+## 5. Claude Code 호환 레이어와 멀티 모델 라우팅
+
+이미 Claude Code 설정을 쓰고 있는 개발자를 위해, oh-my-opencode는 호환성 레이어를 제공한다. 리뷰에 따르면, Claude Code용 설정 파일을 그대로 읽어 OpenCode가 이해하는 형식으로 변환해 준다.
+
+- 기존 Claude Code의 프로젝트 설정, 스킬, MCP 설정을 재사용할 수 있다.
+- `oh-my-opencode.json`에서 모델·에이전트 구성을 세밀하게 조정할 수 있다.
+
+또한 설치 옵션에서 `--claude`, `--chatgpt`, `--gemini`를 지정해, 어떤 모델 구독을 쓰는지에 따라 최적의 조합을 구성할 수 있다. 예를 들어:
+
+```bash
+bunx oh-my-opencode install --no-tui   --claude=yes --chatgpt=no --gemini=no
+```
+
+이렇게 설정하면 Claude 중심으로 에이전트들이 돌아간다. 일부 블로그와 데모 리뷰에서는 Z.ai, GPT, Gemini까지 섞어서 비용 대비 성능을 최적화하는 사례도 소개한다.
+
+<br/>
+
+## 6. MCP와 외부 서비스 연동: 코드 밖의 맥락까지 끌어오기
+
+oh-my-opencode는 MCP(Model Context Protocol)를 통해 외부 서비스를 연결할 수 있다. 공식 설명과 커뮤니티 글에 따르면, MCP를 통해 Google Drive, Slack, GitHub 같은 외부 데이터를 에이전트가 직접 조회하고 활용할 수 있다.
+
+이 말은 곧
+
+- PR 코멘트, 이슈, Slack 대화를 읽고 <strong>개발 맥락을 이해</strong>할 수 있고,
+- 설계 문서나 API 스펙을 직접 가져와 코드에 반영할 수 있다는 뜻이다.
+
+OpenCode 자체도 MCP를 지원하지만, oh-my-opencode는 이를 미리 통합해 "배터리 포함" 상태로 제공한다. 사용자는 복잡한 MCP 설정을 일일이 하지 않고도, 기본적인 외부 도구 연동을 바로 쓸 수 있다.
+
+<br/>
+
+## 7. ultrawork 키워드: 한 줄로 풀 세트를 켜는 스위치
+
+세부 설정을 다 알 필요 없이, oh-my-opencode의 모든 기능을 한 번에 켜는 방법이 있다. 바로 <strong>`ultrawork`</strong> 또는 줄여서 <strong>`ulw`</strong>라는 키워드를 프롬프트에 넣는 것이다.
+
+리뷰에 따르면, ultrawork가 들어간 프롬프트를 보내면 Sisyphus가 다음과 같이 동작한다.
+
+- 작업을 단계별로 쪼개고
+- 필요한 서브 에이전트를 병렬로 띄우고
+- LSP/AST 도구까지 동원해서
+- <strong>"초안 → 수정 → 리팩터링 → 정리"</strong>까지 한 번에 밀어붙인다.
+
+실제 사용 후기를 보면, 8시간짜리 작업을 1시간 안에 끝냈다는 사례도 나온다. 복잡한 플러밍을 한 번에 정리했다는 개발자 블로그도 이를 증명한다.
+
+<br/>
+
+## 8. 실제로 코딩할 때 어떤 느낌인가
+
+리뷰와 사용기를 종합하면, oh-my-opencode를 썼을 때 체감 변화는 대략 이런 식이다.
+
+- 단일 프롬프트 → <strong>여러 에이전트가 각자 역할</strong>을 나눠 일을 진행한다.
+- 한 번 삐끗한다고 작업이 끝나지 않고, 다른 시도를 몇 번이고 반복한다.
+- 코드 수정이 "한 줄 생성" 수준이 아니라, LSP·AST 도구를 동원한 <strong>리팩터링</strong>에 가깝다.
+- 초기 구축 설정이 조금 필요하지만, 세팅만 끝나면 실제 개발 속도가 확실히 빨라진다는 평가가 많다.
+
+물론 비판도 있다. 일부 사용자들은 "기본 구성이 잘못되면 쓸데없는 수정이 많다"는 의견도 남겼다. 결국 에이전트 구성과 프롬프트 설계에 따라 체감 품질이 크게 달라지는 셈이다.
+
+<br/>
+
+## 9. 요약: "에이전트 팀"을 만드는 오케스트라
+
+정리하면, oh-my-opencode는 다음 세 가지를 동시에 해결하는 도구다.
+
+- <strong>오케스트레이션</strong>: Sisyphus가 작업을 나누고 여러 서브 에이전트를 병렬로 돌린다.
+- <strong>도구 통합</strong>: LSP, AST-Grep, MCP, 파일·Git 도구까지 에이전트가 직접 사용한다.
+- <strong>호환성과 생산성</strong>: Claude Code 설정을 그대로 가져와 OpenCode에서 재사용하고, ultrawork 같은 키워드로 풀 세트를 한 번에 켠다.
+
+그래서 "Oh-My-OpenCode 는 어떻게 동작하는가"를 한 문장으로 말하면 이렇게 정리할 수 있다.
+
+> OpenCode 위에서 여러 전문 에이전트를 팀처럼 굴리고,
+> IDE·외부 서비스를 다리 삼아 끝까지 작업을 밀어붙이는 오케스트레이션 레이어다.
+
+<br/>
+
+---
+
+#OpenCode #OhMyOpenCode #AIAgent #Automation #DeveloperTools #WorkflowOptimization #MCP #AST

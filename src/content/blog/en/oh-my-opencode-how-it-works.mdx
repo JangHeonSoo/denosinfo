@@ -1,0 +1,164 @@
+---
+title: "How Does Oh My OpenCode Actually Work?"
+date: 2026-02-22
+category: 'ai'
+author: denosinfo
+tags: [OpenCode, OhMyOpenCode, AIAgent, LLM, DeveloperTools, Automation, ASTGrep, MCP]
+description: "Discover the architecture and mechanics behind Oh My OpenCode, the ultimate orchestration layer that transforms OpenCode into a multi-agent powerhouse."
+heroImage: "/images/omo-orchestration-hero.png"
+---
+
+When you first launch OpenCode, it feels like hiring a single very capable AI pair programmer. The moment you add Oh My OpenCode, the vibe shifts. It no longer feels like one assistant—it feels like leading a small senior dev team.
+
+Oh My OpenCode is not "just another model." It is an agent harness, an orchestration layer that runs on top of OpenCode. This layer splits the single OpenCode agent into a set of specialized sub-agents, wires in tools like LSP, AST-based search, and MCP integrations, and coordinates them. That is why it feels so different in practice.
+
+<br/>
+
+## 1. Core architecture: a batteries-included agent harness on top of OpenCode
+
+The project describes itself as "the best agent harness" and a <strong>"batteries-included"</strong> plugin for OpenCode. Architecturally, it keeps OpenCode as the core engine and wraps it with:
+
+- A primary orchestrator agent (<strong>Sisyphus</strong>).
+- Multiple specialized sub-agents (<strong>Oracle, Librarian, Explore, Frontend</strong>, etc.).
+- A rich <strong>tool layer</strong> (LSP, AST-Grep, file system, Git, session search).
+- A <strong>compatibility layer</strong> that reads Claude Code config and maps it into OpenCode's format.
+
+You still launch OpenCode via the CLI, for example:
+
+```bash
+opencode
+```
+
+Once the Oh My OpenCode plugin is installed, that same `opencode` session internally spins up Sisyphus plus the sub-agents and tool integrations.
+
+<br/>
+
+## 2. Sisyphus: the "keep going until it's done" main agent
+
+Sisyphus is the heart of Oh My OpenCode. The README calls it "The Batteries-Included Agent that codes like you". Rather than handling a single prompt and returning, Sisyphus is designed to pursue a task until completion.
+
+From docs and reviews, Sisyphus typically does four things:
+
+- <strong>Decomposes tasks</strong>: It takes your prompt (often containing keywords like `ultrawork`) and splits it into design, research, implementation, and testing steps.
+- <strong>Delegates to sub-agents</strong>: Architecture to Oracle, code search to Explore, docs/codebase exploration to Librarian, and so on.
+- <strong>Retries and pivots</strong>: If one approach fails, it tries alternative tools or strategies. In demo videos, the narrator explicitly mentions that it "recognizes when something is not working and pivots".
+- <strong>Enforces continuation</strong>: With a todo-enforcement mechanism, it avoids stopping halfway through. If some steps remain, it nudges itself to continue until they are done.
+
+This gives it a different feel compared to single-shot agents that give up after one failed attempt.
+
+<br/>
+
+## 3. Sub-agents: Oracle, Librarian, Explore… like a real dev team
+
+Instead of one LLM doing everything, Oh My OpenCode splits responsibilities across sub-agents. This keeps prompts shorter and context cleaner for each specialist.
+
+The main sub-agents described in docs and blogs include:
+
+- <strong>Oracle</strong> – architecture analysis, code review, and refactoring strategies.
+- <strong>Librarian</strong> – documentation and codebase exploration, understanding legacy code.
+- <strong>Explore</strong> – fast code search and symbol tracing.
+- <strong>Frontend / Backend agents</strong> – focused implementation for specific layers.
+- <strong>Background agents</strong> – tasks that run with `run_in_background: true`, allowing parallel work.
+
+The `call_omo_agent` tool lets one agent spawn another, with an optional `run_in_background` flag so the caller does not block on the result. In practice, this means multiple agents can work in parallel on different parts of the same project, much like a real engineering team.
+
+<br/>
+
+## 4. LSP and AST-Grep: letting the agent use IDE-grade tools
+
+![Visualizing structured nodes and an Abstract Syntax Tree code search concept](/images/omo-ast-tools.png)
+
+Most AI coding helpers stop at "read files + generate code." Oh My OpenCode goes further by giving agents access to the same structural tools developers rely on.
+
+Key tool integrations include:
+
+- <strong>LSP-based features</strong>: go-to-definition, find references, symbol search, diagnostics, and code actions (like rename and quick fixes).
+- <strong>AST-Grep</strong>: AST-aware code search and replace for 25+ languages; matches patterns at the syntax tree level instead of raw text.
+- <strong>Session history search</strong>: reuse previous changes or discussions without reloading them into context.
+
+The README notes that it replaces basic grep/glob tools and ships an AST-Grep implementation without timeouts, so long-running structural queries do not get killed prematurely. The underlying philosophy is captured in one line:
+
+> <strong>"Why should IDE tools be for humans only, and not for agents?"</strong>
+
+Oh My OpenCode removes that barrier, letting agents directly invoke LSP and AST tools to perform more precise edits and refactors.
+
+<br/>
+
+## 5. Claude Code compatibility and multi-model routing
+
+For developers already invested in Claude Code, Oh My OpenCode offers a compatibility layer.
+
+Korean reviews explain that the plugin can read existing Claude Code config, skills, and MCP settings, then translate them into OpenCode's configuration format. That means:
+
+- You can reuse Claude Code project settings almost as-is.
+- An `oh-my-opencode.json` file lets you fine-tune model and agent setups.
+
+Installation flags like `--claude`, `--chatgpt`, and `--gemini` let you declare which providers you actually subscribe to. For example:
+
+```bash
+bunx oh-my-opencode install --no-tui   --claude=yes --chatgpt=no --gemini=no
+```
+
+This configures the harness to favor Claude-based models. Some guides show blending Claude, GPT, Gemini, or Z.ai to balance latency, quality, and cost.
+
+<br/>
+
+## 6. MCP and external services: bringing in context from outside the repo
+
+Through MCP (Model Context Protocol), Oh My OpenCode can tap into external systems.
+
+Docs and community posts mention that, via MCP, agents can query services like Google Drive, Slack, or GitHub directly. This lets the system:
+
+- Read PR discussions, issues, or Slack threads to <strong>understand project context</strong>.
+- Pull design docs or API specs into the coding process.
+
+While OpenCode itself supports MCP, Oh My OpenCode ships with preconfigured MCP hooks to make this "batteries included"—users do not need to wire everything manually.
+
+<br/>
+
+## 7. The `ultrawork` keyword: one word to enable the full stack
+
+If you do not want to micromanage agents and tools, there is a shortcut: include <strong>`ultrawork`</strong> (or the shorter <strong>`ulw`</strong>) in your prompt.
+
+Blog reviews explain that when `ultrawork` is present, Sisyphus shifts into full-orchestration mode:
+
+- It automatically <strong>breaks the request into stages</strong>.
+- It spins up relevant sub-agents in parallel.
+- It leverages LSP/AST tools when editing code.
+- It drives the loop from <strong>"initial draft" through "refinement" to "cleanup."</strong>
+
+One dev blog describes building a Hugo/React hybrid PDF merge tool in about 60 minutes, estimating that it would have taken roughly 8 hours of manual plumbing otherwise.
+
+<br/>
+
+## 8. What it feels like in day-to-day coding
+
+Putting the pieces together, user reports describe a distinct feel when using Oh My OpenCode:
+
+- A single request triggers <strong>multiple agents working on different layers</strong>.
+- The system does not quit after a single failed attempt; it tries alternative paths.
+- Edits feel more like IDE-backed <strong>refactors</strong> than simple text generation.
+- Setup is more complex than plain OpenCode or Claude Code, but once configured, many users report a noticeable jump in throughput.
+
+There are criticisms too. Some Reddit users say it occasionally makes more mistakes than vanilla OpenCode, especially with poorly tuned configs, and sometimes removes code it should not touch. As with any orchestrator, quality depends heavily on configuration and task design.
+
+<br/>
+
+## 9. In one sentence: an orchestra for your AI dev team
+
+Boiled down, Oh My OpenCode solves three things at once:
+
+- <strong>Orchestration</strong> – Sisyphus splits work and coordinates multiple sub-agents, often in parallel.
+- <strong>Tool integration</strong> – agents can invoke LSP, AST-Grep, MCP, file and Git tools directly.
+- <strong>Compatibility and productivity</strong> – Claude Code configs are reused, and keywords like `ultrawork` flip on the full stack in one go.
+
+So if you had to answer the question "How does Oh My OpenCode work?" in a single line, it would be this:
+
+> It runs on top of OpenCode as an orchestration layer that turns one model into a coordinated team of agents,
+> wiring in IDE-grade tools and external services, and pushing tasks to completion instead of stopping halfway.
+
+<br/>
+
+---
+
+#OpenCode #OhMyOpenCode #AIAgent #Automation #DeveloperTools #WorkflowOptimization #MCP #AST
