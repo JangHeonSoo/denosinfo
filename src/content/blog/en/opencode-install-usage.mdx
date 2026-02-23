@@ -1,0 +1,261 @@
+---
+title: "OpenCode from Install to First Use: A Guide for Windows & macOS"
+date: 2026-02-23
+category: 'tech'
+author: denosinfo
+tags: [OpenCode, AI, Coding, CLI, DeveloperTools, Productivity]
+description: "Everything you need to know about setting up OpenCode, the terminal-based open-source AI coding agent, on Windows and Mac. Includes a quick start demo session."
+heroImage: "/images/opencode_hero_abstract_laptop_1771821519650.png"
+---
+
+The first time you look at OpenCode, it can feel a bit confusing. Is it a terminal tool, a desktop app, or an editor extension? In reality, it is all three. The good news: once you set it up, a single `opencode` command gives you a powerful AI coding environment.
+
+This guide walks through a practical path for Windows and macOS: how to install OpenCode, run it for the first time, and try a simple workflow.
+
+![A sleek laptop on a minimalist desk displaying a glowing, abstract 3D blue and purple wireframe geometric pattern](/images/opencode_hero_abstract_laptop_1771821519650.png)
+
+<br/>
+
+## 1. Before you install: what OpenCode actually is
+
+According to the official docs, OpenCode is an open-source AI coding agent built for the terminal. Key points:
+
+- It runs primarily as a terminal-based TUI/CLI.
+- It understands and operates on entire codebases, not just single files.
+- It also ships a desktop app and extensions for VS Code, Cursor, Zed, Windsurf, and more.
+
+In this article, the focus is on:
+
+- Installing the <strong>OpenCode CLI</strong>.
+- Running it once to connect a model provider.
+- Using a few basic commands to get a feel for it.
+
+<br/>
+
+## 2. Installing on macOS
+
+On macOS, you have three straightforward options.
+
+### 2.1. Install script (recommended quick path)
+
+The simplest and most up-to-date method is the official install script:
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+- Run this in the default Terminal app or iTerm2.
+- The script downloads the latest binary and wires it into your PATH.
+
+After it completes, verify the install:
+
+```bash
+opencode --version
+```
+
+### 2.2. Homebrew
+
+If you already live in the Homebrew world, this is convenient:
+
+```bash
+brew install opencode
+```
+
+The docs recommend using the dedicated OpenCode tap for more frequent updates:
+
+```bash
+brew tap sst/opencode
+brew install opencode
+```
+
+### 2.3. Desktop app and editor extensions
+
+If you prefer GUI tools, grab the desktop app and editor extensions from the download page:
+
+- OpenCode Desktop for macOS (Intel and Apple Silicon).
+- Extensions for VS Code, Cursor, Zed, Windsurf, and VSCodium.
+
+This guide stays focused on the CLI, but the first-run experience is similar: you still need to connect a model and select a workspace.
+
+<br/>
+
+## 3. Installing on Windows
+
+![A photorealistic, extreme close-up macro shot of premium computer hardware](/images/opencode_install_hardware_macro_1771821536737.png)
+
+On Windows, you can either use a Unix-like shell (Git Bash/WSL) or native package managers.
+
+### 3.1. Install script via Git Bash or WSL
+
+If you have Git Bash or WSL (e.g., Ubuntu) installed, you can reuse the same install script as on macOS:
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+- Run this in Git Bash or inside your WSL terminal.
+- After installation, `opencode` is available inside that environment.
+
+### 3.2. Windows-native via Chocolatey or Scoop
+
+If you want `opencode` directly in PowerShell or CMD, package managers are the smoothest option.
+
+<strong>Chocolatey</strong>
+
+1. Install Chocolatey via an elevated PowerShell.
+2. Then run:
+
+```powershell
+choco install opencode
+```
+
+<strong>Scoop</strong>
+
+If you already use Scoop (a Homebrew-like tool for Windows), do this:
+
+```powershell
+scoop bucket add extras
+scoop install extras/opencode
+```
+
+Then verify:
+
+```powershell
+opencode --version
+```
+
+### 3.3. Desktop app
+
+Prefer GUI? Download the Windows (x64) OpenCode Desktop installer from the official download page and install it like any other app. You can then add the VS Code extension to work directly inside your editor.
+
+<br/>
+
+## 4. First run: starting an OpenCode session
+
+Once installed, start OpenCode from your terminal (macOS or Windows):
+
+```bash
+opencode
+```
+
+Per the CLI docs and setup guides, the first run usually walks you through:
+
+1. <strong>Provider selection</strong>
+   - Choose which model provider(s) to use (Claude, OpenAI, Gemini, etc.).
+   - Enter API keys or authenticate via browser.
+2. <strong>Workspace selection</strong>
+   - Either use the current directory or pick a project to work on.
+3. <strong>Session launch</strong>
+   - The terminal UI opens with a chat/command prompt at the bottom.
+
+Several guides recommend <strong>"running `opencode` once in a small or empty directory first, just to complete account setup and confirm everything works before pointing it at a large repo."</strong>
+
+<br/>
+
+## 5. Basic usage patterns (TUI/CLI)
+
+![A photorealistic, top-down atmospheric shot of a professional dark-themed mechanical keyboard and an ergonomic mouse](/images/opencode_usage_keyboard_glow_1771821557689.png)
+
+Based on the CLI reference, here are the most common ways people start using OpenCode.
+
+### 5.1. Starting from a project root
+
+From your project directory:
+
+```bash
+cd /path/to/your/project
+opencode
+```
+
+Once the TUI is open, you can type natural-language requests like:
+
+- "Add ESLint to this project and fix existing files to match the style." 
+- "Refactor the auth module to separate JWT handling into its own file." 
+
+OpenCode will scan the repo, propose changes, and (if you confirm) apply them.
+
+### 5.2. One-off runs with a single command
+
+Some versions expose subcommands like `run` for one-shot tasks. For example:
+
+```bash
+opencode run "Find refactoring opportunities to improve test coverage."
+```
+
+Always check current options with:
+
+```bash
+opencode --help
+```
+
+### 5.3. Reattaching to an existing backend
+
+If you are running OpenCode in server or web mode, you can attach from another terminal:
+
+```bash
+opencode attach
+# or
+opencode attach http://localhost:11434
+```
+
+This is handy when you keep a long-lived backend session running.
+
+<br/>
+
+## 6. A tiny Win/Mac demo you can try right away
+
+To test your setup without risking a real project, try this minimal example.
+
+1. Create a demo directory:
+
+```bash
+mkdir opencode-demo
+cd opencode-demo
+```
+
+2. Add a tiny script:
+
+```bash
+echo "console.log('hello');" > index.js
+```
+
+3. Start OpenCode:
+
+```bash
+opencode
+```
+
+4. In the TUI, try prompts like:
+
+- "Turn this into a Node.js CLI that takes a name argument and prints a greeting." 
+- "Convert this project to TypeScript, add a `tsconfig.json`, and create a basic test." 
+
+5. Inspect the files and diffs. You will see how OpenCode reads the repo, plans changes, and applies them.
+
+Most tutorials suggest getting comfortable in a sandbox like this before pointing OpenCode at large or critical repositories.
+
+<br/>
+
+## 7. Optional: layering Oh My OpenCode on top
+
+If you want the multi-agent experience, you can add Oh My OpenCode as an OpenCode plugin once the base CLI works.
+
+High-level flow from the official README and installation guides:
+
+1. Confirm that `opencode` is installed and working.
+2. In a Bun or Node.js environment, run one of:
+
+```bash
+bunx oh-my-opencode install
+# or
+npx oh-my-opencode install
+```
+
+3. Answer the installer prompts to declare which providers you use (Claude, OpenAI, Gemini, etc.).
+4. From then on, launching `opencode` will boot with the Oh My OpenCode agent harness active.
+
+Windows and macOS both support this flow, as long as Node/Bun is installed and `opencode` is on your PATH.
+
+---
+
+#OpenCode #AI #Coding #CLI #DeveloperTools #Productivity

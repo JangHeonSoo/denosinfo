@@ -1,0 +1,264 @@
+---
+title: "OpenCode 설치부터 간단 사용법까지 (Windows/macOS 완벽 가이드)"
+date: 2026-02-23
+category: 'tech'
+author: denosinfo
+tags: [OpenCode, AI, Coding, CLI, DeveloperTools, Productivity]
+description: "터미널에 최적화된 오픈소스 AI 코딩 에이전트 OpenCode. 윈도우와 맥 환경에서의 설치 방법부터 최초 실행, 그리고 간단한 터미널 사용법까지 한 번에 정리했습니다."
+heroImage: "/images/opencode_hero_abstract_laptop_1771821519650.png"
+---
+
+처음 OpenCode를 접하면 약간 헷갈린다. 터미널용 도구인지, 데스크톱 앱인지, VS Code 확장인지. 사실 셋 다이다. 그래서 설치도 여러 길이 열려 있다. 막상 한 번만 세팅해 두면, 그다음부터는 `opencode` 한 줄로 꽤 강력한 AI 코딩 환경이 열린다.
+
+여기서는 Windows와 macOS를 기준으로, 가장 현실적인 설치 루트와 "처음 켜서 간단히 써보기"까지 한 번에 정리한다.
+
+![미니멀한 책상 위, 문자가 표시되지 않고 추상적인 푸른빛 와이어프레임만 띄워진 세련된 노트북](/images/opencode_hero_abstract_laptop_1771821519650.png)
+
+<br/>
+
+## 1. 설치 전에 알아둘 것: OpenCode가 뭐 하는 도구인지
+
+공식 문서에서 OpenCode는 "터미널에 최적화된 오픈소스 AI 코딩 에이전트"로 소개된다. 핵심 포인트만 뽑으면 이렇다.
+
+- 터미널 기반 TUI/CLI로 동작한다.
+- 코드베이스를 스캔하고, 파일 단위가 아니라 프로젝트 단위로 작업한다.
+- VS Code, Cursor, Zed, Windsurf 같은 에디터 확장도 함께 제공한다.
+
+이 글에서는
+
+- <strong>터미널용 OpenCode CLI 설치</strong>
+- <strong>최초 실행 후 모델 연동</strong>
+- <strong>기본 명령 몇 개로 맛보기</strong>
+
+이 세 가지만 잡는다.
+
+<br/>
+
+## 2. macOS에서 설치하기
+
+macOS에서는 선택지가 세 가지 정도로 정리된다.
+
+### 2-1. 설치 스크립트로 설치 (가장 단순)
+
+공식 문서와 여러 가이드가 추천하는 방법이다.
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+- macOS 기본 터미널에서 그대로 실행하면 된다.
+- 스크립트가 알아서 최신 버전 바이너리를 내려받고 PATH에 등록한다.
+
+설치가 끝나면
+
+```bash
+opencode --version
+```
+
+으로 버전이 찍히는지 확인한다.
+
+### 2-2. Homebrew로 설치
+
+brew를 이미 쓰고 있다면 이쪽이 편하다.
+
+```bash
+brew install opencode
+```
+
+공식 문서에서는 OpenCode 전용 tap를 쓰면 업데이트가 더 빠르다고 안내한다. 환경에 따라 다음처럼 사용할 수 있다.
+
+```bash
+brew tap sst/opencode
+brew install opencode
+```
+
+### 2-3. 데스크톱 앱 + 에디터 확장
+
+터미널이 부담스럽다면, Download 페이지에서 데스크톱 앱과 에디터 확장을 같이 설치할 수도 있다.
+
+- macOS용 OpenCode Desktop (Intel/Apple Silicon)
+- VS Code/Cursor/Zed/Windsurf용 확장 프로그램
+
+이 글의 초점은 CLI라서, 이후 설명은 `opencode` CLI 기준으로 간다.
+
+<br/>
+
+## 3. Windows에서 설치하기
+
+![시스템 세팅을 상징하는, 세련된 컴퓨터 하드웨어 부품의 깔끔한 클로즈업 매크로 샷](/images/opencode_install_hardware_macro_1771821536737.png)
+
+Windows는 약간 선택지가 더 많다. 상황에 맞게 하나만 고르면 된다.
+
+### 3-1. 공식 설치 스크립트 (Git Bash / WSL)
+
+Git Bash 또는 WSL(우분투 등)이 깔려 있다면, mac과 거의 똑같이 설치할 수 있다.
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+- Git Bash에서 실행하거나, WSL 터미널에서 실행하면 된다.
+- 설치 후에는 WSL 안에서 `opencode`를 쓸 수 있다.
+
+### 3-2. 패키지 매니저로 설치 (Chocolatey / Scoop)
+
+윈도우 네이티브 환경에서 바로 쓰고 싶다면 패키지 매니저를 쓰는 편이 깔끔하다.
+
+<strong>Chocolatey 사용</strong>
+
+1. 관리자 권한 PowerShell에서 Chocolatey 설치.
+2. 그다음 명령 실행.
+
+```powershell
+choco install opencode
+```
+
+<strong>Scoop 사용</strong>
+
+Scoop은 Windows용 Homebrew 느낌이다. 이미 많이 쓰고 있다면 이 경로가 편하다.
+
+```powershell
+# Scoop 설치 후
+scoop bucket add extras
+scoop install extras/opencode
+```
+
+설치 후에는 새 PowerShell에서
+
+```powershell
+opencode --version
+```
+
+으로 동작 여부를 확인한다.
+
+### 3-3. 데스크톱 앱 설치
+
+터미널보다 GUI가 편하다면, Download 페이지에서 Windows(x64)용 OpenCode Desktop을 내려받아 설치하면 된다. 이후 VS Code 확장까지 깔면, 익숙한 에디터 안에서 OpenCode를 쓸 수 있다.
+
+<br/>
+
+## 4. 최초 실행: OpenCode 처음 켜서 세션 만들기
+
+설치가 끝났다면 이제 실제로 켜 본다. macOS/Windows 모두 터미널에서 동일하다.
+
+```bash
+opencode
+```
+
+공식 문서 기준으로, 첫 실행 시에는 대략 이런 흐름을 거친다.
+
+1. <strong>초기 설정 마법사</strong>
+   - 어떤 모델 제공자를 쓸지 선택(예: Claude, OpenAI, Gemini 등).
+   - API 키 또는 계정 연동 절차 진행.
+2. <strong>프로젝트 경로 선택</strong>
+   - 현재 디렉터리 또는 다른 코드베이스를 작업 폴더로 지정.
+3. <strong>세션 시작</strong>
+   - 터미널 기반 TUI가 열리고, 채팅/명령을 입력할 수 있는 프롬프트가 뜬다.
+
+일부 가이드에서는 <strong>"먼저 한 번은 빈 디렉터리에서 `opencode`를 실행해, 계정 연결과 기본 설정만 끝내 두라"</strong>고 권장한다.
+
+<br/>
+
+## 5. 기본적인 사용 흐름 (터미널 TUI 기준)
+
+![모니터의 은은한 불빛이 비치는 어두운 톤의 기계식 키보드와 마우스](/images/opencode_usage_keyboard_glow_1771821557689.png)
+
+OpenCode CLI 문서를 기준으로, 가장 자주 쓰는 패턴만 뽑아서 정리하면 이 정도다.
+
+### 5-1. 코드베이스에서 바로 시작하기
+
+프로젝트 루트 디렉터리로 이동한 뒤
+
+```bash
+cd /path/to/your/project
+opencode
+```
+
+를 실행한다.
+
+- TUI가 뜨면, 하단 입력창에 자연어로 작업을 던질 수 있다.
+- 예: "이 프로젝트에 ESLint 설정 추가하고, 기존 코드에 맞춰 자동 수정해 줘." 같은 요청.
+
+### 5-2. 명령어 스타일로 한 번에 실행하기
+
+일부 작업은 한 줄짜리 명령으로도 처리할 수 있다. 예를 들어, 한 번만 코드를 스캔하고 제안만 보고 싶다면.
+
+```bash
+opencode run "테스트 코드 커버리지 올릴 수 있는 리팩터링 포인트 찾아줘"
+```
+
+`run` 하위 명령은 OpenCode 버전에 따라 다를 수 있으니, `opencode --help`로 현재 지원 명령을 한 번 확인하는 게 좋다.
+
+### 5-3. 세션 다시 붙기 (attach)
+
+이미 떠 있는 OpenCode 백엔드에 다시 붙어 보고 싶다면
+
+```bash
+opencode attach
+```
+
+또는 특정 URL/포트에 붙을 수 있다.
+
+```bash
+opencode attach http://localhost:11434
+```
+
+이 기능은 서버 모드나 웹 모드에서 OpenCode를 띄워 둔 뒤, 다른 터미널에서 다시 접속할 때 유용하다.
+
+<br/>
+
+## 6. Win/Mac 공통으로 바로 써볼 수 있는 간단 시나리오
+
+설치 직후, 작은 프로젝트에서 동작만 확인해 보고 싶다면 이런 흐름이 무난하다.
+
+1. 새 디렉터리 만들기
+
+```bash
+mkdir opencode-demo
+cd opencode-demo
+```
+
+2. 예시 코드 하나 만들기 (언어는 아무거나)
+
+```bash
+echo "console.log('hello');" > index.js
+```
+
+3. OpenCode 실행
+
+```bash
+opencode
+```
+
+4. TUI에서 이런 식으로 요청해 보기
+
+- "이 프로젝트를 Node.js CLI 도구로 바꿔 줘. 명령줄 인자 받아서 인사 메시지 출력하게." 
+- "TypeScript로 마이그레이션해 주고, tsconfig와 간단한 테스트 파일도 만들어 줘." 
+
+5. 생성된 파일과 diff를 직접 확인하면서, 어떤 식으로 코드를 읽고 수정하는지 감을 잡는다.
+
+공식·비공식 가이드에서는, 처음에는 이렇게 작은 샌드박스 프로젝트에서 패턴을 익히고 나서, 실제 서비스 레포에 붙이는 것을 권장한다.
+
+<br/>
+
+## 7. Oh My OpenCode까지 엮고 싶다면
+
+조금 더 욕심이 난다면, Oh My OpenCode를 얹어서 "멀티 에이전트" 모드로 쓰는 것도 가능하다. 이 부분은 별도의 글이 필요하지만, 설치 흐름만 간단히 메모해 두면 이렇다.
+
+1. OpenCode가 잘 설치되어 있는지 확인한다.
+2. Bun 또는 Node.js가 있는 환경에서 아래 명령 중 하나를 실행한다.
+
+```bash
+bunx oh-my-opencode install
+# 또는
+npx oh-my-opencode install
+```
+
+3. 설치 마법사 질문에 따라 Claude/OpenAI/Gemini 등 사용할 모델을 선택한다.
+4. 이후부터는 `opencode`를 실행하면, 내부에서 oh-my-opencode 에이전트 하네스가 함께 돌아간다.
+
+이렇게 붙여 두면, Win/Mac 어느 쪽에서든 "그냥 opencode 켰는데, 여러 에이전트가 팀처럼 같이 일하는" 상태를 바로 체감할 수 있다.
+
+---
+
+#OpenCode #AI #Coding #CLI #DeveloperTools #Productivity
