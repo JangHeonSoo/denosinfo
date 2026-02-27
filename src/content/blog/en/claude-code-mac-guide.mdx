@@ -1,0 +1,305 @@
+---
+title: "Claude Code: From Setup to Shipping a Real Web App on macOS"
+date: 2026-02-27
+category: 'ai'
+author: denosinfo
+tags: [Claude, ClaudeCode, MacOS, AIAgent, WebDevelopment, AI, Productivity]
+description: "A MacBook, a Claude Pro subscription, and a Git repo. In 2026, this combo is enough to ship a real web app. Explore the full guide to setting up and building with Claude Code on macOS."
+heroImage: "/images/claude-code-hero.png"
+---
+
+A MacBook, a Claude Pro subscription, and a Git repo. As of 2026, that combo is enough to ship a real web app without touching half the boilerplate yourself. Claude Code is no longer just a "chatbot that writes snippets" — it’s an agent that reads your repo, edits files, runs tests, starts dev servers, and opens pull requests for you.
+
+This guide focuses on four things: what Claude Code actually is, why it’s good, how to set it up on macOS, and how to use it to build and ship a real web application end-to-end.
+
+<br/>
+
+## What Makes Claude Code Different
+
+Most AI coding tools live in a chat box and spit out code fragments. Claude Code lives <em>inside</em> your codebase. It reads your Git repo, edits files, runs commands, and drives your dev tools like a junior engineer who already knows your stack.
+
+![Premium Developer Workspace](/images/claude-code-setup.png)
+
+Key capabilities:
+
+- Terminal integration: Run Claude Code in your local terminal and let it drive your existing CLI tools (`npm`, `git`, `pytest`, etc.).
+- IDE integration: Native extensions for VS Code and JetBrains show Claude’s edits as visual diffs inside your editor.
+- Desktop app: The Claude desktop app’s Code tab manages multiple sessions in parallel, using Git worktrees to isolate branches per session.
+- Web & iOS: You can continue Claude Code sessions from the browser or iOS app, great for long-running remote jobs.
+
+In practice, you describe what you want, Claude scans your project, opens and edits relevant files, runs tests, and shows you a diff. You approve, and the changes land in your repo.
+
+<br/>
+
+## Why Claude Code Is Worth Using (Five Real Advantages)
+
+There are plenty of AI coding copilots already. Claude Code still earns a spot in the "top tier" for a few concrete reasons.
+
+1. <strong>Project-wide understanding</strong>
+   - Uses agentic search to map your project structure and dependencies without you manually curating context.
+   - Handles large codebases (tens of thousands of lines) by summarizing architecture and key modules.
+
+2. <strong>Serious multi-file refactors</strong>
+   - Makes coordinated edits across many files while running build and test commands to keep things consistent.
+   - Can read GitHub issues, create branches, apply fixes, run checks, and open a PR in one continuous workflow.
+
+3. <strong>Safe review-and-approve workflow</strong>
+   - In Ask permissions mode, every file edit shows up as a diff you can accept or reject before it touches disk.
+   - Four permission modes (Ask, Auto accept edits, Plan, Bypass) let you dial automation up or down depending on the repo.
+
+4. <strong>Dev server + in-app browser</strong>
+   - Starts your dev server and opens an embedded browser, then clicks around, fills forms, and inspects the DOM to verify its own changes.
+   - Uses <strong>.claude/launch.json</strong> to understand how to run `npm run dev`, `yarn dev`, custom scripts, and which port to expect.
+
+5. <strong>macOS-friendly with Local/Remote/SSH</strong>
+   - On macOS desktop, you can choose Local, Remote, or SSH environments for each session.
+   - Local sessions inherit your shell’s environment variables and tools. Remote sessions run in Anthropic’s cloud and keep going even if your Mac sleeps.
+
+Your job shifts from "typing code" to "steering and reviewing". Claude handles the grunt work; you keep it pointed at the right problem.
+
+<br/>
+
+## Setting Up Claude Code on macOS
+
+Let’s walk through a clean macOS setup.
+
+### 1. Install Claude Desktop
+
+1. Go to the Claude Code product page and download the desktop app for macOS.
+2. Install the `.dmg` as usual and move it to your Applications folder.
+3. Launch the app and sign in with a Claude Pro, Max, Team, or Enterprise account to unlock the Code tab.
+
+If you’re on a managed org, your admin can enable or disable the Code tab from the admin console.
+
+### 2. Install core dev tools (Terminal)
+
+On a Mac, you’ll want at least:
+
+- Git: usually preinstalled, but verify with `git --version`.
+- Node.js / npm: for web and full-stack apps.
+- Homebrew: for installing other CLI tools.
+
+```bash
+# Check Git
+git --version
+
+# Install Homebrew (if needed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Node.js (LTS)
+brew install node
+```
+
+Claude Code’s local sessions inherit your shell environment, so put PATH and API keys into `~/.zshrc` or `~/.bashrc` and restart the desktop app afterward.
+
+### 3. Prepare a project folder
+
+1. Create a new repo on GitHub.
+2. Clone it locally:
+
+```bash
+git clone https://github.com/username/claude-web-demo.git
+cd claude-web-demo
+```
+
+3. In Claude Desktop, set this directory as the <strong>Project folder</strong> when starting a Code session.
+
+### 4. Start a Code session in Claude Desktop
+
+1. Open the Claude desktop app and switch to the <strong>Code</strong> tab.
+2. Click <strong>New session</strong> and configure four things:
+   - Environment: Local
+   - Project folder: your `claude-web-demo` directory
+   - Model: Sonnet 4.6 or Opus 4.6
+   - Permission mode: start with Ask permissions
+3. For your first prompt, try something like:
+
+```text
+I want to build a simple web application using Next.js + TypeScript + Tailwind.
+Please initialize this repo, set up the project, and get a dev server running.
+ Use best practices for directory structure and minimal boilerplate.
+```
+
+Claude will run commands like `npm init`, `npx create-next-app`, and `npm run dev`, then open a local preview to confirm everything works.
+
+<br/>
+
+## Permission Modes: How Much Autonomy Do You Want?
+
+Permission modes are the safety rails around Claude Code.
+
+- Ask permissions: Claude always asks before editing files or running commands. Best for first-time use and production repos.
+- Auto accept edits: File edits are applied automatically, but command execution still requires approval.
+- Plan mode: Claude only analyzes and produces a plan without touching files or running anything. Great for complex refactors.
+- Bypass permissions: Full autonomy — no prompts. Only safe in sandboxes, throwaway branches, or containers.
+
+For macOS development, a sane pattern is:
+
+1. New projects: Auto accept edits + ask before commands.
+2. Sensitive production code: Ask permissions only.
+3. Experimental branches or toy projects: Auto accept or Bypass.
+
+Double-check the mode before you start. On the wrong repo, Bypass mode is how you end up letting an AI run `rm -rf` in the wrong place.
+
+<br/>
+
+## Teaching Claude Your Project Rules with CLAUDE.md
+
+One of Claude Code’s underrated features is the <strong>CLAUDE.md</strong> project file. It tells Claude how to behave inside a specific repo — code style, stack choices, libraries, and conventions.
+
+Create `CLAUDE.md` in your project root and add something like:
+
+```markdown
+# Project Guidelines
+
+- This project uses Next.js 14 + TypeScript + App Router.
+- Styling must use Tailwind CSS only, no standalone CSS files.
+- Components should default to server components; use 'use client' only when needed.
+- Tests are written with Vitest + React Testing Library.
+- Commit messages follow Conventional Commits in English.
+```
+
+From then on, Claude Code will respect these rules automatically without you repeating them in every prompt. It’s like giving your AI pair-programmer a team handbook.
+
+<br/>
+
+## End-to-End Example: Building a Web App with Claude Code on macOS
+
+![Visualization of High-Tech Connectivity](/images/claude-code-workflow.png)
+
+Let’s walk through a realistic example: a simple "Todo + tags" web app built with Next.js.
+
+### Step 1: Scaffold the project
+
+In a Claude Code session, prompt:
+
+```text
+Create a new Next.js 14 + TypeScript + Tailwind CSS web app.
+Features:
+- No login, store data in localStorage only.
+- Each todo has multiple tags.
+- Support filtering by tag.
+
+Use create-next-app or a suitable template.
+ Install dependencies and ensure the dev server runs.
+```
+
+Claude will:
+
+- Run `npx create-next-app@latest`.
+- Configure TypeScript and Tailwind.
+- Run `npm install` and `npm run dev`.
+- Open the app in the embedded browser and verify it loads correctly.
+
+### Step 2: Design the domain model with Plan mode
+
+Switch to Plan mode and ask:
+
+```text
+Using Plan mode only, design the full structure for this app:
+- Data types for todos and tags
+- Main pages and components
+- State management approach
+- How to persist to localStorage
+
+Show a step-by-step plan before implementing anything.
+```
+
+Claude will produce a detailed file-by-file plan without modifying code yet. Once it looks good, tell it to implement the plan.
+
+### Step 3: Implement and auto-preview
+
+Switch back to Auto accept edits and say:
+
+```text
+Now implement the plan you just created.
+ Build the todo list page, tag filters, and localStorage integration.
+ After each change, verify behavior in the dev server and fix any issues you find.
+```
+
+Claude will:
+
+- Create and edit files (`app/page.tsx`, `components/TodoList.tsx`, etc.).
+- Implement types, state logic, and UI.
+- Start the dev server and interact with the app in the embedded browser, reading DOM and error messages to debug.
+
+The dev server configuration will live in <strong>.claude/launch.json</strong>, which you can customize, for example:
+
+```json
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["dev"],
+      "port": 3000
+    }
+  ]
+}
+```
+
+### Step 4: Self-review and refactor
+
+Once the MVP works, turn Claude into your reviewer:
+
+```text
+Review all recent changes with a focus on:
+- Type safety
+- Error handling
+- Component boundaries
+
+Suggest improvements and then apply the ones you recommend.
+```
+
+From the diff view, hit <strong>Review code</strong> so Claude leaves comments on potential bugs and logic issues. For changes you agree with, just ask it to apply its own suggestions.
+
+### Step 5: Open a GitHub PR from macOS
+
+Hook it up to GitHub so Claude can carry the work all the way to a PR.
+
+1. Install and authenticate GitHub CLI:
+
+```bash
+brew install gh
+gh auth login
+```
+
+2. Configure GitHub as a connector in the Claude desktop app.
+3. In your session, say:
+
+```text
+Create a new branch for the current changes, commit with a clear message,
+open a GitHub pull request, and enable auto-fix and auto-merge if CI passes.
+ Summarize the PR description for human reviewers.
+```
+
+Claude will:
+
+- Create a worktree branch for the session.
+- Commit the changes with a descriptive message.
+- Use `gh pr create` to open a PR.
+- Monitor CI status and apply Auto-fix / Auto-merge if configured.
+
+You keep control: review the PR, skim the diff, and hit Approve.
+
+<br/>
+
+## macOS Claude Code Setup Checklist
+
+Here’s a quick checklist you can literally run through on a fresh Mac:
+
+- [ ] Install Claude Desktop for macOS and unlock the Code tab with Pro/Max/Team/Enterprise.
+- [ ] Install Git, Node.js, npm, and GitHub CLI; log in to GitHub.
+- [ ] Add a <strong>CLAUDE.md</strong> file in each project with stack and style rules.
+- [ ] Start a Local Code session in Ask permissions mode for your first repo.
+- [ ] Inspect <strong>.claude/launch.json</strong> and adjust dev server commands and ports if needed.
+- [ ] Connect GitHub as a connector and test the PR workflow once.
+
+Do this once, and new projects become a one-liner: "Set up this repo and build X." Your Mac turns into a command center where you think about products, and Claude Code handles the typing.
+
+<br/>
+
+---
+
+#Claude #ClaudeCode #MacOS #AIAgent #WebDevelopment #AI #Productivity #Automation #Nextjs #TailwindCSS

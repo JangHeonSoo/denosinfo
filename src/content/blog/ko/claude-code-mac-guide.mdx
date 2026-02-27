@@ -1,0 +1,303 @@
+---
+title: "Claude Code, 이제 진짜 ‘AI 개발 파트너’로 쓰는 법"
+date: 2026-02-27
+category: 'ai'
+author: denosinfo
+tags: [Claude, ClaudeCode, MacOS, AIAgent, WebDevelopment, AI, Productivity]
+description: "맥북, Claude Pro, 그리고 Git. 2026년 개발 환경의 게임 체인저가 된 Claude Code의 설치부터 실무 활용까지 아우르는 완벽 가이드입니다."
+heroImage: "/images/claude-code-hero.png"
+---
+
+맥북 하나, Claude Pro 구독 하나. 2026년 기준으로 이 조합이면 웬만한 웹 서비스는 혼자서 뚝딱 만든다. 그냥 코드 몇 줄 써주는 도우미가 아니라, 프로젝트 구조를 파악하고, 서버를 띄우고, 테스트를 돌리고, PR까지 만들어주는 ‘AI 개발 파트너’가 된다. 그 중심에 있는 게 바로 <strong>Claude Code</strong>이다.
+
+이 글에서는 네 가지에 집중한다. Claude Code가 뭐 하는 친구인지, 뭐가 좋은지, 맥 환경에서 어떻게 세팅하는지, 마지막으로 이걸로 실전 웹 애플리케이션을 어떻게 뽑아내는지다.
+
+<br/>
+
+## Claude Code, 뭐가 다르냐
+
+다른 AI 코딩 도구는 채팅창에서 코드만 토막토막 던져주는 경우가 많다. Claude Code는 아예 코드베이스 안으로 들어간다. Git 리포를 읽고, 파일을 수정하고, 테스트를 돌리고, dev 서버까지 띄운다.
+
+![Claude Code Setup and Workspace](/images/claude-code-setup.png)
+
+핵심 포인트 몇 가지만 보자.
+
+- 터미널 연동: 로컬 터미널에서 Claude Code를 실행하면, 기존 CLI 도구(npm, git, pytest 등)를 그대로 쓰면서 Claude가 명령을 대신 실행한다.
+- IDE 통합: VS Code / JetBrains 플러그인을 통해 코드 diff를 시각적으로 보여주고, 파일별 변경 내용을 확인할 수 있다.
+- 데스크톱 앱: Claude Desktop의 Code 탭에서 여러 세션을 병렬로 돌리고, Git worktree로 세션별 브랜치를 자동 분리해준다.
+- 웹/모바일: 브라우저와 iOS 앱에서도 Claude Code 세션을 원격으로 이어갈 수 있다.
+
+실제 동작 방식이 더 인상적이다. 원하는 작업을 프롬프트로 던지면, Claude가 코드베이스를 스캔하고, 관련 파일을 읽고, 수정하고, 테스트와 빌드를 돌린다. 변경 내용은 diff 뷰로 보여주고, 사용자가 승인하면 실제 파일에 반영한다.
+
+<br/>
+
+## Claude Code의 진짜 장점 5가지
+
+벌써 코파일럿 도구가 넘치는 시대다. 그럼에도 Claude Code를 "3대장" 안에 넣어야 하는 이유가 있다.
+
+1. <strong>프로젝트 전체 맥락 이해</strong>
+   - 에이전틱 검색을 통해 코드를 일일이 선택해주지 않아도, 프로젝트 구조와 의존성을 자동으로 파악한다.
+   - 3만 라인 이상 되는 코드베이스도 구조를 요약하고, 모듈별 역할을 정리해준다.
+
+2. <strong>멀티 파일 대규모 리팩터링</strong>
+   - 다수의 파일을 동시에 수정하면서도, 빌드와 테스트를 돌려가며 일관성을 유지한다.
+   - GitHub 이슈를 읽고, 브랜치를 생성하고, 수정, 테스트, 커밋, PR 생성까지 한 번에 처리하는 워크플로우를 지원한다.
+
+3. <strong>안전한 변경 승인 플로우</strong>
+   - Ask permissions 모드에서는 모든 파일 변경을 diff 뷰로 보여주고, 사용자가 승인해야 실제로 반영된다.
+   - Auto accept edits, Plan mode, Bypass permissions 등 네 가지 권한 모드로 자동화 수준을 조절할 수 있다.
+
+4. <strong>실행 가능한 Dev 서버 + 미니 브라우저</strong>
+   - dev 서버를 띄우고, 내장 브라우저에서 앱을 띄운 뒤, DOM을 읽고, 버튼을 클릭하고, 폼을 채우면서 스스로 버그를 찾는다.
+   - `.claude/launch.json`으로 `npm run dev`, `yarn dev` 같은 커맨드를 설정해두면, 저장 후 자동 검증까지 돌아간다.
+
+5. <strong>맥 환경 최적화 + 로컬/클라우드/SSH</strong>
+   - macOS용 데스크톱 앱에서 Local, Remote, SSH 세 가지 환경을 선택해 세션을 시작할 수 있다.
+   - 로컬 세션은 내 맥의 환경변수와 CLI 도구를 그대로 사용하고, Remote 세션은 클라우드에서 장시간 작업을 계속 돌려준다.
+
+개발자가 해야 할 일은 방향을 정해주고, Claude가 만든 결과물을 리뷰하고, 최종 결정을 내려주는 것 정도로 줄어든다. "AI가 짜온 코드 뒷처리"에서 "AI 팀장을 굴리는 느낌"으로 바뀐다.
+
+<br/>
+
+## 맥 환경에서 Claude Code 세팅하기
+
+맥 유저를 기준으로, Claude Code를 실제로 쓰기 위한 세팅 과정을 정리한다.
+
+### 1. Claude Desktop 설치
+
+1. [Claude 공식 사이트](https://claude.com/product/claude-code)에 접속해 데스크톱 앱을 다운로드한다.
+2. macOS용 `.dmg` 파일을 설치하고, 일반 앱처럼 Applications 폴더에 둔다.
+3. 앱 실행 후, Claude Pro 또는 Max 계정으로 로그인하면 Code 탭이 활성화된다.
+
+기업 계정(Teams/Enterprise)을 쓴다면, 관리자 콘솔에서 Code 탭 사용 여부를 제어할 수 있다.
+
+### 2. 필수 개발 도구 설치 (맥 터미널 기준)
+
+- Git: 대부분의 맥에는 기본 설치되어 있지만, `git --version`으로 확인해야 한다.
+- Node.js / npm: 프론트엔드, 풀스택 앱을 만들려면 필수다. nvm으로 설치하는 것을 추천한다.
+- 패키지 매니저(Homebrew): 기타 도구 설치용.
+
+```bash
+# Git 확인
+git --version
+
+# Homebrew 설치 (없다면)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Node.js (LTS) 설치
+brew install node
+```
+
+Claude Code는 로컬 세션에서 내 터미널 환경변수를 그대로 가져오기 때문에, `~/.zshrc` 또는 `~/.bashrc`에 PATH와 각종 키를 정리해 두는 것이 좋다.
+
+### 3. 프로젝트 폴더 준비
+
+1. GitHub에서 새 리포를 만든다.
+2. 로컬에 클론한다.
+
+```bash
+git clone https://github.com/username/claude-web-demo.git
+cd claude-web-demo
+```
+
+3. 여기서 Claude Code 세션의 <strong>프로젝트 폴더</strong>로 이 디렉터리를 지정하면 된다.
+
+### 4. Claude Desktop에서 Code 세션 시작
+
+1. Claude 데스크톱 앱을 실행하고 상단의 <strong>Code</strong> 탭을 연다.
+2. "New session"을 누르고 아래 네 가지를 설정한다.
+   - Environment: Local
+   - Project folder: `claude-web-demo` 디렉터리
+   - Model: Sonnet 4.6 또는 Opus 4.6 중 선택.
+   - Permission mode: 처음에는 `Ask permissions`를 추천한다.
+3. 첫 메시지에 이렇게 적는다.
+
+```text
+Next.js + TypeScript + Tailwind를 사용하는 간단한 웹 애플리케이션을 만들고 싶다.
+이 리포를 초기화하고 개발 서버가 뜰 수 있게 설정해달라.
+ 필요한 패키지 설치, 프로젝트 구조 생성, 기본 페이지 구현까지 진행해달라.
+```
+
+이제 Claude가 터미널에서 `npm init`, `npx create-next-app`, `npm run dev` 같은 작업을 순서대로 실행하면서 프로젝트를 세팅한다.
+
+<br/>
+
+## 권한 모드, 처음에는 이렇게 쓰면 된다
+
+Permission mode는 Claude Code를 얼마나 "풀어 줄 것인가"를 정하는 스위치다.
+
+- Ask permissions: 파일 수정, 명령 실행 전에 항상 물어본다. 처음 쓸 때는 이 모드로 안전하게 감을 잡는 것이 좋다.
+- Auto accept edits: 파일 수정은 자동으로 반영하되, 터미널 명령은 실행 전 물어본다.
+- Plan mode: 코드를 건드리지 않고, 먼저 전체 작업 계획만 만들어준다. 복잡한 리팩터링 전에 유용하다.
+- Bypass permissions: 아무 것도 묻지 않고 알아서 파일 수정, 명령 실행까지 다 한다. 샌드박스 컨테이너나 VM에서만 쓰는 게 좋다.
+
+맥에서 개발할 때는 보통 이렇게 추천한다.
+
+1. 새 프로젝트 초기 세팅: Auto accept edits + Ask before commands.
+2. 민감한 프로덕션 코드 수정: 무조건 Ask permissions.
+3. 실험용 브랜치, 샌드박스 리포: Auto accept edits 또는 Bypass.
+
+실수로 Bypass를 켜놓고 실서비스 리포에서 돌리면, 진짜로 `rm -rf` 같은 명령도 실행할 수 있다. 모르는 물에는 발부터 담그지 말고, 꼭 권한 모드를 확인해야 한다.
+
+<br/>
+
+## CLAUDE.md로 ‘개발 팀장’ 캐릭터 심어주기
+
+Claude Code의 숨은 핵심 기능이 <strong>CLAUDE.md</strong> 파일이다. 이 파일에 프로젝트 룰을 써두면, Claude가 항상 그 규칙을 따라 행동한다.
+
+프로젝트 루트에 `CLAUDE.md`를 만들고 이렇게 적을 수 있다.
+
+```markdown
+# 프로젝트 가이드
+
+- 이 프로젝트는 Next.js 14 + TypeScript + App Router를 사용한다.
+- 스타일은 Tailwind CSS만 사용하고, 별도의 CSS 파일은 만들지 않는다.
+- 컴포넌트는 server component를 기본으로 하고, 필요할 때만 'use client'를 쓴다.
+- 테스트는 Vitest + React Testing Library로 작성한다.
+- 커밋 메시지는 영어, Conventional Commits 스타일을 따른다.
+```
+
+이렇게 해두면, 매번 프롬프트에 장황하게 설명하지 않아도, Claude가 알아서 프로젝트 룰을 지킨다. 팀장 대신 규칙을 지키는 팀원 하나를 추가 고용하는 셈이다.
+
+<br/>
+
+## 실전: Claude Code로 웹 앱 하나 끝까지 만들기 (맥 기준)
+
+![Claude Code Digital Workflow](/images/claude-code-workflow.png)
+
+이제 실제로 한 번 웹 애플리케이션을 처음부터 끝까지 만드는 흐름을 그려보자. 예시는 Next.js 기반의 간단한 "작업 관리(Todo + 태그)" 웹 앱이다.
+
+### 1단계: 프로젝트 스캐폴딩 생성
+
+Claude Code 세션에서 이렇게 지시한다.
+
+```text
+Next.js 14 + TypeScript + Tailwind CSS 기반의 웹 앱을 새로 만들고 싶다.
+기능은 다음과 같다.
+- 로그인 없이 로컬 스토리지에만 데이터를 저장한다.
+- Todo 항목에 태그를 여러 개 붙일 수 있다.
+- 태그별 필터링 기능을 지원한다.
+
+create-next-app 또는 적절한 템플릿으로 프로젝트를 초기화해달라.
+ 패키지 설치와 초기 설정을 진행하고, dev 서버가 뜨는 것까지 확인해달라.
+```
+
+Claude는 다음과 같은 일을 한다.
+
+- `npx create-next-app@latest` 실행.
+- TypeScript, Tailwind 선택.
+- `npm install` 후 `npm run dev` 실행.
+- 내장 브라우저에서 `http://localhost:3000`을 띄우고, 페이지가 제대로 뜨는지 스스로 확인한다.
+
+### 2단계: 도메인 모델 설계 + Plan mode 활용
+
+이제 Plan mode로 전체 구조를 먼저 잡게 한다.
+
+```text
+지금 만들 Todo + 태그 앱의 전체 코드 구조를 계획해달라.
+- 데이터 구조 정의 (타입)
+- 주요 페이지/컴포넌트 설계
+- 상태 관리 전략
+- 로컬 스토리지 연동 방식
+을 포함해서 Plan mode로 단계별 계획을 만들어달라.
+```
+
+Plan mode에서는 실제 파일을 건드리지 않고, 어떤 파일을 만들지, 어떤 함수를 정의할지 계획만 보여준다. 마음에 들면 "이제 계획대로 구현을 진행해달라"라고 시키면 된다.
+
+### 3단계: 구현 + 자동 미리보기
+
+Plan이 마음에 들면 Permission mode를 Auto accept edits로 바꾼 뒤, 이렇게 말한다.
+
+```text
+방금 만든 계획에 따라 구현을 진행해달라.
+ Todo 목록 페이지, 태그 필터, 로컬 스토리지 연동까지 포함해서 MVP를 완성해달라.
+ 작업 후 dev 서버에서 동작을 확인하고, 문제가 있으면 직접 수정한 뒤 요약해달라.
+```
+
+Claude는 다음과 같은 루틴으로 움직인다.
+
+- 필요한 파일 생성(`app/page.tsx`, `components/TodoList.tsx` 등).
+- 타입 정의, 상태 관리 로직 구현.
+- dev 서버를 띄우고, 내장 브라우저에서 UI를 클릭하면서 버그를 찾는다.
+- DOM을 읽고 에러 메시지를 해석해가며, 코드를 다시 수정한다.
+
+이때 `.claude/launch.json`에 Next.js dev 서버 설정이 자동으로 생성된다. 필요하면 직접 이렇게 수정할 수 있다.
+
+```json
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["dev"],
+      "port": 3000
+    }
+  ]
+}
+```
+
+### 4단계: 코드 리뷰 + 리팩터링
+
+MVP가 돌아가면, 이제는 Claude에게 스스로 짠 코드를 다시 리뷰하게 하면 된다.
+
+```text
+지금까지 변경된 코드에 대해 코드 리뷰를 해달라.
+- 타입 안정성
+- 에러 처리
+- 컴포넌트 분리
+ 관점에서 개선 포인트를 찾고, 필요한 리팩터링을 제안한 뒤 직접 적용해달라.
+```
+
+diff 뷰 상단의 <strong>Review code</strong> 버튼을 누르면, Claude가 변경사항을 스캔하고, 논리 오류, 런타임 에러 가능성, 보안 취약점 등을 중심으로 코멘트를 단다. 마음에 드는 수정은 "이 코멘트 반영해서 리팩터링해달라"라고 답하면 된다.
+
+### 5단계: GitHub PR까지 한 번에
+
+마지막으로 GitHub와 연동하면, PR 생성까지도 Claude가 처리한다.
+
+1. GitHub CLI(`gh`)를 설치하고 로그인한다.
+
+```bash
+brew install gh
+gh auth login
+```
+
+2. Claude Code에서 GitHub 커넥터를 설정한다.
+3. 세션에서 이렇게 말한다.
+
+```text
+현재 브랜치의 변경사항을 기반으로 새 브랜치를 만들고,
+적절한 커밋 메시지와 함께 커밋한 뒤,
+GitHub에 PR을 생성해달라.
+CI가 통과하면 자동으로 머지하도록 설정해달라.
+```
+
+Claude는 다음 작업을 순서대로 처리한다.
+
+- 새 브랜치 생성.
+- 변경 파일 커밋.
+- `gh pr create`로 PR 생성.
+- CI 상태를 모니터링하며 Auto-fix / Auto-merge 옵션을 적용한다.
+
+개발자는 PR 내용과 변경 파일만 한 번 더 눈으로 확인하면 된다. 남은 일은 "Approve"와 "Merge" 버튼을 누르는 수준이다.
+
+<br/>
+
+## 맥 유저를 위한 Claude Code 세팅 체크리스트
+
+마지막으로 실무에서 바로 써먹을 수 있는 체크리스트를 정리한다.
+
+- [ ] macOS용 Claude Desktop 설치 및 Pro/Max 구독 활성화.
+- [ ] Git, Node.js, npm, GitHub CLI 설치 및 로그인.
+- [ ] 프로젝트 루트에 <strong>CLAUDE.md</strong>로 코딩 규칙 정의.
+- [ ] Claude Code에서 Local 세션 + Ask permissions 모드로 첫 프로젝트 연결.
+- [ ] <strong>.claude/launch.json</strong> 확인 후 dev 서버 커맨드(yarn dev 등) 맞게 조정.
+- [ ] GitHub 커넥터 연결 후 PR 자동화 플로우 테스트.
+
+한 번만 세팅해두면, 이후에는 새 프로젝트를 만들 때마다 "이 리포 세팅해줘" 한 줄이면 된다. 맥 앞에 앉아서 키보드를 두드리는 시간보다, 어떤 제품을 만들지 고민하는 시간이 더 많아진다.
+
+<br/>
+
+---
+
+#Claude #ClaudeCode #MacOS #AIAgent #WebDevelopment #AI #Productivity #Automation #Nextjs #TailwindCSS
