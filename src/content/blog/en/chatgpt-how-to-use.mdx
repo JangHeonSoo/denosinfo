@@ -1,0 +1,181 @@
+---
+title: "How Should I Use ChatGPT? From Prompt Engineering to Routines"
+date: 2026-03-05
+category: 'ai'
+author: denosinfo
+tags: [ChatGPT, AI, PromptEngineering, LLM, Productivity, ContextEngineering]
+description: "Stop shooting in the dark and start using ChatGPT like a professional teammate. Learn context engineering principles, long-context strategies, and effective daily routines."
+heroImage: "/images/chatgpt_hero_hologram_sphere_1772686835540.png"
+---
+
+You probably feel it already.
+When someone asks, "Which LLM actually gets what I mean?", your hand reaches for ChatGPT.
+Same here.
+
+At this point it feels less like a tool and more like a teammate.
+So it should be used properly.
+Once you stop shooting in the dark, the difference is huge.
+
+![A sleek minimalist desk setup with a glowing holographic sphere on a laptop screen](/images/chatgpt_hero_hologram_sphere_1772686835540.png)
+
+<br/>
+
+## 1. Why I trust ChatGPT more than others
+
+At first I looked at benchmarks.
+Accuracy scores, standardized tests, leaderboard rankings.
+I got bored quickly.
+
+The reason I rate ChatGPT highly is not the numbers.
+It is the way it follows a long, messy context without losing the thread.
+It is the way it infers the missing assumptions I never wrote down.
+
+OpenAI’s own guides point out that ChatGPT-style models follow <strong>clear rules</strong> and <strong>structured inputs</strong> very well.
+That means if I lay down the rules cleanly, it behaves smarter than I expect.
+So the bottleneck is often my prompt, not the model.
+
+<br/>
+
+## 2. Context engineering without the buzzword
+
+![A macro shot of elegant, polished metallic geometric shapes interlocking in a perfect formation](/images/chatgpt_structure_geometric_macro_1772686847792.png)
+
+"Context engineering" sounds fancy.
+In practice it is simple.
+You decide <strong>what to feed the model, in what order, and with what boundaries</strong>.
+
+OpenAI’s prompt best practices boil down to three points.
+1) Be clear.
+2) Include the information the model needs.
+3) Refine your request when the output is off.
+
+So I use a fixed skeleton whenever I talk to ChatGPT.
+
+```text
+[ROLE]
+You are a ~~~.
+
+[RULES]
+- Tone: ~~~
+- Never: ~~~
+
+[CONTEXT]
+Here is what I am doing right now: ~~~
+
+[TASK]
+1) First, ~~~
+2) Then, ~~~
+3) Finally, produce an output I can copy-paste directly.
+```
+
+Just keeping these four boxes raises answer quality a lot.
+It is less about writing long prompts and more about <strong>clear compartments</strong>.
+
+<br/>
+
+## 3. Everyday ChatGPT routines that actually work
+
+### 3-1. Daily brain-cache cleanup
+
+All day I search, skim, and scroll.
+Tabs stack up to 30 or more.
+My brain cache is permanently overloaded.
+
+Here is a routine I use.
+
+```text
+You are my personal research assistant.
+
+[RULES]
+- If you are unsure, say "I don’t know".
+- Limit lists to at most 10 items.
+- Answer in Korean.
+
+[CONTEXT]
+These are the things I read today.
+Each line is a page, article, or note I touched.
+
+[DATA]
+1) ...
+2) ...
+
+[TASK]
+1) Group the items into at most 5 themes.
+2) For each theme, suggest 3 follow-up questions I should explore.
+3) End with a 5-line list of "actions for tomorrow".
+```
+
+ChatGPT turns this into a <strong>"brain cache cleanup"</strong> list.
+Ten minutes of cleanup a day quietly compounds.
+OpenAI’s guides recommend this kind of <strong>"role + rules + data + task"</strong> structure as well.
+
+### 3-2. Co-writing blog posts in three steps
+
+If you let ChatGPT ghostwrite the entire blog post, it quickly feels generic.
+It is not your voice.
+On the other hand, writing everything from scratch by hand can be exhausting.
+
+So I break it down.
+
+<strong>Step 1, let ChatGPT design the structure only.</strong>
+<strong>Step 2, I write the actual paragraphs myself.</strong> (I fill about 70% in my own voice.)
+<strong>Step 3, I ask ChatGPT to edit.</strong>
+
+Now the article still feels like my writing, but the friction is lower.
+It becomes <strong>"I think, ChatGPT does the heavy lifting"</strong>.
+
+<br/>
+
+## 4. Using long context without drowning the model
+
+![A top-down shot of a minimalist wooden desk with a warm lamp glow over a blank pristine notebook](/images/chatgpt_routine_minimalist_desk_topdown_1772686862124.png)
+
+Recent ChatGPT models can handle hundreds of thousands to around a million tokens of context.
+You can throw in a book, several reports, or a big codebase.
+
+But experiments show that <strong>"more context" does not always mean "better reasoning"</strong>.
+The model can lose focus and latch onto the wrong passages.
+It is like pouring more water into the soup and expecting more flavor.
+
+So I use long context this way.
+
+<strong>Step 1, chunk the document.</strong> (e.g., split into 10-page blocks for local summaries.)
+<strong>Step 2, merge the summaries.</strong> (Combine summaries to extract global structure and insights.)
+
+This way, long context becomes a feature instead of a trap.
+
+<br/>
+
+## 5. Thinking ahead to API and code workflows
+
+One reason I call ChatGPT "the smartest one" is continuity.
+The same patterns work in the chat UI, in the API, and in code assistants.
+A good context pattern today becomes tomorrow’s product spec.
+
+OpenAI’s docs describe `developer`, `user`, and `assistant` messages with different priorities.
+- <strong>developer</strong>: rules for the app.
+- <strong>user</strong>: what the user actually typed.
+- <strong>assistant</strong>: what the model answered.
+
+Once you internalize this, you naturally start writing clear prompts.
+Later, you can move the same blocks into API calls.
+In short, <strong>context engineering in chat mode doubles as early-stage product design</strong>.
+
+<br/>
+
+## 6. What "good" ChatGPT usage looks like to me
+
+To me, power users share three habits.
+
+1. <strong>They do not dump everything at once.</strong>
+2. <strong>They do not expect perfection in one shot.</strong>
+3. <strong>They keep teaching the model their preferences.</strong>
+
+If I had to twist a proverb, it would go like this.
+ChatGPT is not the friend you teach how to fish.
+It is the chef who already knows how to fish, cook, and plate.
+Our job is to <strong>write the order ticket clearly</strong>.
+
+---
+
+#ChatGPT #AI #PromptEngineering #LLM #Productivity #ContextEngineering #BlogWriting #Automation #OpenAI
