@@ -1,0 +1,128 @@
+---
+title: "DGX Spark — 책상 위의 슈퍼컴퓨터, 진짜인가 마케팅인가"
+date: 2026-03-18
+category: 'tech'
+author: denosinfo
+tags: [NVIDIA, DGXSpark, AI, Supercomputer, GraceBlackwell, CUDA, TensorCores, AIComputing]
+description: "2025년 CES에서 공개된 NVIDIA DGX Spark를 파헤쳐 봅니다. 1페타플롭의 성능을 내는 이 작은 금색 상자가 정말 개인용 슈퍼컴퓨터가 될 수 있을까요?"
+heroImage: "/images/dgx_spark_hero.png"
+---
+
+2025년 1월, 젠슨 황이 CES 무대에서 작은 금색 상자 하나를 들어올렸다. 손바닥만 하다. 그런데 그 안에 1페타플롭(PetaFLOP)의 AI 연산 성능이 들어있다고 했다. 청중이 잠시 조용해졌다. "Project DIGITS"라는 코드명으로 불리던 이 장치가, 9개월 뒤 <strong>NVIDIA DGX Spark</strong>라는 이름으로 세상에 나왔다.
+
+"AI 슈퍼컴퓨터를 집에 둔다." 10년 전이었으면 SF 소설 얘기였다.
+
+![NVIDIA DGX Spark가 책상 위 모니터와 키보드 옆에 놓여 있는 모습](/images/dgx_spark_hero.png)
+
+---
+
+## 안에 뭐가 들었나
+
+DGX Spark의 심장은 <strong>GB10 Grace Blackwell 슈퍼칩</strong>이다. NVIDIA가 MediaTek과 공동 개발한 이 칩은 CPU와 GPU를 하나의 패키지에 집어넣었다. CPU는 Arm 코어 20개(Cortex-X925 10개 + Cortex-A725 10개), GPU는 6,144개의 CUDA 코어와 192개의 5세대 Tensor 코어로 구성된다.
+
+핵심 수치를 정리하면 이렇다.
+
+- <strong>AI 연산 성능:</strong> 최대 1 PetaFLOP (FP4 기준)
+- <strong>메모리:</strong> 128GB LPDDR5x 통합 메모리 (CPU·GPU 공유)
+- <strong>메모리 대역폭:</strong> 273 GB/s
+- <strong>스토리지:</strong> 4TB NVMe SSD
+- <strong>네트워크:</strong> ConnectX-7 NIC, 최대 200 Gbps
+- <strong>소비 전력:</strong> 약 240W (일반 가정용 콘센트로 충분)
+- <strong>무게:</strong> 약 1.2 kg
+
+1.2킬로그램짜리 박스가 1페타플롭을 낸다. 2016년 NVIDIA가 OpenAI에 납품한 첫 번째 DGX-1 슈퍼컴퓨터보다 성능이 높다. 그게 당시 가격 129,000달러짜리였다.
+
+---
+
+## NVFP4가 핵심 기술이다
+
+DGX Spark가 "1페타플롭"을 달성하는 방식은 <strong>NVFP4(4비트 부동소수점)</strong> 덕분이다. AI 모델을 4비트 정밀도로 압축하면 모델 크기가 최대 70%까지 줄어든다. 덕분에 128GB 메모리 안에 <strong>최대 2,000억(200B) 파라미터</strong> 모델을 올릴 수 있다. 두 대를 ConnectX-7로 묶으면 <strong>4,050억(405B) 파라미터</strong> 모델도 가능하다.
+
+실제 벤치마크를 보면, GPT-OSS 120B 모델 기준 <strong>Prefill(입력 처리) 속도가 1,723 토큰/초</strong>다. 같은 조건에서 RTX 3090 세 장짜리 시스템(1,641 토큰/초)을 살짝 웃돈다. AMD Strix Halo(339 토큰/초)와는 5배 이상 차이난다.
+
+단, 함정이 있다. Token Generation(텍스트 생성) 속도는 <strong>38.55 토큰/초</strong>다. RTX 3090 세 장(124 토큰/초)에 크게 밀린다. 이유는 메모리 대역폭. DGX Spark의 273 GB/s는 Apple M4 Ultra의 819 GB/s에 비해 약 3분의 1 수준이다. 모델을 "처리"하는 건 빠른데, "뱉어내는" 건 상대적으로 느리다는 뜻이다.
+
+---
+
+## Apple M4 Ultra와 뭐가 다른가
+
+비슷한 가격대라서 자주 비교된다. 직접 대조해보면 이렇다.
+
+| 항목 | DGX Spark | Apple M4 Ultra |
+|---|---|---|
+| AI 연산 (TOPS) | 1,000 TOPS | ~38 TOPS (NPU) |
+| 메모리 대역폭 | 273 GB/s | 819 GB/s |
+| 최대 메모리 | 128 GB | 512 GB |
+| 생태계 | CUDA (산업 표준) | MLX / CoreML |
+| 최적 용도 | 모델 파인튜닝, 개발 | LLM 추론, 크리에이티브 |
+| 가격 | $4,699 (2026년 2월 인상) | $3,999~ |
+
+쉽게 말하면, DGX Spark는 "생각을 빠르게 처리"하고, Apple M4 Ultra는 "데이터를 빠르게 읽는다." AI 개발자가 모델을 파인튜닝하거나 CUDA 네이티브 코드를 돌린다면 DGX Spark가 맞다. 빠른 채팅 응답이나 창작 작업이 목적이라면 Mac Studio가 유리하다.
+
+---
+
+## 가격, 현실적인 이야기
+
+미국 출시가는 $3,999였다. 그런데 2026년 2월, 메모리 공급 부족을 이유로 <strong>$4,699로 인상됐다</strong>. 약 18% 오른 것이다. 기존 주문 물량은 구매 시점 가격으로 처리됐다.
+
+한국에서는 상황이 조금 복잡하다. 2025년 7월 예약주문이 시작됐는데, 파운더스 에디션 한국 출시가가 <strong>715만 원</strong>으로 확정됐다. 미국 $3,999 대비 상당한 프리미엄이다. 한국 배정 수량은 <strong>1,500대 한정</strong>이었다. 현재는 다나와 기준으로 <strong>약 700만~758만 원</strong> 선에서 유통되고 있다.
+
+국내 공식 파트너사는 에즈웰에이아이, 비엔아이엔씨, MDS테크, 씨이랩 등이다.
+
+---
+
+## 출시 이후 성능이 2.5배 올랐다
+
+2026년 1월 CES에서 NVIDIA는 흥미로운 발표를 했다. 소프트웨어 최적화로 DGX Spark의 성능이 <strong>출시 대비 평균 2.5배 향상됐다</strong>는 것이다. 하드웨어는 그대로다. 드라이버와 프레임워크 최적화만으로 이뤄진 성과다.
+
+같은 시점에 <strong>NVIDIA AI Enterprise 구독 서비스</strong>가 Spark에서도 사용 가능해졌다. 원래 GPU당 연간 $4,500짜리 서비스인데, Spark용 특별 가격이 별도 책정됐다. 또한 CUDA 코딩 어시스턴트 <strong>Nsight</strong>의 Spark 버전도 2026년 봄 출시 예정이다.
+
+---
+
+## 누가 사야 하는 장비인가
+
+솔직히 말하면, 일반 가정용으로 사기엔 좀 이른 장비다. AI 채팅 좀 더 빠르게 하려고 700만 원 쓰는 건 낭비다.
+
+DGX Spark가 진짜 빛나는 자리는 다음이다.
+
+- <strong>AI 연구자·개발자:</strong> 로컬에서 70B 파라미터 모델을 파인튜닝하고, CUDA 코드를 테스트하고, DGX Cloud로 배포하는 파이프라인 구축
+- <strong>대학 연구실:</strong> 클라우드 GPU 비용 없이 LLM 실험 가능. 클라우드 대기열 눈치 안 봐도 된다
+- <strong>데이터 보안이 중요한 기업:</strong> 외부로 데이터 안 보내고 로컬에서 AI 추론 처리
+- <strong>엣지 AI 개발자:</strong> 제조 현장, 의료 영상, 로보틱스 등 현장 배치형 AI 워크로드
+
+NVIDIA 자신도 이걸 "개인용 소비자 기기"라고 부르지 않는다. "개발자를 위한 AI 슈퍼컴퓨터"다.
+
+---
+
+## DGX Station과 비교하면
+
+DGX Spark보다 위에 <strong>DGX Station</strong>이 있다. GB300 Grace Blackwell Ultra 슈퍼칩, 784GB 통합 메모리, 4,800 TOPS 이상의 AI 연산, 최대 1조(1T) 파라미터 모델 지원. 가격은 $19,000 이상으로 예상된다. 액체 냉각 방식이라 가정에서 쓰기는 더 어렵다.
+
+DGX Spark는 두 시스템 중 "책상 위에 올려놓을 수 있는" 버전이다.
+
+---
+
+## 클러스터로 확장 가능하다
+
+현재 NVIDIA는 DGX Spark 두 대를 ConnectX-7 NIC로 직접 연결하는 구성을 공식 지원한다. 두 대 묶으면 가용 메모리가 256GB로 늘고, 405B 파라미터 모델도 실행 가능해진다. 두 대 번들 패키지 가격은 $8,049였다.
+
+더 나아가, NVIDIA 엔지니어들이 두 대 이상의 클러스터 구성도 탐색 중이다. ConnectX-7 NIC는 이론적으로 더 많은 노드 연결도 가능하기 때문이다.
+
+---
+
+## 참고 자료
+
+- NVIDIA 공식 제품 페이지: https://www.nvidia.com/en-us/products/workstations/dgx-spark/
+- Tom's Hardware DGX Spark 리뷰 (2026.01): https://www.tomshardware.com/pc-components/gpus/nvidia-dgx-spark-review
+- Intuition Labs DGX Spark 리뷰 (업데이트 2026.03): https://intuitionlabs.ai/articles/nvidia-dgx-spark-review
+- NVIDIA 공식 보도자료 (출시, 2025.10): https://nvidianews.nvidia.com/news/nvidia-dgx-spark-arrives-for-worlds-ai-developers
+- NVIDIA 블로그 KR (DGX Spark & Station): https://blogs.nvidia.co.kr/blog/dgx-spark-and-station-open-source-frontier-models/
+- The Register — DGX Spark 2.5x 성능 개선 (2026.01): https://www.theregister.com/2026/01/05/nvidia_dgx_spark_speed/
+- Tom's Hardware — 가격 인상 보도 (2026.02): https://www.tomshardware.com/desktops/mini-pcs/nvidia-dgx-spark-gets-18-percent-price-increase-as-memory-shortages-bite-founders
+- News1 한국 출시 보도 (2025.07): https://www.news1.kr/it-science/general-it/5861831
+- TIME 선정 2025 최고 발명품: https://time.com/collections/best-inventions-2025/7318247/nvidia-dgx-spark/
+- NVIDIA CES 2025 젠슨 황 키노트 (한국어): https://blogs.nvidia.co.kr/blog/ces-2025-jensen-huang/
+
+---
+
+#NVIDIA #DGXSpark #AI #Supercomputer #GraceBlackwell #CUDA #TensorCores #AIComputing
