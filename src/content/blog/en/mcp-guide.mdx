@@ -12,11 +12,11 @@ heroImage: "/images/mcp_hero.png"
 
 Plain LLMs have a frustrating ceiling. They don't know what happened after their training cutoff, can't touch the file system, and have no way to call external APIs. MCP punches through that ceiling.
 
-<strong>Model Context Protocol</strong> is an open-source protocol introduced by Anthropic in November 2024. It has since been adopted by Claude, ChatGPT, Cursor, GitHub Copilot, and dozens of other AI applications. The reason it spread fast is simple: before MCP, every AI app had to build its own custom integrations for every external system. MCP standardizes that entire layer, so developers write one MCP server and every MCP-compatible AI app can use it.
+Model Context Protocol is an open-source protocol introduced by Anthropic in November 2024. It has since been adopted by Claude, ChatGPT, Cursor, GitHub Copilot, and dozens of other AI applications. The reason it spread fast is simple: before MCP, every AI app had to build its own custom integrations for every external system. MCP standardizes that entire layer, so developers write one MCP server and every MCP-compatible AI app can use it.
 
 One sentence captures it:
 
-> <strong>MCP = a standardized protocol for LLMs to access external tools and data</strong>
+> MCP = a standardized protocol for LLMs to access external tools and data
 
 ![Futuristic fiber-optic connector plugging into a high-tech port with glowing signals](/images/mcp_hero.png)
 
@@ -28,9 +28,9 @@ Three actors make up the MCP architecture.
 
 | Component | Role | Real Examples |
 |---|---|---|
-| <strong>Host</strong> | The AI app users interact with. Manages Clients and enforces security policy. | Claude Desktop, Cursor, VS Code |
-| <strong>Client</strong> | Lives inside the Host. Maintains a 1:1 connection with a specific MCP Server. Routes JSON-RPC messages. | Claude's internal MCP module |
-| <strong>Server</strong> | Exposes Tools (callable functions), Resources (read-only data), and Prompts (reusable templates). | Weather server, DB server, GitHub server |
+| Host | The AI app users interact with. Manages Clients and enforces security policy. | Claude Desktop, Cursor, VS Code |
+| Client | Lives inside the Host. Maintains a 1:1 connection with a specific MCP Server. Routes JSON-RPC messages. | Claude's internal MCP module |
+| Server | Exposes Tools (callable functions), Resources (read-only data), and Prompts (reusable templates). | Weather server, DB server, GitHub server |
 
 The data flow looks like this:
 
@@ -75,8 +75,8 @@ A successful response:
 
 Two transport mechanisms are supported:
 
-- <strong>Stdio (Standard Input/Output)</strong>: Direct local process communication. Fast, minimal setup. Great for development.
-- <strong>Streamable HTTP</strong>: Remote server communication with real-time streaming. Designed for production.
+- Stdio (Standard Input/Output): Direct local process communication. Fast, minimal setup. Great for development.
+- Streamable HTTP: Remote server communication with real-time streaming. Designed for production.
 
 ---
 
@@ -84,11 +84,11 @@ Two transport mechanisms are supported:
 
 An MCP server can offer exactly three things.
 
-<strong>Tools</strong> — Functions the AI calls directly. "Add two numbers", "Search the web", "Query the database." This is the most commonly used feature.
+Tools — Functions the AI calls directly. "Add two numbers", "Search the web", "Query the database." This is the most commonly used feature.
 
-<strong>Resources</strong> — Read-only data. File contents, database records, API snapshots. The server hands structured context to the LLM.
+Resources — Read-only data. File contents, database records, API snapshots. The server hands structured context to the LLM.
 
-<strong>Prompts</strong> — Reusable prompt templates managed server-side. Patterns like "Suggest the next task" can be standardized and versioned on the server.
+Prompts — Reusable prompt templates managed server-side. Patterns like "Suggest the next task" can be standardized and versioned on the server.
 
 ![Dynamic digital particles and light filaments flowing through a translucent high-tech structure](/images/mcp_logic.png)
 
@@ -129,7 +129,7 @@ def get_weather(city: str) -> str:
  }
  return weather_data.get(city, f"No weather data found for {city}.")
 
-if __name__ == "__main__":
+if name == "main":
  mcp.run(transport="stdio")
 ```
 
@@ -152,12 +152,12 @@ async def main():
  env=None
  )
 
- async with stdio_client(server_params) as (read, write):
+ async with stdioclient(serverparams) as (read, write):
  async with ClientSession(read, write) as session:
  await session.initialize()
 
  # List available Tools
- tools_response = await session.list_tools()
+ toolsresponse = await session.listtools()
  print("=== Available Tools ===")
  for tool in tools_response.tools:
  print(f" - {tool.name}: {tool.description}")
@@ -169,10 +169,10 @@ async def main():
 
  # Call get_weather Tool
  print("\n=== Calling get_weather('Seoul') ===")
- result = await session.call_tool("get_weather", {"city": "Seoul"})
+ result = await session.calltool("getweather", {"city": "Seoul"})
  print(f" Result: {result.content[0].text}")
 
-if __name__ == "__main__":
+if name == "main":
  asyncio.run(main())
 ```
 
@@ -216,8 +216,8 @@ Opens at `http://127.0.0.1:6274`. Click a Tool, fill in parameters, see the resu
 
 One config file change attaches the server to Claude Desktop.
 
-<strong>macOS</strong>: `~/Library/Application Support/Claude/claude_desktop_config.json` 
-<strong>Windows</strong>: `%APPDATA%\Claude\claude_desktop_config.json`
+macOS: `~/Library/Application Support/Claude/claudedesktopconfig.json` 
+Windows: `%APPDATA%\Claude\claudedesktopconfig.json`
 
 ```json
 {

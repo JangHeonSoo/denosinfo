@@ -21,14 +21,14 @@ But despite the three name changes, the software itself has been growing steadil
 ## What OpenClaw actually does: not "just another chatbot"
 
 When I first heard about it, I assumed it was just "yet another AI chat UI." 
-But once you look at the architecture, it's much closer to an **agent gateway** that lives on your own infra.
+But once you look at the architecture, it's much closer to an agent gateway that lives on your own infra.
 
 Quick summary from a dev's perspective:
 
-- It's a **self‑hosted personal AI assistant** that you run on your own machine, VPS, or even Cloudflare Workers.
+- It's a self‑hosted personal AI assistant that you run on your own machine, VPS, or even Cloudflare Workers.
 - You talk to it through channels you already use: WhatsApp, Telegram, web dashboard, terminal TUI, etc.
 - Under the hood it can talk to whatever LLM you prefer – Claude, OpenAI, Gemini, or a local model via Ollama.
-- It uses a **skill** system so it can send emails, manage your calendar, touch GitHub, access files, and more.
+- It uses a skill system so it can send emails, manage your calendar, touch GitHub, access files, and more.
 
 If I had to compress it into one line: 
 > "An AI assistant that lives on your infra and actually does stuff – runs commands, hits APIs, sends emails, manages your calendar – all from a chat app."
@@ -39,13 +39,13 @@ If I had to compress it into one line:
 
 The docs have diagrams, but I prefer a rough mental UML:
 
-- **Gateway**: the always-on backend. 
+- Gateway: the always-on backend. 
  - It connects your channels (Telegram, web, TUI), your LLM provider, and your skills.
-- **Channels**: WhatsApp / Telegram / Web / TUI / Workers. 
+- Channels: WhatsApp / Telegram / Web / TUI / Workers. 
  - These are the entry points where humans talk.
-- **Skills**: GitHub, email, calendar, filesystem, etc. 
+- Skills: GitHub, email, calendar, filesystem, etc. 
  - These are the "hands and feet" that actually perform actions.
-- **LLM provider**: Anthropic, OpenAI, Gemini, local LLM. 
+- LLM provider: Anthropic, OpenAI, Gemini, local LLM. 
  - This is the "brain" that decides what to do.
 
 The gateway sits in the middle and orchestrates: 
@@ -82,11 +82,11 @@ Result: the Telegram bot silently "works" but never replies.
 Messages arrive just fine, but every LLM call fails behind the scenes because there's no API key configured, so you end up with 0 responses and some sad error logs.
 
 After a good "why the hell is this bot so quiet?" moment, 
-the fix was obvious: set `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` env vars properly and restart.
+the fix was obvious: set `ANTHROPICAPIKEY` / `OPENAIAPIKEY` env vars properly and restart.
 
 ### 3) Second gotcha: losing the gateway token
 
-Some hosting guides generate an `OPENCLAW_GATEWAY_TOKEN` and tell you to store it somewhere safe because you'll need it to access the web interface. 
+Some hosting guides generate an `OPENCLAWGATEWAYTOKEN` and tell you to store it somewhere safe because you'll need it to access the web interface. 
 Of course I did not store it anywhere.
 
 Later, when I opened the web UI, it politely asked me to enter the gateway token. 
@@ -297,10 +297,10 @@ We just target a calendar database instead of a generic notes DB.
 import { Client } from "@notionhq/client";
 
 const notion = new Client({
- auth: process.env.NOTION_API_KEY, // store in env or secret manager
+ auth: process.env.NOTIONAPIKEY, // store in env or secret manager
 });
 
-const NOTION_DATABASE_ID = process.env.NOTION_EVENT_DB_ID!;
+const NOTIONDATABASEID = process.env.NOTIONEVENTDB_ID!;
 
 type ParsedEvent = {
  title: string;
@@ -324,7 +324,7 @@ export async function createNotionEvent(event: ParsedEvent) {
  : undefined;
 
  const res = await notion.pages.create({
- parent: { database_id: NOTION_DATABASE_ID },
+ parent: { databaseid: NOTIONDATABASE_ID },
  properties: {
  Name: {
  title: [{ text: { content: title } }],
@@ -393,8 +393,8 @@ type ParsedEvent = {
  note?: string;
 };
 
-const EMAIL_FROM = process.env.MAIL_FROM!;
-const EMAIL_TO_LIST = (process.env.MAIL_TO_LIST ?? "")
+const EMAILFROM = process.env.MAILFROM!;
+const EMAILTOLIST = (process.env.MAILTOLIST ?? "")
  .split(",")
  .map((x) => x.trim())
  .filter(Boolean);
@@ -410,7 +410,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
- if (!EMAIL_TO_LIST.length) return;
+ if (!EMAILTOLIST.length) return;
 
  const { title, date, startTime, endTime, location, note } = event;
 
@@ -424,10 +424,10 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
  const html = `
  <h2>New event created</h2>
  <ul>
- <li><b>Title</b>: ${title}</li>
- <li><b>Date</b>: ${date}</li>
- <li><b>Time</b>: ${timeRange}</li>
- ${location ? `<li><b>Location</b>: ${location}</li>` : ""}
+ <li>Title: ${title}</li>
+ <li>Date: ${date}</li>
+ <li>Time: ${timeRange}</li>
+ ${location ? `<li>Location: ${location}</li>` : ""}
  </ul>
  <p>Notion link: <a href="${notionUrl}">${notionUrl}</a></p>
  ${note ? `<p>Note: ${note}</p>` : ""}
@@ -435,7 +435,7 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
 
  await transporter.sendMail({
  from: EMAIL_FROM,
- to: EMAIL_TO_LIST,
+ to: EMAILTOLIST,
  subject,
  html,
  });
@@ -449,16 +449,16 @@ But once it works, you get a nice "type it in Telegram and everyone gets an emai
 
 ## Quick summary: 4 key takeaways
 
-1. **OpenClaw is a self‑hosted agent, not just a UI** 
+1. OpenClaw is a self‑hosted agent, not just a UI 
  - It runs on your infra, talks to your LLM of choice, and connects to your tools via skills.
 
-2. **Skills make it easy to plug in your own domain logic** 
+2. Skills make it easy to plug in your own domain logic 
  - There's already an ecosystem of skills, and adding your own is just dropping a folder in the right place.
 
-3. **Security is your problem now** 
+3. Security is your problem now 
  - With great power comes the ability to accidentally rm -rf your own stuff via chat if you're careless with permissions.
 
-4. **Telegram → Notion → email is just channels + LLM parsing + two APIs** 
+4. Telegram → Notion → email is just channels + LLM parsing + two APIs 
  - Receive message, parse event via LLM, create Notion page, send emails, and you've got a surprisingly useful automation.
 
 #OpenClaw #AI #Agent #OSS #LLM #Automation

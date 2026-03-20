@@ -16,7 +16,7 @@ This guide focuses on four things: what Claude Code actually is, why it’s good
 
 ## What Makes Claude Code Different
 
-Most AI coding tools live in a chat box and spit out code fragments. Claude Code lives <em>inside</em> your codebase. It reads your Git repo, edits files, runs commands, and drives your dev tools like a junior engineer who already knows your stack.
+Most AI coding tools live in a chat box and spit out code fragments. Claude Code lives inside your codebase. It reads your Git repo, edits files, runs commands, and drives your dev tools like a junior engineer who already knows your stack.
 
 ![Premium Developer Workspace](/images/claude-code-setup.png)
 
@@ -35,23 +35,23 @@ In practice, you describe what you want, Claude scans your project, opens and ed
 
 There are plenty of AI coding copilots already. Claude Code still earns a spot in the "top tier" for a few concrete reasons.
 
-1. <strong>Project-wide understanding</strong>
+1. Project-wide understanding
  - Uses agentic search to map your project structure and dependencies without you manually curating context.
  - Handles large codebases (tens of thousands of lines) by summarizing architecture and key modules.
 
-2. <strong>Serious multi-file refactors</strong>
+2. Serious multi-file refactors
  - Makes coordinated edits across many files while running build and test commands to keep things consistent.
  - Can read GitHub issues, create branches, apply fixes, run checks, and open a PR in one continuous workflow.
 
-3. <strong>Safe review-and-approve workflow</strong>
+3. Safe review-and-approve workflow
  - In Ask permissions mode, every file edit shows up as a diff you can accept or reject before it touches disk.
  - Four permission modes (Ask, Auto accept edits, Plan, Bypass) let you dial automation up or down depending on the repo.
 
-4. <strong>Dev server + in-app browser</strong>
+4. Dev server + in-app browser
  - Starts your dev server and opens an embedded browser, then clicks around, fills forms, and inspects the DOM to verify its own changes.
- - Uses <strong>.claude/launch.json</strong> to understand how to run `npm run dev`, `yarn dev`, custom scripts, and which port to expect.
+ - Uses .claude/launch.json to understand how to run `npm run dev`, `yarn dev`, custom scripts, and which port to expect.
 
-5. <strong>macOS-friendly with Local/Remote/SSH</strong>
+5. macOS-friendly with Local/Remote/SSH
  - On macOS desktop, you can choose Local, Remote, or SSH environments for each session.
  - Local sessions inherit your shell’s environment variables and tools. Remote sessions run in Anthropic’s cloud and keep going even if your Mac sleeps.
 
@@ -102,12 +102,12 @@ git clone https://github.com/username/claude-web-demo.git
 cd claude-web-demo
 ```
 
-3. In Claude Desktop, set this directory as the <strong>Project folder</strong> when starting a Code session.
+3. In Claude Desktop, set this directory as the Project folder when starting a Code session.
 
 ### 4. Start a Code session in Claude Desktop
 
-1. Open the Claude desktop app and switch to the <strong>Code</strong> tab.
-2. Click <strong>New session</strong> and configure four things:
+1. Open the Claude desktop app and switch to the Code tab.
+2. Click New session and configure four things:
  - Environment: Local
  - Project folder: your `claude-web-demo` directory
  - Model: Sonnet 4.6 or Opus 4.6
@@ -145,7 +145,7 @@ Double-check the mode before you start. On the wrong repo, Bypass mode is how yo
 
 ## Teaching Claude Your Project Rules with CLAUDE.md
 
-One of Claude Code’s underrated features is the <strong>CLAUDE.md</strong> project file. It tells Claude how to behave inside a specific repo — code style, stack choices, libraries, and conventions.
+One of Claude Code’s underrated features is the CLAUDE.md project file. It tells Claude how to behave inside a specific repo — code style, stack choices, libraries, and conventions.
 
 Create `CLAUDE.md` in your project root and add something like:
 
@@ -223,7 +223,7 @@ Claude will:
 - Implement types, state logic, and UI.
 - Start the dev server and interact with the app in the embedded browser, reading DOM and error messages to debug.
 
-The dev server configuration will live in <strong>.claude/launch.json</strong>, which you can customize, for example:
+The dev server configuration will live in .claude/launch.json, which you can customize, for example:
 
 ```json
 {
@@ -252,7 +252,7 @@ Review all recent changes with a focus on:
 Suggest improvements and then apply the ones you recommend.
 ```
 
-From the diff view, hit <strong>Review code</strong> so Claude leaves comments on potential bugs and logic issues. For changes you agree with, just ask it to apply its own suggestions.
+From the diff view, hit Review code so Claude leaves comments on potential bugs and logic issues. For changes you agree with, just ask it to apply its own suggestions.
 
 ### Step 5: Open a GitHub PR from macOS
 
@@ -291,9 +291,9 @@ Here’s a quick checklist you can literally run through on a fresh Mac:
 
 - [ ] Install Claude Desktop for macOS and unlock the Code tab with Pro/Max/Team/Enterprise.
 - [ ] Install Git, Node.js, npm, and GitHub CLI; log in to GitHub.
-- [ ] Add a <strong>CLAUDE.md</strong> file in each project with stack and style rules.
+- [ ] Add a CLAUDE.md file in each project with stack and style rules.
 - [ ] Start a Local Code session in Ask permissions mode for your first repo.
-- [ ] Inspect <strong>.claude/launch.json</strong> and adjust dev server commands and ports if needed.
+- [ ] Inspect .claude/launch.json and adjust dev server commands and ports if needed.
 - [ ] Connect GitHub as a connector and test the PR workflow once.
 
 Do this once, and new projects become a one-liner: "Set up this repo and build X." Your Mac turns into a command center where you think about products, and Claude Code handles the typing.

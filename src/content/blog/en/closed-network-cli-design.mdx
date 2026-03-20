@@ -11,29 +11,29 @@ heroImage: '/images/closed-net-hero.png'
 
 My work environment is incredibly restrictive.
 
-**Security is the top priority**, so I totally get it. But after experiencing **vibe coding**, **automated workflows**, and various **AI agents** outside, I realized just how stifling my work environment has become. It feels like my computer has been taken away...
+Security is the top priority, so I totally get it. But after experiencing vibe coding, automated workflows, and various AI agents outside, I realized just how stifling my work environment has become. It feels like my computer has been taken away...
 
-The silver lining? We have access to an **internal GPT**.
+The silver lining? We have access to an internal GPT.
 
-So in this post, I'm going to build a "**Web-based CLI Assistant Agent**" that works like a **CLI** in a Windows environment using **Python**.
+So in this post, I'm going to build a "Web-based CLI Assistant Agent" that works like a CLI in a Windows environment using Python.
 
 ## Why Build This?
 
-Working in a **closed network** comes with more constraints than you'd think. Installing external packages is a hassle, and **cloud-based AI tools** are completely off the table. But if you have **internal GPT access**? That's an opportunity.
+Working in a closed network comes with more constraints than you'd think. Installing external packages is a hassle, and cloud-based AI tools are completely off the table. But if you have internal GPT access? That's an opportunity.
 
-Initially, I just thought about writing simple scripts. But repeatedly coding, losing context, explaining again... this cycle got frustrating. So I decided to build a tool that **remembers conversation context** and can even **access my local file system**.
+Initially, I just thought about writing simple scripts. But repeatedly coding, losing context, explaining again... this cycle got frustrating. So I decided to build a tool that remembers conversation context and can even access my local file system.
 
 ## Defining Requirements
 
 First, I need to be crystal clear about what I want.
 
-**Language**: **Python 3** 
-**Interface**: **Web-based** (accessible via browser) 
-**Core Features**:
-- Receive user questions and pass them to **internal GPT**
-- Read built-in **context** (project info, codebase) to generate concrete **execution plans**
-- Store **conversation history** to maintain context
-- **Access local file system** (read/analyze source code)
+Language: Python 3 
+Interface: Web-based (accessible via browser) 
+Core Features:
+- Receive user questions and pass them to internal GPT
+- Read built-in context (project info, codebase) to generate concrete execution plans
+- Store conversation history to maintain context
+- Access local file system (read/analyze source code)
 
 Why web-based? CLI is good, but web means access from anywhere, and you can prettify the UI later. In Windows, you just need a browser.
 
@@ -45,30 +45,30 @@ Let's dive into which technologies to use.
 
 I need a lightweight Python web framework. Heavy dependencies are a burden in closed networks.
 
-**Flask**: The most popular **micro-framework**. Great extensibility and tons of documentation. Session management requires separate setup though.
+Flask: The most popular micro-framework. Great extensibility and tons of documentation. Session management requires separate setup though.
 
-**Bottle**: **Ultra-lightweight framework** built as a single file. Minimal dependencies make it perfect for closed networks. Comes with a built-in dev server and **WSGI compatibility** for easy production deployment.
+Bottle: Ultra-lightweight framework built as a single file. Minimal dependencies make it perfect for closed networks. Comes with a built-in dev server and WSGI compatibility for easy production deployment.
 
-**FastAPI**: Powerful **async processing** and automatic documentation. But has quite a few dependencies.
+FastAPI: Powerful async processing and automatic documentation. But has quite a few dependencies.
 
-Considering the closed network, **Bottle or Flask** seem most suitable. Start with a Bottle prototype, then migrate to Flask if complexity grows.
+Considering the closed network, Bottle or Flask seem most suitable. Start with a Bottle prototype, then migrate to Flask if complexity grows.
 
 ### LLM Integration Structure
 
 How do we call the internal GPT?
 
-Looking at typical **OpenAI API structure**:
-- **API Key authentication**
-- **REST API call** (POST request)
-- Pass messages in **JSON format**
-- Receive **streaming** or standard response
+Looking at typical OpenAI API structure:
+- API Key authentication
+- REST API call (POST request)
+- Pass messages in JSON format
+- Receive streaming or standard response
 
-Internal GPT probably has a similar structure. Just use the `requests` library for **HTTP requests**. Add token to headers if authentication is needed.
+Internal GPT probably has a similar structure. Just use the `requests` library for HTTP requests. Add token to headers if authentication is needed.
 
 ```python
 import requests
 
-def call_internal_gpt(messages, api_endpoint, token):
+def callinternalgpt(messages, api_endpoint, token):
  headers = {
  'Authorization': f'Bearer {token}',
  'Content-Type': 'application/json'
@@ -85,14 +85,14 @@ Simple. No need for complex SDKs.
 
 ### Conversation Context Management
 
-This is the key. **LLMs** don't inherently remember state. Each interaction is treated as a new conversation.
+This is the key. LLMs don't inherently remember state. Each interaction is treated as a new conversation.
 
 ![Context Flow](/images/closed-net-flow.png)
 
-**Solution**:
-1. **Store conversation history**: Save all **user messages** and **assistant responses** in a list
-2. **Inject context**: Pass previous **conversation history** with each new question
-3. **Manage token limits**: Summarize or remove old messages when conversations get long
+Solution:
+1. Store conversation history: Save all user messages and assistant responses in a list
+2. Inject context: Pass previous conversation history with each new question
+3. Manage token limits: Summarize or remove old messages when conversations get long
 
 In Python, simply manage with a list:
 
@@ -108,9 +108,9 @@ def get_context():
 ```
 
 For more sophistication:
-- **Summarization mechanism**: Summarize old conversations with LLM
-- **Importance filtering**: Selectively retain core information
-- **Vector DB**: Embed conversation content for **similarity-based retrieval**
+- Summarization mechanism: Summarize old conversations with LLM
+- Importance filtering: Selectively retain core information
+- Vector DB: Embed conversation content for similarity-based retrieval
 
 Start simple with a list, upgrade later if needed.
 
@@ -120,7 +120,7 @@ Need to read local files and pass them to the LLM.
 
 Python standard library is sufficient:
 - `os`: File/directory traversal
-- `pathlib`: **Path management** (more intuitive)
+- `pathlib`: Path management (more intuitive)
 - `open()`: File read/write
 
 For example, to analyze project structure:
@@ -128,30 +128,30 @@ For example, to analyze project structure:
 ```python
 from pathlib import Path
 
-def get_project_structure(root_path):
+def getprojectstructure(root_path):
  structure = []
  for path in Path(root_path).rglob('*.py'):
  structure.append(str(path))
  return structure
 
-def read_file_content(file_path):
+def readfilecontent(file_path):
  with open(file_path, 'r', encoding='utf-8') as f:
  return f.read()
 ```
 
 Security considerations:
-- Restrict accessible directories (**whitelist**)
+- Restrict accessible directories (whitelist)
 - Filter sensitive files (.env, credentials, etc.)
-- Prevent **path traversal attacks** (../ etc.)
+- Prevent path traversal attacks (../ etc.)
 
 ### Session Management
 
 In a web environment, we need to distinguish conversations per user.
 
-**Flask approach**:
+Flask approach:
 ```python
 from flask import Flask, session
-app = Flask(__name__)
+app = Flask(name)
 app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
@@ -162,17 +162,17 @@ def chat():
  # Process conversation
 ```
 
-**Bottle approach**:
-Bottle doesn't have built-in sessions, so you need to implement it yourself or use middleware like **beaker**.
+Bottle approach:
+Bottle doesn't have built-in sessions, so you need to implement it yourself or use middleware like beaker.
 
-**Simple alternative**: 
-If you're the only user in a closed network, global variables might suffice. Proper **session management** is needed if security is critical.
+Simple alternative: 
+If you're the only user in a closed network, global variables might suffice. Proper session management is needed if security is critical.
 
 ```python
 # Simple in-memory session
 sessions = {}
 
-def get_session(session_id):
+def getsession(sessionid):
  if session_id not in sessions:
  sessions[session_id] = {'history': [], 'context': {}}
  return sessions[session_id]
@@ -216,33 +216,33 @@ Now let's sketch the overall structure.
 
 ### Key Modules
 
-**1. Web Server Module** (`app.py`)
+1. Web Server Module (`app.py`)
 - Define routes (/, /chat, /files, /context)
 - Handle requests/responses
 - Initialize sessions
 
-**2. Conversation Management Module** (`conversation.py`)
+2. Conversation Management Module (`conversation.py`)
 - `ConversationManager` class
  - `add_message()`: Add message
  - `get_history()`: Retrieve history
- - `summarize_old_messages()`: Summarize old conversations
+ - `summarizeoldmessages()`: Summarize old conversations
  - `clear_context()`: Reset context
 
-**3. LLM Interface Module** (`llm_client.py`)
+3. LLM Interface Module (`llm_client.py`)
 - `InternalGPTClient` class
- - `__init__(api_endpoint, token)`: Initialize
+ - `init(api_endpoint, token)`: Initialize
  - `chat(messages)`: General conversation
- - `create_plan(context, question)`: **Generate execution plan**
+ - `create_plan(context, question)`: Generate execution plan
  - `summarize(text)`: Summarize text
 
-**4. File System Module** (`filesystem.py`)
+4. File System Module (`filesystem.py`)
 - `FileSystemManager` class
  - `list_files(directory)`: File list
  - `read_file(path)`: Read file
  - `search_files(pattern)`: Search files
- - `get_project_context()`: Analyze project structure
+ - `getprojectcontext()`: Analyze project structure
 
-**5. Context Management Module** (`context.py`)
+5. Context Management Module (`context.py`)
 - `ContextManager` class
  - `load_context(name)`: Load predefined context
  - `save_context(name, content)`: Save context
@@ -250,21 +250,21 @@ Now let's sketch the overall structure.
 
 ### Data Flow
 
-1. **User Input** → Enter question in web UI
-2. **Receive Request** → Web server receives POST request
-3. **Check Session** → Load user's conversation history by session ID
-4. **Compose Context**:
+1. User Input → Enter question in web UI
+2. Receive Request → Web server receives POST request
+3. Check Session → Load user's conversation history by session ID
+4. Compose Context:
  - Load base context (project info, rules, etc.)
  - Add conversation history
  - Add file contents if needed
-5. **Call LLM** → Call **internal GPT** with composed context
-6. **Generate Plan** → LLM returns concrete **execution plan**
-7. **Save Response** → Add to conversation history
-8. **Return Result** → Display in web UI
+5. Call LLM → Call internal GPT with composed context
+6. Generate Plan → LLM returns concrete execution plan
+7. Save Response → Add to conversation history
+8. Return Result → Display in web UI
 
 ### Concrete Workflow Example
 
-**Scenario**: "List the API endpoints in this project"
+Scenario: "List the API endpoints in this project"
 
 1. User enters question in web interface
 2. Server receives request and passes to `ConversationManager`
@@ -298,20 +298,20 @@ Now let's sketch the overall structure.
 
 Need to prepare everything in advance for closed network.
 
-**Essential packages**:
-- `bottle` or `flask`: **Web framework**
-- `requests`: **HTTP client** (for LLM API calls)
+Essential packages:
+- `bottle` or `flask`: Web framework
+- `requests`: HTTP client (for LLM API calls)
 - `pathlib`: Path management (Python 3.4+ standard library)
 
-**Optional packages**:
+Optional packages:
 - `flask-session`: Flask session management (if using Flask)
 - `python-dotenv`: Environment variable management
 - `markdown`: Convert responses to HTML (UI enhancement)
-- `pygments`: **Code highlighting**
+- `pygments`: Code highlighting
 
-**Development tools**:
+Development tools:
 - `pytest`: Testing
-- `black`: **Code formatting**
+- `black`: Code formatting
 
 Download all with pip for offline install:
 ```bash
@@ -326,42 +326,42 @@ pip install --no-index --find-links=packages/ bottle requests
 
 Don't neglect security just because it's a closed network.
 
-**1. Restrict File System Access**
+1. Restrict File System Access
 ```python
 ALLOWED_DIRECTORIES = ['/workspace/project', '/data/documents']
 
-def is_safe_path(path):
+def issafepath(path):
  real_path = os.path.realpath(path)
- return any(real_path.startswith(allowed) for allowed in ALLOWED_DIRECTORIES)
+ return any(realpath.startswith(allowed) for allowed in ALLOWEDDIRECTORIES)
 ```
 
-**2. Input Validation**
-- Prevent **SQL Injection** (if using DB)
-- Prevent **Path Traversal**
-- Prevent **XSS** (escape web output)
+2. Input Validation
+- Prevent SQL Injection (if using DB)
+- Prevent Path Traversal
+- Prevent XSS (escape web output)
 
-**3. API Token Management**
+3. API Token Management
 - No hardcoding
 - Use environment variables or config files
 - Set appropriate file permissions (600)
 
-**4. Logging**
+4. Logging
 - Record all requests
 - Track errors
 - Mask sensitive information
 
 ## Performance Optimization Strategy
 
-**1. Caching**
+1. Caching
 - Cache frequently read file contents
 - LLM responses (reuse identical questions)
 - Project structure (refresh after detecting changes)
 
-**2. Asynchronous Processing**
+2. Asynchronous Processing
 - Parallelize file reading operations
-- **LLM response streaming** (progressive display for long responses)
+- LLM response streaming (progressive display for long responses)
 
-**3. Token Management**
+3. Token Management
 - Auto-summarize conversation history
 - Select context based on importance
 - Limit maximum token count
@@ -370,20 +370,20 @@ def is_safe_path(path):
 
 Start simple, but keep extension points for later:
 
-**1. Plugin System**
+1. Plugin System
 - Add new features as modules
-- **Git integration**, database queries, test execution, etc.
+- Git integration, database queries, test execution, etc.
 
-**2. Multimodal Support**
+2. Multimodal Support
 - Image analysis (if internal GPT supports it)
 - Document parsing (PDF, DOCX)
 
-**3. Collaboration Features**
+3. Collaboration Features
 - Multi-user support
 - Conversation sharing
 - Permission management
 
-**4. CLI Mode**
+4. CLI Mode
 - Use from terminal in addition to web
 - Script automation
 
@@ -397,78 +397,78 @@ Time to actually build it. Broken down by phases:
 - Test internal GPT API integration
 - Basic conversation history management
 
-**Goal**: Achieve "Hello, GPT" level conversation
+Goal: Achieve "Hello, GPT" level conversation
 
 ### Phase 2: Context Management (1 week)
 - Save/load conversation history
 - Load predefined contexts
 - Handle token limits (summarize or remove)
 
-**Goal**: Enable contextual conversation
+Goal: Enable contextual conversation
 
 ### Phase 3: File System Integration (1-2 weeks)
 - Scan project directory
 - File read/search functionality
 - Add file contents to context
 
-**Goal**: Handle requests like "Analyze this file"
+Goal: Handle requests like "Analyze this file"
 
 ### Phase 4: Plan Generation Feature (1 week)
 - Auto-generate question → execution plan
 - Display plan step-by-step
 - Execute after user confirmation
 
-**Goal**: Automatically break down complex tasks into steps
+Goal: Automatically break down complex tasks into steps
 
 ### Phase 5: UI Enhancement & Stabilization (1 week)
 - Responsive UI
-- **Code highlighting**
+- Code highlighting
 - Strengthen error handling
 - Logging system
 
-**Goal**: Stable enough for actual work use
+Goal: Stable enough for actual work use
 
 ## Expected Challenges
 
 Problems you'll likely encounter while building:
 
-**1. Understanding Internal GPT API Specs**
+1. Understanding Internal GPT API Specs
 - Might not have documentation
 - Need to figure out through direct testing
 - Confirm request/response formats
 - Error handling methods
 
-**2. Token Limit Management**
+2. Token Limit Management
 - Context grows too large as conversations extend
 - Summary quality is critical
 - Which information to discard vs. retain
 
-**3. File Encoding Issues**
+3. File Encoding Issues
 - Korean filenames, Korean code
 - UTF-8, EUC-KR might be mixed
 - Need auto-detection or configuration
 
-**4. Windows Environment Quirks**
+4. Windows Environment Quirks
 - Path separators (`\` vs `/`)
 - Permission issues
 - Firewall configuration
 
-**5. Performance Issues**
+5. Performance Issues
 - Handling large files
 - Slow when scanning many files
 - Caching is essential
 
 ## Testing Strategy
 
-**Unit Tests**:
+Unit Tests:
 - Independent tests for each module
 - Use mocks for LLM calls
 
-**Integration Tests**:
+Integration Tests:
 - Test entire workflow
 - Call actual internal GPT (dev environment)
 
-**Manual Tests**:
+Manual Tests:
 - Try various question patterns
 - Check edge cases
 - Simulate long conversations
@@ -477,26 +477,26 @@ Problems you'll likely encounter while building:
 
 This post established the overall design. In the next post:
 
-1. **Phase 1 Implementation**: Basic web server and LLM integration
-2. **Actual Code**: Bottle + internal GPT integration example
-3. **Web UI Construction**: Simple but practical interface
-4. **First Successful Conversation**: Starting from "Hello, GPT"
+1. Phase 1 Implementation: Basic web server and LLM integration
+2. Actual Code: Bottle + internal GPT integration example
+3. Web UI Construction: Simple but practical interface
+4. First Successful Conversation: Starting from "Hello, GPT"
 
 No need to give up just because it's a closed network. Despite many constraints, creative approaches can significantly boost productivity.
 
 ---
 
-**Key Points Summary**:
+Key Points Summary:
 
-1. **Choose Lightweight Framework**: Start with Bottle or Flask. Fewer dependencies are better in closed networks.
+1. Choose Lightweight Framework: Start with Bottle or Flask. Fewer dependencies are better in closed networks.
 
-2. **Context is Everything**: LLMs don't remember state. History management is everything.
+2. Context is Everything: LLMs don't remember state. History management is everything.
 
-3. **File System Integration**: Read local code and pass to LLM. Watch security.
+3. File System Integration: Read local code and pass to LLM. Watch security.
 
-4. **Incremental Implementation**: Don't build everything at once. Go phase by phase.
+4. Incremental Implementation: Don't build everything at once. Go phase by phase.
 
-5. **Consider Extensibility**: Modularize for easy feature additions later.
+5. Consider Extensibility: Modularize for easy feature additions later.
 
 Next episode will show actual code as we dive in for real. Closed network developers, don't lose hope!
 

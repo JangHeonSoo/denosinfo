@@ -8,7 +8,7 @@ description: "A complete guide on diagnosing and fixing a 404 Page Not Found err
 heroImage: "/images/domain-404-hero.png"
 ---
 
-You finally connected your custom domain. DNS records look fine, the server seems to be running. You type `https://yourdomain.com` with a little smile. Then you get slapped with a 404. <strong>"Page Not Found."</strong>
+You finally connected your custom domain. DNS records look fine, the server seems to be running. You type `https://yourdomain.com` with a little smile. Then you get slapped with a 404. "Page Not Found."
 
 In many cases, this isn't a deep server failure. The domain and the server are both alive, but the link between them is misaligned. This guide breaks down the most common reasons why your homepage shows a 404 right after connecting a domain—and how to fix each one.
 
@@ -24,7 +24,7 @@ Typical scenarios:
 - The A record still targets your old server's IP.
 - You updated `www.yourdomain.com` but forgot to update the root (`@`) record.
 
-404 tutorials emphasize that when you move hosting, you must <strong>update nameservers and DNS</strong> so that the domain points to the new server where `index.php`, `.htaccess`, and other core files live. If the domain hits a server that does not know your site, that server will correctly return 404.
+404 tutorials emphasize that when you move hosting, you must update nameservers and DNS so that the domain points to the new server where `index.php`, `.htaccess`, and other core files live. If the domain hits a server that does not know your site, that server will correctly return 404.
 
 Quick checks:
 
@@ -43,7 +43,7 @@ Common patterns:
 - The real homepage lives at `/home` or `/main`, but `/` has no route or redirect.
 - In a CMS (HubSpot, Squarespace, etc.), no page is set as the homepage or the page is disabled.
 
-HubSpot community threads on domain 404 errors often recommend removing the content slug (e.g., `home`) so the homepage maps directly to `/`, then republishing the page. Squarespace helpers say that if the domain is "connected" but shows 404, you should check that a page is actually marked <strong>"Set as homepage"</strong> and enabled.
+HubSpot community threads on domain 404 errors often recommend removing the content slug (e.g., `home`) so the homepage maps directly to `/`, then republishing the page. Squarespace helpers say that if the domain is "connected" but shows 404, you should check that a page is actually marked "Set as homepage" and enabled.
 
 If you manage the server yourself, verify:
 
@@ -67,7 +67,7 @@ If these are misused, Nginx might look for `/usr/share/nginx/html/context-path/i
 
 Checks:
 
-- Apache: ensure each `<VirtualHost>` block has the <strong>correct `DocumentRoot`</strong> for your project.
+- Apache: ensure each `<VirtualHost>` block has the correct `DocumentRoot` for your project.
 - Nginx: confirm `server { root ... }` and any `location`/`alias` settings match your file layout.
 
 <br/>
@@ -101,7 +101,7 @@ In Laravel + Nginx deployments, for example, if `/` requests are not rewritten t
 
 To fix:
 
-- Confirm your `.htaccess` or Nginx config contains the <strong>correct rewrite rules</strong> for your framework.
+- Confirm your `.htaccess` or Nginx config contains the correct rewrite rules for your framework.
 - On WordPress, re-save the Permalinks settings to regenerate `.htaccess`.
 
 <br/>
@@ -115,7 +115,7 @@ Possible culprits:
 - CDN (Cloudflare, Fastly, etc.) caching a previous 404 response.
 - Browser cache or a service worker serving an outdated offline page.
 
-404 troubleshooting guides advise <strong>purging CDN caches</strong> and clearing browser cache/cookies after making changes related to routing or index files. Only then should you test the homepage again.
+404 troubleshooting guides advise purging CDN caches and clearing browser cache/cookies after making changes related to routing or index files. Only then should you test the homepage again.
 
 <br/>
 
@@ -132,7 +132,7 @@ From user reports:
 If you use such a platform, review:
 
 - Site settings → Domains → primary and root domain mapping.
-- Page settings → which page is <strong>set as the homepage</strong>, and whether it's published.
+- Page settings → which page is set as the homepage, and whether it's published.
 - DNS or registrar settings: redirect `domain.com` to `www.domain.com` if required by the platform.
 
 <br/>
@@ -155,19 +155,19 @@ Knowing the real HTTP status code often changes the direction of debugging entir
 
 Despite the many possible causes, a short checklist can narrow things down quickly.
 
-1. <strong>DNS</strong>
+1. DNS
  - `nslookup yourdomain.com` and verify the IP.
  - Fix A/AAAA records or nameservers if they point elsewhere.
-2. <strong>Web root and homepage</strong>
+2. Web root and homepage
  - Ensure `index.html`/`index.php` exists in the correct web root.
  - Check Nginx/Apache `root`/`DocumentRoot` and `index` directives.
-3. <strong>Routing and rewrites</strong>
+3. Routing and rewrites
  - Verify `.htaccess` or Nginx rewrite rules for your framework.
  - On WordPress, re-save Permalinks to regenerate `.htaccess`.
-4. <strong>Builder/platform settings</strong>
+4. Builder/platform settings
  - Confirm a homepage is set and published.
  - Ensure both `www` and naked domains route correctly.
-5. <strong>Cache</strong>
+5. Cache
  - Purge CDN caches and clear browser cache, then retest.
 
 <br/>

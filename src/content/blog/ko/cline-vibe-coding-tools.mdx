@@ -18,7 +18,7 @@ Cline은 VSCode 확장 프로그램이다. 그냥 코드 제안 도구가 아니
 
 2024년 7월에 출시됐고, Apache 2.0 라이선스로 완전히 열려 있다. 포크도 자유롭게 가능하고, 실제로 Roo Code(GitHub Stars 10k, 다운로드 300K 이상)와 Kilo Code 같은 파생 도구들이 속속 등장했다. 오픈소스 생태계가 이미 증명해주고 있다.
 
-핵심은 <strong>BYOK(Bring Your Own Key)</strong> 모델이다. OpenAI, Anthropic, DeepSeek, 심지어 로컬 LLM까지 직접 API 키를 꽂아서 쓴다. 플랫폼 구독료 없이 쓴 만큼만 낸다. OpenRouter 경유 시 5% 마크업이 붙지만, 기본 구조는 완전히 BYOK다.
+핵심은 BYOK(Bring Your Own Key) 모델이다. OpenAI, Anthropic, DeepSeek, 심지어 로컬 LLM까지 직접 API 키를 꽂아서 쓴다. 플랫폼 구독료 없이 쓴 만큼만 낸다. OpenRouter 경유 시 5% 마크업이 붙지만, 기본 구조는 완전히 BYOK다.
 
 ![미래지향적인 홀로그램 인터페이스와 결합된 기계식 키보드](/images/cline_hero.png)
 
@@ -26,15 +26,15 @@ Cline은 VSCode 확장 프로그램이다. 그냥 코드 제안 도구가 아니
 
 ## 핵심 기능 5가지
 
-<strong>Plan/Act 이중 모드</strong>가 Cline의 첫 번째 차별점이다. Plan 모드에서 AI가 실행 계획 전체를 먼저 보여주고, Act 모드에서 실제로 코드를 짜고 파일을 수정한다. "일단 해봐" 식의 눈먼 실행을 막아준다.
+Plan/Act 이중 모드가 Cline의 첫 번째 차별점이다. Plan 모드에서 AI가 실행 계획 전체를 먼저 보여주고, Act 모드에서 실제로 코드를 짜고 파일을 수정한다. "일단 해봐" 식의 눈먼 실행을 막아준다.
 
-<strong>터미널 자율 실행</strong>도 빼놓을 수 없다. VSCode v1.93의 Shell Integration API를 활용해서, 패키지 설치부터 배포 스크립트 실행, 데이터베이스 마이그레이션까지 직접 돌린다. 백그라운드 프로세스도 모니터링한다.
+터미널 자율 실행도 빼놓을 수 없다. VSCode v1.93의 Shell Integration API를 활용해서, 패키지 설치부터 배포 스크립트 실행, 데이터베이스 마이그레이션까지 직접 돌린다. 백그라운드 프로세스도 모니터링한다.
 
-<strong>브라우저 자동화</strong>는 Claude 3.5 Sonnet의 Computer Use 기능을 연결한 것이다. 실제로 Chrome을 열고, 버튼 클릭, 스크롤, 텍스트 입력을 직접 수행한다. 런타임 에러를 확인하고 UI 버그를 스스로 수정한다.
+브라우저 자동화는 Claude 3.5 Sonnet의 Computer Use 기능을 연결한 것이다. 실제로 Chrome을 열고, 버튼 클릭, 스크롤, 텍스트 입력을 직접 수행한다. 런타임 에러를 확인하고 UI 버그를 스스로 수정한다.
 
-<strong>MCP(Model Context Protocol)</strong> 지원은 Cline의 확장성을 무한대로 넓혀준다. 내부 모니터링 시스템 연결, 커스텀 보안 스캔, 자동 문서화 파이프라인까지 JSON 기반 API로 직접 만들어 붙일 수 있다.
+MCP(Model Context Protocol) 지원은 Cline의 확장성을 무한대로 넓혀준다. 내부 모니터링 시스템 연결, 커스텀 보안 스캔, 자동 문서화 파이프라인까지 JSON 기반 API로 직접 만들어 붙일 수 있다.
 
-마지막으로 <strong>Checkpoint 시스템</strong>이다. AI가 작업할 때마다 자동으로 워크스페이스 상태를 스냅샷으로 저장한다. 브라우저 세션과 터미널 상태까지 함께 보존된다. 일반 Git 커밋보다 훨씬 세밀한 롤백이 가능하다.
+마지막으로 Checkpoint 시스템이다. AI가 작업할 때마다 자동으로 워크스페이스 상태를 스냅샷으로 저장한다. 브라우저 세션과 터미널 상태까지 함께 보존된다. 일반 Git 커밋보다 훨씬 세밀한 롤백이 가능하다.
 
 ![자율적 사고와 논리 처리의 흐름을 보여주는 역동적인 디지털 스트림 구조](/images/mcp_logic.png)
 
@@ -88,13 +88,13 @@ Cline에서 DeepSeek V3를 쓰면 입력 토큰 1백만 개당 \$0.32다. Claude
 
 ## 누가 뭘 써야 하는가
 
-<strong>Cline</strong>은 이미 개발 환경이 갖춰진 개발자, 보안 때문에 코드를 외부 SaaS에 올리기 싫은 기업, 로컬 LLM으로 오프라인 작업이 필요한 케이스에 최적이다. 초기 API 키 설정이 귀찮지만, 그 뒤로는 어떤 도구보다 강력하다.
+Cline은 이미 개발 환경이 갖춰진 개발자, 보안 때문에 코드를 외부 SaaS에 올리기 싫은 기업, 로컬 LLM으로 오프라인 작업이 필요한 케이스에 최적이다. 초기 API 키 설정이 귀찮지만, 그 뒤로는 어떤 도구보다 강력하다.
 
-<strong>Cursor</strong>는 매일 VS Code처럼 쓰면서 AI 자동완성과 빠른 편집을 원하는 개발자에게 맞다. 특히 Tab 키 워크플로우를 좋아하는 사람. 다만 대규모 자율 작업은 Cline이 더 낫다.
+Cursor는 매일 VS Code처럼 쓰면서 AI 자동완성과 빠른 편집을 원하는 개발자에게 맞다. 특히 Tab 키 워크플로우를 좋아하는 사람. 다만 대규모 자율 작업은 Cline이 더 낫다.
 
-<strong>Windsurf</strong>는 스타트업이나 MVP를 빠르게 만들어야 하는 팀에 어울린다. 비용 대비 바이브코딩 경험이 가장 좋다.
+Windsurf는 스타트업이나 MVP를 빠르게 만들어야 하는 팀에 어울린다. 비용 대비 바이브코딩 경험이 가장 좋다.
 
-<strong>Bolt.new/Lovable/v0</strong>는 코드를 안 써도 되고, 빠른 프로토타입이 목적이면 고민 없이 쓰면 된다. 단, 프로덕션 수준의 복잡한 코드베이스 관리는 한계가 있다.
+Bolt.new/Lovable/v0는 코드를 안 써도 되고, 빠른 프로토타입이 목적이면 고민 없이 쓰면 된다. 단, 프로덕션 수준의 복잡한 코드베이스 관리는 한계가 있다.
 
 ---
 
@@ -108,7 +108,7 @@ Cursor가 플랫 피 구독료 안에서 AI 제공업체에 지불하는 비용�
 
 싸지는 않다. 그러나 결국 더 비싸지도 않다. 그리고 이 도구는 계속 발전한다.
 
-![다양한 요소들이 유기적으로 연결되며 성장하는 기술 생태계를 나타낸 정교한 회로망 중심부](/images/ai_agent_architecture_circuit_macro_1772754189842.png)
+![다양한 요소들이 유기적으로 연결되며 성장하는 기술 생태계를 나타낸 정교한 회로망 중심부](/images/aiagentarchitecturecircuitmacro_1772754189842.png)
 
 ---
 
@@ -130,7 +130,7 @@ Cursor가 플랫 피 구독료 안에서 AI 제공업체에 지불하는 비용�
 - [PyTorch 한국 커뮤니티 – Cline 소개](https://discuss.pytorch.kr/t/cline/6139)
 - [MOGE – Cline 제품 개요 (한국어)](https://moge.ai/ko/product/cline)
 
-> *조사 기준일: 2026년 3월 16일*
+> 조사 기준일: 2026년 3월 16일
 
 ---
 

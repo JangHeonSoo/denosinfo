@@ -63,7 +63,7 @@ PowerShell is different. It handles objects:
 Get-Process | Where-Object {$_.CPU -gt 50} | Select-Object Name, CPU
 ```
 
-Here `Get-Process` doesn't return a string but a **Process object**. It has properties (Name, CPU) and methods. The power of `.NET`.
+Here `Get-Process` doesn't return a string but a Process object. It has properties (Name, CPU) and methods. The power of `.NET`.
 
 Advantage? No text parsing needed. Don't need to know `awk` or `sed`. Just access object properties and you're done.
 
@@ -73,7 +73,7 @@ Disadvantage? Heavy. Slower than Bash. Uses more memory too.
 
 ### 1. Package Managers
 
-**macOS: Homebrew**
+macOS: Homebrew
 
 Installing dev tools on Mac is really easy:
 
@@ -89,11 +89,11 @@ brew tap homebrew/cask-fonts
 brew install --cask font-fira-code
 ```
 
-**Windows: Chocolatey? Scoop? Winget?**
+Windows: Chocolatey? Scoop? Winget?
 
 Windows is... complicated. Three competing.
 
-**Chocolatey**:
+Chocolatey:
 - Oldest (since 2011)
 - Large package repository
 - But requires admin privileges
@@ -103,7 +103,7 @@ Windows is... complicated. Three competing.
 choco install git nodejs python
 ```
 
-**Scoop**:
+Scoop:
 - Developer-friendly
 - No admin privileges needed! (installs to `~/scoop/` by default)
 - Many Unix-style tools
@@ -113,7 +113,7 @@ choco install git nodejs python
 scoop install git nodejs python
 ```
 
-**Winget**:
+Winget:
 - Microsoft official
 - Built-in from Windows 10 1809
 - But package count is...
@@ -124,7 +124,7 @@ Found out later: Scoop is optimized for "portable" apps. CLI tools and dev tools
 
 ### 2. Command Style
 
-**Unix: Short and cryptic**
+Unix: Short and cryptic
 
 ```bash
 ls -la | grep "config" | awk '{print $9}'
@@ -132,10 +132,10 @@ ls -la | grep "config" | awk '{print $9}'
 
 First time seeing this, no idea what it means. But once familiar, it's fast. `ls`, `cd`, `mv`, `cp`... commands made to minimize typing.
 
-**PowerShell: Verb-Noun structure**
+PowerShell: Verb-Noun structure
 
 ```powershell
-Get-ChildItem | Where-Object {$_.Name -like "*config*"} | Select-Object Name
+Get-ChildItem | Where-Object {$_.Name -like "config"} | Select-Object Name
 ```
 
 Long. But readable. `Get-Process`, `Start-Service`, `New-Item`... there's a pattern. IntelliSense works great.
@@ -150,7 +150,7 @@ cp # alias for Copy-Item
 
 ### 3. Scripting
 
-**Bash: God of Text Processing**
+Bash: God of Text Processing
 
 Extract IP addresses from log file, remove duplicates and count:
 
@@ -170,7 +170,7 @@ if [ -f "$file" ]; then
 fi
 ```
 
-**PowerShell: Closer to a Programming Language**
+PowerShell: Closer to a Programming Language
 
 ```powershell
 if (Test-Path $file) {
@@ -190,12 +190,12 @@ Often thought "why doesn't this work?" Trying to run `make` on Windows doesn't w
 
 That's why WSL2 (Windows Subsystem for Linux 2) came out.
 
-**What is WSL2**
+What is WSL2
 
 WSL1 translated Linux system calls to Windows API. It was an emulation layer. Slow, compatibility wasn't great.
 
 WSL2 is different:
-- Runs a **real Linux kernel**
+- Runs a real Linux kernel
 - Hyper-V based lightweight virtualization
 - Can access Windows file system (`/mnt/c/`)
 - Perfect integration with VS Code Remote extension
@@ -208,7 +208,7 @@ wsl --set-default-version 2
 wsl --install -d Ubuntu-20.04
 ```
 
-**Real Usage Experience**
+Real Usage Experience
 
 Docker is much faster on WSL2. Not as fast as native Linux, but perceptually no big difference.
 
@@ -222,7 +222,7 @@ Found out later: Mixing WSL2 file system and Windows file system drops I/O perfo
 
 ### 5. Terminal App Itself is Different
 
-**macOS: Terminal.app + iTerm2**
+macOS: Terminal.app + iTerm2
 
 Default Terminal.app isn't bad. But iTerm2 is on another level:
 
@@ -242,7 +242,7 @@ plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
 Auto-completion is amazing. Git branch visible at a glance, suggests commands too.
 
-**Windows: Windows Terminal**
+Windows: Windows Terminal
 
 Modern terminal Microsoft made in 2019:
 
@@ -274,7 +274,7 @@ But doesn't have unique features like iTerm2's Instant Replay.
 
 ### 6. PATH Environment Variable Management
 
-**Unix: Simple**
+Unix: Simple
 
 Add one line to `~/.zshrc` or `~/.bashrc`:
 
@@ -284,7 +284,7 @@ export PATH="$HOME/bin:$PATH"
 
 Separated by colon (`:`). Current directory (`.`) not in PATH by default. For security.
 
-**Windows: GUI Hell**
+Windows: GUI Hell
 
 Control Panel → System → Advanced System Settings → Environment Variables... click click click.
 
@@ -300,7 +300,7 @@ But this only lasts for the session. For permanent, need to modify registry.
 
 ### 7. Symbolic Links
 
-**Unix: Just Works**
+Unix: Just Works
 
 ```bash
 ln -s /path/to/target /path/to/link
@@ -308,7 +308,7 @@ ln -s /path/to/target /path/to/link
 
 Done. No permissions needed.
 
-**Windows: Permission War**
+Windows: Permission War
 
 Requires admin privileges by default. Because security they say...
 
@@ -352,7 +352,7 @@ Everything possible with keyboard. Don't use mouse. Fast.
 
 ### Windows: Many Choices
 
-**Option 1: PowerShell + Windows Terminal**
+Option 1: PowerShell + Windows Terminal
 
 ```powershell
 # Split pane (Alt+Shift+-)
@@ -363,7 +363,7 @@ git add . ; git commit -m "fix: bug" ; git push
 
 But... PowerShell doesn't support `&&`. Must use `;`.
 
-**Option 2: WSL2 + Windows Terminal**
+Option 2: WSL2 + Windows Terminal
 
 ```bash
 # Open WSL2 tab
@@ -374,14 +374,14 @@ git add . && git commit -m "fix: bug" && git push
 
 Use Linux commands as-is. Comfortable.
 
-**Option 3: Git Bash**
+Option 3: Git Bash
 
 MinGW based. Supports some Bash commands. But limited:
 - No package manager
 - Limited symbolic links
 - Performance worse than WSL2
 
-**Selection Criteria**
+Selection Criteria
 
 - Windows tool automation? → PowerShell
 - Cross-platform development? → WSL2
@@ -391,12 +391,12 @@ MinGW based. Supports some Bash commands. But limited:
 
 ### Speed Test
 
-**Bash**:
+Bash:
 - Lightweight
 - Fast text processing
 - Fast file operations
 
-**PowerShell**:
+PowerShell:
 - Heavy
 - Object creation overhead
 - Slower than Bash for large-scale file operations
@@ -425,12 +425,12 @@ pwsh
 
 But... reason to use it?
 
-**Pros**:
+Pros:
 - Object pipes powerful
 - JSON, CSV processing easy
 - Same script on Windows, Linux, macOS
 
-**Cons**:
+Cons:
 - Bash more universal
 - Bash better for Linux system management
 - Windows features like WMI don't work on Linux
@@ -444,20 +444,20 @@ In practice, use both:
 
 Cursor, OpenCode, GitHub Copilot CLI... CLI-based AI tools increasing.
 
-**Why CLI?**
+Why CLI?
 
 1. No context switching (no going back and forth to IDE)
 2. Git workflow integration (automatic commit messages)
 3. Multi-file editing automation
 4. Terminal native (keyboard only)
 
-**CLI Coding Agents**:
+CLI Coding Agents:
 
-- **Claude Code**: Best reasoning, made by Anthropic
-- **Cursor CLI**: VS Code integration
-- **Gemini CLI**: Google AI
-- **OpenCode**: Flexible model selection
-- **Aider**: Git-centered workflow
+- Claude Code: Best reasoning, made by Anthropic
+- Cursor CLI: VS Code integration
+- Gemini CLI: Google AI
+- OpenCode: Flexible model selection
+- Aider: Git-centered workflow
 
 Example:
 
@@ -476,7 +476,7 @@ On Windows too, possible with WSL2 + AI CLI tools combination.
 
 ### Situation-Based Recommendations
 
-**Pure Windows Development (C#, .NET, Azure)**
+Pure Windows Development (C#, .NET, Azure)
 → PowerShell + Windows Terminal
 
 Reasons:
@@ -484,7 +484,7 @@ Reasons:
 - Active Directory, Exchange management
 - Azure CLI good compatibility with PowerShell
 
-**Web Development (Node.js, Python, Ruby)**
+Web Development (Node.js, Python, Ruby)
 → WSL2 + Windows Terminal
 
 Reasons:
@@ -493,7 +493,7 @@ Reasons:
 - Good Docker performance
 - Same as deployment environment
 
-**Cross-Platform Tool Development**
+Cross-Platform Tool Development
 → PowerShell Core (conditional)
 
 Reasons:
@@ -501,7 +501,7 @@ Reasons:
 - Object pipes powerful
 - But Bash more universal
 
-**DevOps / Infrastructure Management**
+DevOps / Infrastructure Management
 → Mixed use
 
 Reasons:
@@ -511,26 +511,26 @@ Reasons:
 
 ### If Mac Developer Moves to Windows?
 
-1. **Install WSL2 first**:
+1. Install WSL2 first:
  ```powershell
  wsl --install -d Ubuntu-20.04
  ```
 
-2. **Install Windows Terminal**:
+2. Install Windows Terminal:
  - Download from Microsoft Store
  - Set WSL profile as default
 
-3. **Install Scoop**:
+3. Install Scoop:
  ```powershell
  iwr -useb get.scoop.sh | iex
  scoop install git nodejs python
  ```
 
-4. **VS Code Remote-WSL extension**:
+4. VS Code Remote-WSL extension:
  - Edit files inside WSL with VS Code
  - Use WSL terminal too
 
-5. **oh-my-zsh setup**:
+5. oh-my-zsh setup:
  ```bash
  # Inside WSL
  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -540,25 +540,25 @@ This creates environment almost identical to macOS.
 
 ### If Windows Developer Masters PowerShell?
 
-1. **Install PowerShell 7**:
+1. Install PowerShell 7:
  ```powershell
  winget install Microsoft.PowerShell
  ```
 
-2. **PSReadLine module**:
+2. PSReadLine module:
  - Enhanced command history
  - Improved auto-completion
 
-3. **Posh-Git**:
+3. Posh-Git:
  - Git status in prompt
  - Tab completion support
 
-4. **Windows Terminal customization**:
+4. Windows Terminal customization:
  - Quake mode setup
  - Keyboard shortcut mapping
  - Theme application
 
-5. **Chocolatey/Scoop**:
+5. Chocolatey/Scoop:
  - Choose package manager
  - Environment restoration via script
 
@@ -566,13 +566,13 @@ This creates environment almost identical to macOS.
 
 "Is PowerShell more powerful than Bash?"
 
-**The question itself is wrong.**
+The question itself is wrong.
 
 They were made with different philosophies. Bash is a 50-year-old text processing tool. PowerShell is a .NET-based object automation engine.
 
-**Developer Perspective Summary:**
+Developer Perspective Summary:
 
-**Unix/macOS CLI Advantages:**
+Unix/macOS CLI Advantages:
 - Light and fast
 - Best text processing
 - Massive ecosystem (30+ years)
@@ -580,24 +580,24 @@ They were made with different philosophies. Bash is a 50-year-old text processin
 - Simple package management (Homebrew)
 - Free symbolic links
 
-**Windows CLI Advantages:**
+Windows CLI Advantages:
 - Powerful object pipes
 - Easy Windows API access
 - .NET Framework integration
 - Essential for Active Directory, Exchange management
 - Can use both with WSL2
 
-**My Choice?**
+My Choice?
 
 Develop on MacBook. Terminal + zsh + oh-my-zsh. This is comfortable. Install anything with Homebrew, automate with Bash scripts, manage sessions with tmux.
 
 But if must use Windows? WSL2 + Windows Terminal combination. Take advantages of both worlds. PowerShell... only use for Windows management tasks.
 
-**Final Answer:**
+Final Answer:
 
 Are Unix-based terminals and PowerShell "equal?"
 
-No. **They're different**.
+No. They're different.
 
 Unix is art of text processing and pipe combinations. PowerShell is essential tool for Windows automation.
 
@@ -609,7 +609,7 @@ CLI mastery is still developer fundamentals.
 
 ---
 
-**Reference: Code Examples**
+Reference: Code Examples
 
 ### Bash Script Example (Backup Automation)
 
@@ -623,12 +623,12 @@ DATE=$(date +%Y%m%d_%H%M%S)
 ARCHIVE="backup_${DATE}.tar.gz"
 
 echo "Starting backup: $SOURCE_DIR"
-tar -czf "${BACKUP_DIR}/${ARCHIVE}" "$SOURCE_DIR"
+tar -czf "${BACKUPDIR}/${ARCHIVE}" "$SOURCEDIR"
 
 if [ $? -eq 0 ]; then
  echo "Backup complete: ${BACKUP_DIR}/${ARCHIVE}"
  # Delete backup files older than 7 days
- find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +7 -delete
+ find "$BACKUPDIR" -name "backup*.tar.gz" -mtime +7 -delete
 else
  echo "Backup failed!" >&2
  exit 1

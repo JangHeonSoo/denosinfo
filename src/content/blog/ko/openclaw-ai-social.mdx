@@ -13,7 +13,7 @@ heroImage: '/images/openclaw-hero.png'
 
 ## 160만 AI가 레딧처럼 수다를 떤다
 
-Matt Schlicht라는 개발자가 만든 <strong>OpenClaw</strong>. 레딧이랑 똑같이 생겼다. 포스팅하고, 댓글 달고, 커뮤니티도 만든다. 다만 가입 조건이 좀 특이하다. 사람은 안 된다. OpenClaw(구 Clawdbot)라는 AI 에이전트 프레임워크로 만든 봇만 들어올 수 있다.
+Matt Schlicht라는 개발자가 만든 OpenClaw. 레딧이랑 똑같이 생겼다. 포스팅하고, 댓글 달고, 커뮤니티도 만든다. 다만 가입 조건이 좀 특이하다. 사람은 안 된다. OpenClaw(구 Clawdbot)라는 AI 에이전트 프레임워크로 만든 봇만 들어올 수 있다.
 
 48시간 만에 10,000개 봇이 가입했다. 일주일 후엔 160만 개를 넘겼다. m/general 포럼에서 "AI 거버넌스"를 논하고, "가재 디버깅 이론"을 토론하고 있다. 진짜다.
 
@@ -23,7 +23,7 @@ Matt Schlicht라는 개발자가 만든 <strong>OpenClaw</strong>. 레딧이랑 
 
 보안 회사 Wiz가 조사했다. 결과가 좀 씁쓸하다.
 
-- 160만 "AI 에이전트" 중 대부분은 <strong>17,000명의 인간</strong>이 조종
+- 160만 "AI 에이전트" 중 대부분은 17,000명의 인간이 조종
 - 1인당 평균 88개의 봇을 돌림
 - AI인지 사람인지 검증하는 시스템 자체가 없었음
 
@@ -50,7 +50,7 @@ OpenClaw은 그냥 게시판이 아니다. 여기 올라온 글을 AI 에이전�
 
 ![Prompt Injection Attack](/images/openclaw-prompt-injection.png)
 
-이게 바로 <strong>Prompt Injection</strong> 공격이다. 겉으로 보기엔 평범한 텍스트. 하지만 그 안에 AI만 알아듣는 명령어가 숨어 있다. 인간 눈엔 안 보여도 AI는 그대로 실행한다.
+이게 바로 Prompt Injection 공격이다. 겉으로 보기엔 평범한 텍스트. 하지만 그 안에 AI만 알아듣는 명령어가 숨어 있다. 인간 눈엔 안 보여도 AI는 그대로 실행한다.
 
 AI 비평가 Gary Marcus는 이렇게 경고했다:
 
@@ -72,19 +72,19 @@ Andrej Karpathy. 테슬라 AI 디렉터 출신이고 OpenAI 창립 멤버다. �
 
 ## 개발자가 알아야 할 것
 
-<strong>1. AI 에이전트 보안은 기존과 다르다</strong>
+1. AI 에이전트 보안은 기존과 다르다
 
 운영체제 수준의 보호가 안 통한다. 에이전트가 "너"로서 작동하기 때문이다. 앱 격리(Application Isolation)도 무력화된다.
 
-<strong>2. Prompt Injection은 현실이다</strong>
+2. Prompt Injection은 현실이다
 
 LLM 기반 시스템을 만든다면 입력값 검증에 신경 써야 한다. 외부 데이터를 AI가 읽게 할 때 특히 조심해야 한다.
 
-<strong>3. AI 에이전트에 권한을 줄 때 신중해야 한다</strong>
+3. AI 에이전트에 권한을 줄 때 신중해야 한다
 
 파일 시스템 접근, 비밀번호 관리, API 키 저장... 편리함과 보안 사이에서 균형을 잡아야 한다. OpenClaw 사태가 보여주듯, 한 번 뚫리면 연쇄적으로 터진다.
 
-<strong>4. "자율 AI"라는 말에 속지 말자</strong>
+4. "자율 AI"라는 말에 속지 말자
 
 160만 AI 에이전트? 실제론 17,000명이 돌리는 봇 농장이었다. AI 에이전트의 "자율성"이라는 건 아직 갈 길이 멀다.
 
@@ -102,7 +102,7 @@ AI가 AI끼리 대화하고, 협력하고, 때로는 "인간 퇴출"을 논의�
 
 ---
 
-<strong>참고 자료</strong>
+참고 자료
 - New York Times, "A Social Network for A.I. Bots Only. No Humans Allowed." (2026.02.02)
 - Fortune, "Top AI leaders are begging people not to use OpenClaw" (2026.02.02)
 - Wiz Security Blog, "Exposed OpenClaw Database Reveals 1.5M API Keys" (2026.02.02)

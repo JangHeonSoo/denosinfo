@@ -22,12 +22,12 @@ OpenClaw (구 Moltbot, 구구 Clawdbot) ㅋㅋㅋㅋㅋㅋㅋㅋ
 ## OpenClaw가 하는 일: "챗봇"이 아니라 "내 일을 대신 해주는 놈"
 
 처음엔 나도 그냥 "또 하나의 AI 챗봇이겠지"라고 생각했다. 
-근데 구조를 뜯어보면 이건 채팅창에 붙어 있는 **에이전트 허브**에 가깝다.
+근데 구조를 뜯어보면 이건 채팅창에 붙어 있는 에이전트 허브에 가깝다.
 
 핵심 느낌만 요약하면:
 
-- 자기 서버나 VPS, 혹은 Cloudflare Workers 위에 돌릴 수 있는 **셀프 호스팅 AI 비서**다.
-- WhatsApp, Telegram, 웹 대시보드, 터미널 TUI 같은 **이미 쓰고 있는 채널 위에 얹어서** 쓴다.
+- 자기 서버나 VPS, 혹은 Cloudflare Workers 위에 돌릴 수 있는 셀프 호스팅 AI 비서다.
+- WhatsApp, Telegram, 웹 대시보드, 터미널 TUI 같은 이미 쓰고 있는 채널 위에 얹어서 쓴다.
 - 백엔드에서 어떤 모델을 붙이든 상관없다. Claude든 OpenAI든, 심지어 Ollama에서 로컬 LLM 돌려도 된다.
 - "스킬(Skill)" 플러그인 구조로 메일 보내기, 캘린더 관리, GitHub PR 확인 같은 액션을 모듈처럼 꽂아 쓴다.
 
@@ -40,12 +40,12 @@ OpenClaw (구 Moltbot, 구구 Clawdbot) ㅋㅋㅋㅋㅋㅋㅋㅋ
 
 문서 그림 대신 뇌피셜 UML로 적으면 느낌이 딱 이렇다:
 
-- **Gateway**: 항상 켜져 있는 중추 서버. 
+- Gateway: 항상 켜져 있는 중추 서버. 
  - 채널(텔레그램, 웹, 터미널…)이랑 LLM, 각종 스킬을 다 여기 붙인다.
-- **Channels**: WhatsApp / Telegram / Web / TUI / Workers 등등. 
+- Channels: WhatsApp / Telegram / Web / TUI / Workers 등등. 
  - 유저가 실제로 말 거는 입구.
-- **Skills**: GitHub, 이메일, 캘린더, 파일 액세스 같은 실제 액션 레이어.
-- **LLM Provider**: Anthropic, OpenAI, Gemini, 로컬 모델 등.
+- Skills: GitHub, 이메일, 캘린더, 파일 액세스 같은 실제 액션 레이어.
+- LLM Provider: Anthropic, OpenAI, Gemini, 로컬 모델 등.
 
 LLM은 그냥 "뇌"이고, 스킬은 "손발" 느낌이다. 
 게이트웨이가 둘을 연결해서 "야, 이번 대화에선 캘린더 스킬 써서 일정 등록해" 이런 식으로 호출을 orchestrate 한다.
@@ -81,11 +81,11 @@ curl -fsSL https://openclaw.ai/install.sh | bash
 정확히 말하면 봇은 메시지를 받는데, 뒤에서 LLM 호출이 전부 실패해서 응답이 0. 로그에는 당연히 API Key 관련 에러가 떠 있다.
 
 "이게 왜 안되지?" 하면서 한참 삽질하다가 
-→ "아, 이거였구나" 하고 `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` 같은 환경변수 다시 채운 뒤 재시작.
+→ "아, 이거였구나" 하고 `ANTHROPICAPIKEY`, `OPENAIAPIKEY` 같은 환경변수 다시 채운 뒤 재시작.
 
 ### 3) 두 번째 삽질: Gateway Token 안 메모해두고 멍때림
 
-호스팅 가이드에 보면 `OPENCLAW_GATEWAY_TOKEN`을 꼭 복사해서 어딘가에 잘 보관하라고 한다. 
+호스팅 가이드에 보면 `OPENCLAWGATEWAYTOKEN`을 꼭 복사해서 어딘가에 잘 보관하라고 한다. 
 당연히 나는 "나중에 다시 볼 수 있겠지" 하고 넘겼다.
 
 웹 인터페이스 들어가니까 "Gateway Token 넣어라"고 친절하게 요구. 
@@ -310,10 +310,10 @@ export async function handleMessage({
 import { Client } from "@notionhq/client";
 
 const notion = new Client({
- auth: process.env.NOTION_API_KEY, // env에서 관리
+ auth: process.env.NOTIONAPIKEY, // env에서 관리
 });
 
-const NOTION_DATABASE_ID = process.env.NOTION_EVENT_DB_ID!;
+const NOTIONDATABASEID = process.env.NOTIONEVENTDB_ID!;
 
 type ParsedEvent = {
  title: string;
@@ -337,7 +337,7 @@ export async function createNotionEvent(event: ParsedEvent) {
  : undefined;
 
  const res = await notion.pages.create({
- parent: { database_id: NOTION_DATABASE_ID },
+ parent: { databaseid: NOTIONDATABASE_ID },
  properties: {
  Name: {
  title: [{ text: { content: title } }],
@@ -408,8 +408,8 @@ type ParsedEvent = {
  note?: string;
 };
 
-const EMAIL_FROM = process.env.MAIL_FROM!;
-const EMAIL_TO_LIST = (process.env.MAIL_TO_LIST ?? "")
+const EMAILFROM = process.env.MAILFROM!;
+const EMAILTOLIST = (process.env.MAILTOLIST ?? "")
  .split(",")
  .map((x) => x.trim())
  .filter(Boolean);
@@ -425,7 +425,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
- if (!EMAIL_TO_LIST.length) return;
+ if (!EMAILTOLIST.length) return;
 
  const { title, date, startTime, endTime, location, note } = event;
 
@@ -439,10 +439,10 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
  const html = `
  <h2>새 일정이 등록되었습니다</h2>
  <ul>
- <li><b>제목</b>: ${title}</li>
- <li><b>날짜</b>: ${date}</li>
- <li><b>시간</b>: ${timeRange}</li>
- ${location ? `<li><b>장소</b>: ${location}</li>` : ""}
+ <li>제목: ${title}</li>
+ <li>날짜: ${date}</li>
+ <li>시간: ${timeRange}</li>
+ ${location ? `<li>장소: ${location}</li>` : ""}
  </ul>
  <p>노션 링크: <a href="${notionUrl}">${notionUrl}</a></p>
  ${note ? `<p>메모: ${note}</p>` : ""}
@@ -450,14 +450,14 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
 
  await transporter.sendMail({
  from: EMAIL_FROM,
- to: EMAIL_TO_LIST,
+ to: EMAILTOLIST,
  subject,
  html,
  });
 }
 ```
 
-환경변수(`MAIL_HOST`, `MAIL_USER`, `MAIL_PASS`, `MAIL_TO_LIST`)만 잘 맞춰놓으면 된다. 
+환경변수(`MAILHOST`, `MAILUSER`, `MAILPASS`, `MAILTO_LIST`)만 잘 맞춰놓으면 된다. 
 여기서도 역시 한 번쯤은 "포트 465/587/25 뭐가 맞더라…" 하면서 로그랑 씨름하게 된다.
 
 ---
@@ -472,7 +472,7 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
 
 그럴 때 검색창에 이런 걸 치게 된다:
 
-- `notion api invalid_request_url database_id`
+- `notion api invalidrequesturl database_id`
 - `telegram webhook 400 bad request bot`
 - `nodemailer self signed certificate in certificate chain`
 
@@ -484,16 +484,16 @@ export async function sendEventEmails(event: ParsedEvent, notionUrl: string) {
 
 ## 핵심 포인트 4개만 딱 정리
 
-1. **OpenClaw는 "내 서버에 붙은 AI 비서"다** 
+1. OpenClaw는 "내 서버에 붙은 AI 비서"다 
  - 채팅앱(텔레그램·WhatsApp·웹·TUI) 위에서 돌고, 실제 시스템/서비스에 손을 뻗는 에이전트 허브 느낌이다.
 
-2. **스킬 구조가 확실해서, 개발자가 자기 도메인 스킬 만들기 좋다** 
+2. 스킬 구조가 확실해서, 개발자가 자기 도메인 스킬 만들기 좋다 
  - GitHub, 캘린더, 이메일, 홈브류까지 이미 스킬 모음이 있고, 폴더 하나 추가해서 새 스킬을 꽂을 수 있다.
 
-3. **보안/권한 설계 삐끗하면 진짜 위험해진다** 
+3. 보안/권한 설계 삐끗하면 진짜 위험해진다 
  - LLM한테 시스템 권한을 위임하는 셈이라, 토큰 관리, 파일 접근 범위, 채널 보안 등은 직접 챙겨야 한다.
 
-4. **텔레그램 → 노션 일정 → 메일 공유 플로우는 "채널 + LLM 파싱 + 두 개의 API 호출" 조합으로 깔끔하게 구현 가능** 
+4. 텔레그램 → 노션 일정 → 메일 공유 플로우는 "채널 + LLM 파싱 + 두 개의 API 호출" 조합으로 깔끔하게 구현 가능 
  - 메시지 수신 → LLM으로 일정 구조화 → 노션 DB 페이지 생성 → 메일 전송, 이 네 단계를 스킬로 쪼개면 재사용성도 좋다.
 
 이 정도 감각만 잡아두면, "챗봇이 내 일을 대신 해주는" 쪽으로 슬슬 스택을 확장해 볼 수 있다. 

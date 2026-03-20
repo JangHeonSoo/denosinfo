@@ -13,7 +13,7 @@ I'm a Tesla owner. In Korea, no less. Running a vehicle with FSD (Full Self-Driv
 
 ## My Car "Drives" Even When It's Not Driving
 
-Tesla has something called **Shadow Mode**.
+Tesla has something called Shadow Mode.
 
 Think about boxers practicing shadow boxing. No real opponent, but they throw punches, move their feet, keep their guard up. Building muscle memory, refining technique. Not the real fight, but feels like it.
 
@@ -35,7 +35,7 @@ Why? Shadow mode.
 
 Each vehicle operates like this:
 
-**1. Trigger Classifier**
+1. Trigger Classifier
 
 The car doesn't transmit everything. That would crash the servers. Instead, it does first-stage filtering onboard.
 
@@ -48,11 +48,11 @@ This is Andrej Karpathy's patented system. As the neural network analyzes camera
 
 When detected, it assigns a classifier score. High score? Transmit to server. Low score? Discard.
 
-**2. Context-Aware Activation**
+2. Context-Aware Activation
 
 GPS data helps too. If the car approaches a tunnel, it pre-activates the "tunnel exit classifier." Only runs when needed, maximizing efficiency.
 
-**3. Upload on WiFi Connection**
+3. Upload on WiFi Connection
 
 When the car returns home and connects to WiFi, it uploads the day's collected data overnight. Some goes through LTE, but most via WiFi. That's why my ISP freaked out.
 
@@ -66,33 +66,33 @@ Finding cars in footage and marking them "car," finding pedestrians and marking 
 
 Years ago, humans did this. Tesla outsourced to third-party companies, but quality was poor. So they built an in-house labeling team of hundreds. But even that had limits. Humans can only process so much per day.
 
-That's why Tesla created **Auto-Labeling**.
+That's why Tesla created Auto-Labeling.
 
 ### How It Works: 3D Reconstruction
 
-1. **High-Precision 3D Mapping**: Multiple Teslas pass through the same area, collecting footage. Camera, radar (previously), and sensor data fuse to create a 3D digital twin of the road. Buildings, trees, lane markings, signs—all precisely mapped.
+1. High-Precision 3D Mapping: Multiple Teslas pass through the same area, collecting footage. Camera, radar (previously), and sensor data fuse to create a 3D digital twin of the road. Buildings, trees, lane markings, signs—all precisely mapped.
 
-2. **Multi-Trip Reconstruction**: Analyzes data from multiple visits to the same location. Tracks trajectories of moving objects (vehicles, pedestrians) and learns their interaction with static environments.
+2. Multi-Trip Reconstruction: Analyzes data from multiple visits to the same location. Tracks trajectories of moving objects (vehicles, pedestrians) and learns their interaction with static environments.
 
-3. **Automated Labeling**: When a new vehicle passes the same area, it compares real-time sensor data with the existing 3D model. Automatically identifies "that's a car, that's a sign, that's a lane line."
+3. Automated Labeling: When a new vehicle passes the same area, it compares real-time sensor data with the existing 3D model. Automatically identifies "that's a car, that's a sign, that's a lane line."
 
 The results? Astounding.
 
-According to Tesla AI Day 2, what would take humans 5 million hours of labeling took 12 hours. **400,000 times faster.**
+According to Tesla AI Day 2, what would take humans 5 million hours of labeling took 12 hours. 400,000 times faster.
 
 Of course, humans still review. But AI handles most of it.
 
 ## Training Pipeline: Data Becomes Intelligence
 
-1. **Data Collection**: 400,000 video clips processed per second from 6 million vehicles
-2. **Shadow Mode Comparison**: Human driver vs AI predictions, mark disagreements
-3. **Trigger Classifier**: Filter interesting/difficult/rare cases
-4. **Auto-Labeling**: Automatic label generation based on 3D reconstruction
-5. **Training**: 48 neural networks trained for 70,000 GPU hours on Dojo supercomputer
-6. **Deployment**: OTA updates distribute to all vehicles
-7. **Repeat**
+1. Data Collection: 400,000 video clips processed per second from 6 million vehicles
+2. Shadow Mode Comparison: Human driver vs AI predictions, mark disagreements
+3. Trigger Classifier: Filter interesting/difficult/rare cases
+4. Auto-Labeling: Automatic label generation based on 3D reconstruction
+5. Training: 48 neural networks trained for 70,000 GPU hours on Dojo supercomputer
+6. Deployment: OTA updates distribute to all vehicles
+7. Repeat
 
-This is **Fleet Learning**. When one car learns, all cars learn.
+This is Fleet Learning. When one car learns, all cars learn.
 
 ## What If We Apply This to Manufacturing?
 
@@ -102,12 +102,12 @@ This got me thinking: what if we applied this methodology to factories?
 
 There's a German automotive parts manufacturer case. They applied shadow mode to laser welding robot cells.
 
-- **Existing System**: Approved quality control algorithm in operation
-- **Shadow Mode**: New AI model runs in parallel but doesn't influence actual decisions
-- **Comparison**: Compare judgments from both systems, analyze disagreements
-- **Result**: Safely validate then deploy new model, drastically reduced latency
+- Existing System: Approved quality control algorithm in operation
+- Shadow Mode: New AI model runs in parallel but doesn't influence actual decisions
+- Comparison: Compare judgments from both systems, analyze disagreements
+- Result: Safely validate then deploy new model, drastically reduced latency
 
-**Key Point**: Test AI without stopping the production line.
+Key Point: Test AI without stopping the production line.
 
 ### Case 2: Medical Devices
 
@@ -118,7 +118,7 @@ Wipro applied shadow mode to medical devices.
 - Learn by observing clinician decisions
 - AI diagnostic system detecting multiple sclerosis via MRI: case-level sensitivity 93.3% (vs standard radiologist reading 58.3%)
 
-**Key Point**: Improve AI in real clinical environments without compromising patient safety.
+Key Point: Improve AI in real clinical environments without compromising patient safety.
 
 ### Case 3: Predictive Maintenance
 
@@ -136,23 +136,23 @@ Foxconn applied it to Autonomous Mobile Robots (AMRs):
 
 If you're building such a system in your company:
 
-**1. Start Small**
+1. Start Small
 - Where there's lots of repetition
 - Where sensor data is abundant
 - Where failure isn't catastrophic
 
-**2. Validate with Shadow Mode**
+2. Validate with Shadow Mode
 - Never deploy directly to production
 - Parallel execution, comparison, error pattern measurement
 - Grant execution authority only after thorough validation
 
-**3. Build Data Pipeline**
+3. Build Data Pipeline
 - First-stage filtering at edge (like Tesla's trigger classifier)
 - Transmit to cloud (WiFi/5G)
 - Auto-labeling system (humans only review)
 - Continuous learning loop
 
-**4. Design Feedback Loop**
+4. Design Feedback Loop
 - Expert judgment vs AI judgment
 - Use disagreement cases as training data
 - After model update, validate again in shadow mode
@@ -161,17 +161,17 @@ If you're building such a system in your company:
 
 Of course, it's not perfect.
 
-**Data Privacy**: Tesla claims anonymization, but controversy remains. Protecting sensitive process data matters in manufacturing too.
+Data Privacy: Tesla claims anonymization, but controversy remains. Protecting sensitive process data matters in manufacturing too.
 
-**Computing Costs**: Petabyte-scale data processing is expensive. Tesla built its own Dojo supercomputer. What about small businesses?
+Computing Costs: Petabyte-scale data processing is expensive. Tesla built its own Dojo supercomputer. What about small businesses?
 
-**Overfitting Risk**: If AI only learns specific situations well, it fails in new ones. Tesla struggles with this too.
+Overfitting Risk: If AI only learns specific situations well, it fails in new ones. Tesla struggles with this too.
 
-**Regulation**: Safety-critical systems like medical devices need FDA, CE mark approval. Shadow mode helps this process but doesn't replace it.
+Regulation: Safety-critical systems like medical devices need FDA, CE mark approval. Shadow mode helps this process but doesn't replace it.
 
 ## Conclusion: AI Learns from Experience
 
-Tesla's core insight: **AI can't learn from simulation alone. It must face reality.**
+Tesla's core insight: AI can't learn from simulation alone. It must face reality.
 
 A boxer who only shadow boxes gets hit in the ring. But stepping into the ring from day one means injury. So you shadow box for practice, spar for validation, then enter the real fight.
 
@@ -185,7 +185,7 @@ Future AI learns from experience, not textbooks. Tesla proved it.
 
 ---
 
-**References**
+References
 - Tesla AI Day 2021, 2022 presentations
 - Andrej Karpathy patent: "Systems and Methods for Obtaining Training Data"
 - Tesla official safety reports

@@ -8,7 +8,7 @@ description: "맥북, Claude Pro, 그리고 Git. 2026년 개발 환경의 게임
 heroImage: "/images/claude-code-hero.png"
 ---
 
-맥북 하나, Claude Pro 구독 하나. 2026년 기준으로 이 조합이면 웬만한 웹 서비스는 혼자서 뚝딱 만든다. 그냥 코드 몇 줄 써주는 도우미가 아니라, 프로젝트 구조를 파악하고, 서버를 띄우고, 테스트를 돌리고, PR까지 만들어주는 ‘AI 개발 파트너’가 된다. 그 중심에 있는 게 바로 <strong>Claude Code</strong>이다.
+맥북 하나, Claude Pro 구독 하나. 2026년 기준으로 이 조합이면 웬만한 웹 서비스는 혼자서 뚝딱 만든다. 그냥 코드 몇 줄 써주는 도우미가 아니라, 프로젝트 구조를 파악하고, 서버를 띄우고, 테스트를 돌리고, PR까지 만들어주는 ‘AI 개발 파트너’가 된다. 그 중심에 있는 게 바로 Claude Code이다.
 
 이 글에서는 네 가지에 집중한다. Claude Code가 뭐 하는 친구인지, 뭐가 좋은지, 맥 환경에서 어떻게 세팅하는지, 마지막으로 이걸로 실전 웹 애플리케이션을 어떻게 뽑아내는지다.
 
@@ -35,23 +35,23 @@ heroImage: "/images/claude-code-hero.png"
 
 벌써 코파일럿 도구가 넘치는 시대다. 그럼에도 Claude Code를 "3대장" 안에 넣어야 하는 이유가 있다.
 
-1. <strong>프로젝트 전체 맥락 이해</strong>
+1. 프로젝트 전체 맥락 이해
  - 에이전틱 검색을 통해 코드를 일일이 선택해주지 않아도, 프로젝트 구조와 의존성을 자동으로 파악한다.
  - 3만 라인 이상 되는 코드베이스도 구조를 요약하고, 모듈별 역할을 정리해준다.
 
-2. <strong>멀티 파일 대규모 리팩터링</strong>
+2. 멀티 파일 대규모 리팩터링
  - 다수의 파일을 동시에 수정하면서도, 빌드와 테스트를 돌려가며 일관성을 유지한다.
  - GitHub 이슈를 읽고, 브랜치를 생성하고, 수정, 테스트, 커밋, PR 생성까지 한 번에 처리하는 워크플로우를 지원한다.
 
-3. <strong>안전한 변경 승인 플로우</strong>
+3. 안전한 변경 승인 플로우
  - Ask permissions 모드에서는 모든 파일 변경을 diff 뷰로 보여주고, 사용자가 승인해야 실제로 반영된다.
  - Auto accept edits, Plan mode, Bypass permissions 등 네 가지 권한 모드로 자동화 수준을 조절할 수 있다.
 
-4. <strong>실행 가능한 Dev 서버 + 미니 브라우저</strong>
+4. 실행 가능한 Dev 서버 + 미니 브라우저
  - dev 서버를 띄우고, 내장 브라우저에서 앱을 띄운 뒤, DOM을 읽고, 버튼을 클릭하고, 폼을 채우면서 스스로 버그를 찾는다.
  - `.claude/launch.json`으로 `npm run dev`, `yarn dev` 같은 커맨드를 설정해두면, 저장 후 자동 검증까지 돌아간다.
 
-5. <strong>맥 환경 최적화 + 로컬/클라우드/SSH</strong>
+5. 맥 환경 최적화 + 로컬/클라우드/SSH
  - macOS용 데스크톱 앱에서 Local, Remote, SSH 세 가지 환경을 선택해 세션을 시작할 수 있다.
  - 로컬 세션은 내 맥의 환경변수와 CLI 도구를 그대로 사용하고, Remote 세션은 클라우드에서 장시간 작업을 계속 돌려준다.
 
@@ -100,11 +100,11 @@ git clone https://github.com/username/claude-web-demo.git
 cd claude-web-demo
 ```
 
-3. 여기서 Claude Code 세션의 <strong>프로젝트 폴더</strong>로 이 디렉터리를 지정하면 된다.
+3. 여기서 Claude Code 세션의 프로젝트 폴더로 이 디렉터리를 지정하면 된다.
 
 ### 4. Claude Desktop에서 Code 세션 시작
 
-1. Claude 데스크톱 앱을 실행하고 상단의 <strong>Code</strong> 탭을 연다.
+1. Claude 데스크톱 앱을 실행하고 상단의 Code 탭을 연다.
 2. "New session"을 누르고 아래 네 가지를 설정한다.
  - Environment: Local
  - Project folder: `claude-web-demo` 디렉터리
@@ -143,7 +143,7 @@ Permission mode는 Claude Code를 얼마나 "풀어 줄 것인가"를 정하는 
 
 ## CLAUDE.md로 ‘개발 팀장’ 캐릭터 심어주기
 
-Claude Code의 숨은 핵심 기능이 <strong>CLAUDE.md</strong> 파일이다. 이 파일에 프로젝트 룰을 써두면, Claude가 항상 그 규칙을 따라 행동한다.
+Claude Code의 숨은 핵심 기능이 CLAUDE.md 파일이다. 이 파일에 프로젝트 룰을 써두면, Claude가 항상 그 규칙을 따라 행동한다.
 
 프로젝트 루트에 `CLAUDE.md`를 만들고 이렇게 적을 수 있다.
 
@@ -249,7 +249,7 @@ MVP가 돌아가면, 이제는 Claude에게 스스로 짠 코드를 다시 리�
  관점에서 개선 포인트를 찾고, 필요한 리팩터링을 제안한 뒤 직접 적용해달라.
 ```
 
-diff 뷰 상단의 <strong>Review code</strong> 버튼을 누르면, Claude가 변경사항을 스캔하고, 논리 오류, 런타임 에러 가능성, 보안 취약점 등을 중심으로 코멘트를 단다. 마음에 드는 수정은 "이 코멘트 반영해서 리팩터링해달라"라고 답하면 된다.
+diff 뷰 상단의 Review code 버튼을 누르면, Claude가 변경사항을 스캔하고, 논리 오류, 런타임 에러 가능성, 보안 취약점 등을 중심으로 코멘트를 단다. 마음에 드는 수정은 "이 코멘트 반영해서 리팩터링해달라"라고 답하면 된다.
 
 ### 5단계: GitHub PR까지 한 번에
 
@@ -289,9 +289,9 @@ Claude는 다음 작업을 순서대로 처리한다.
 
 - [ ] macOS용 Claude Desktop 설치 및 Pro/Max 구독 활성화.
 - [ ] Git, Node.js, npm, GitHub CLI 설치 및 로그인.
-- [ ] 프로젝트 루트에 <strong>CLAUDE.md</strong>로 코딩 규칙 정의.
+- [ ] 프로젝트 루트에 CLAUDE.md로 코딩 규칙 정의.
 - [ ] Claude Code에서 Local 세션 + Ask permissions 모드로 첫 프로젝트 연결.
-- [ ] <strong>.claude/launch.json</strong> 확인 후 dev 서버 커맨드(yarn dev 등) 맞게 조정.
+- [ ] .claude/launch.json 확인 후 dev 서버 커맨드(yarn dev 등) 맞게 조정.
 - [ ] GitHub 커넥터 연결 후 PR 자동화 플로우 테스트.
 
 한 번만 세팅해두면, 이후에는 새 프로젝트를 만들 때마다 "이 리포 세팅해줘" 한 줄이면 된다. 맥 앞에 앉아서 키보드를 두드리는 시간보다, 어떤 제품을 만들지 고민하는 시간이 더 많아진다.

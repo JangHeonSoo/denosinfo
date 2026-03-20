@@ -5,34 +5,34 @@ category: 'tech'
 author: denosinfo
 tags: [Server, Networking, Firewall, Troubleshooting, WebServer, SysAdmin]
 description: "Is your server running locally but unreachable from the public internet? Learn about the 10 most common causes—from port binding to firewall rules—and follow our step-by-step diagnosis guide."
-heroImage: "/images/server_access_hero_connection_glow_1771459314906.png"
+heroImage: "/images/serveraccessheroconnectionglow_1771459314906.png"
 ---
 
 Locally, the server works perfectly. Hit `localhost:8080` and the page loads just fine. But from home, the office, or mobile data, all you get is timeouts and connection errors. The process is alive, yet from the outside it feels like the server is stranded on an island.
 
-This situation is more common than it looks. Web apps, game servers, APIs under development, you name it. This guide walks through the most common reasons why <strong>"a server process is running but cannot be reached from outside."</strong>
+This situation is more common than it looks. Web apps, game servers, APIs under development, you name it. This guide walks through the most common reasons why "a server process is running but cannot be reached from outside."
 
-![A high-tech server rack in a dark data center with one port glowing amber, symbolizing a connection issue](/images/server_access_hero_connection_glow_1771459314906.png)
+![A high-tech server rack in a dark data center with one port glowing amber, symbolizing a connection issue](/images/serveraccessheroconnectionglow_1771459314906.png)
 
 <br/>
 
 ## 1. Server is listening only on 127.0.0.1 (localhost)
 
-This is the classic, almost comical root cause. The server binds only to the loopback address <strong>127.0.0.1</strong>, so the same machine can reach it but nothing else can.
+This is the classic, almost comical root cause. The server binds only to the loopback address 127.0.0.1, so the same machine can reach it but nothing else can.
 
 On Stack Overflow, a large share of "works on my machine, not from others" questions boil down to this exact issue. Typical listen targets:
 
-- <strong>127.0.0.1</strong>: Accessible only from the local machine.
-- <strong>192.168.x.x, 10.x.x.x</strong>: Accessible only from the local network (LAN).
-- <strong>0.0.0.0</strong>: Accessible from all interfaces.
+- 127.0.0.1: Accessible only from the local machine.
+- 192.168.x.x, 10.x.x.x: Accessible only from the local network (LAN).
+- 0.0.0.0: Accessible from all interfaces.
 
-If your app listens on <strong>127.0.0.1</strong>, external access is impossible by design. In most frameworks—Spring Boot, Node.js, Python, etc.—changing the bind address to <strong>0.0.0.0</strong> exposes the server to external clients.
+If your app listens on 127.0.0.1, external access is impossible by design. In most frameworks—Spring Boot, Node.js, Python, etc.—changing the bind address to 0.0.0.0 exposes the server to external clients.
 
 <br/>
 
 ## 2. OS firewall blocking inbound traffic
 
-The application is running, but the operating system firewall drops incoming packets. On Linux this is usually <strong>iptables</strong> or <strong>ufw</strong>; on Windows it's Windows Defender Firewall.
+The application is running, but the operating system firewall drops incoming packets. On Linux this is usually iptables or ufw; on Windows it's Windows Defender Firewall.
 
 Practical troubleshooting guides emphasize that inbound rules are often "deny by default; whitelist only what you need." To check whether your service port is listening:
 
@@ -50,7 +50,7 @@ Many server basics guides recommend adding the firewall rule, then testing from 
 
 ## 3. Network firewall/router issues (port forwarding and inbound policy)
 
-![A futuristic 3D visualization of a robotic hand precisely adjusting a translucent digital firewall interface](/images/server_access_firewall_robotic_hand_1771459334384.png)
+![A futuristic 3D visualization of a robotic hand precisely adjusting a translucent digital firewall interface](/images/serveraccessfirewallrobotichand_1771459334384.png)
 
 If there is a router or dedicated firewall in front of the server, that device may be blocking access. This is extremely common with home servers, NAS boxes, and on-prem office servers.
 
@@ -60,7 +60,7 @@ Typical problems:
 - Incorrect port or IP in the port forwarding rule.
 - Firewall policy on the edge device denies inbound traffic on the service port.
 
-Troubleshooting guides note that when a firewall sits between the internet and the web server, <strong>"you must explicitly allow inbound traffic for the server's IP and service port in that firewall's rules."</strong> Let's Encrypt/ACME error messages like `Timeout during connect (likely firewall problem)` usually indicate that ports 80/443 are blocked or not forwarded correctly.
+Troubleshooting guides note that when a firewall sits between the internet and the web server, "you must explicitly allow inbound traffic for the server's IP and service port in that firewall's rules." Let's Encrypt/ACME error messages like `Timeout during connect (likely firewall problem)` usually indicate that ports 80/443 are blocked or not forwarded correctly.
 
 When outside access fails, first check:
 
@@ -75,11 +75,11 @@ Sometimes the server is fine and works on the LAN, but the domain or IP used fro
 
 Common confusion patterns:
 
-- Using <strong>192.168.x.x:8080</strong> from outside the network—it will never work.
+- Using 192.168.x.x:8080 from outside the network—it will never work.
 - The domain still points to an old IP address.
 - Dynamic DNS not updating after the router's public IP changed.
 
-Stack Overflow answers repeatedly explain that <strong>"private addresses like 192.168.x.x are not reachable from the public internet and are reused across countless networks worldwide."</strong> For external access, the chain must look like:
+Stack Overflow answers repeatedly explain that "private addresses like 192.168.x.x are not reachable from the public internet and are reused across countless networks worldwide." For external access, the chain must look like:
 
 - Domain → public IP → router → private server IP → service port.
 
@@ -89,11 +89,11 @@ If any link in that chain is wrong, outside clients cannot reach the server.
 
 ## 5. Cloud security group (SG) rules missing
 
-On cloud providers like AWS, GCP, and Azure, there is another firewall layer besides the OS: <strong>security groups</strong> or network security rules.
+On cloud providers like AWS, GCP, and Azure, there is another firewall layer besides the OS: security groups or network security rules.
 
 If inbound rules are not configured, the port will look closed from the internet even though the process is listening. Example for AWS EC2:
 
-- Add inbound rule for <strong>TCP 80</strong> or <strong>TCP 443</strong> from <strong>0.0.0.0/0</strong>.
+- Add inbound rule for TCP 80 or TCP 443 from 0.0.0.0/0.
 - Restrict admin ports to specific IP ranges.
 
 Real-world Q&A threads show many "server is running but unreachable" cases ending up as missing or overly strict security group rules.
@@ -107,7 +107,7 @@ In development, it's easy to run the app on one port while trying to access anot
 To verify:
 
 - From the server itself, run `curl http://localhost:PORT` to see which port responds.
-- Use <strong>netstat</strong> or <strong>ss</strong> to see which IP/port combinations the process actually binds to.
+- Use netstat or ss to see which IP/port combinations the process actually binds to.
 
 Linux troubleshooting tips often recommend spinning up a simple test server, such as `python3 -m http.server PORT`, and checking external access. If that test server works but your app does not, the issue lies in application configuration, not the network.
 
@@ -120,8 +120,8 @@ Another pattern: IP-based access works, but the domain name does not.
 Symptoms:
 
 - Direct IP access succeeds; domain access times out or hits another site.
-- <strong>ping domain</strong> shows an unexpected IP.
-- <strong>nslookup</strong> times out or returns the wrong records.
+- ping domain shows an unexpected IP.
+- nslookup times out or returns the wrong records.
 
 Networking forums point out that firewalls blocking DNS traffic on port 53, or asymmetric routing of DNS responses, can also cause name resolution failures. If domain-based access fails, verify:
 
@@ -137,10 +137,10 @@ In home and small office setups, NAT complexity can break access in surprising w
 
 Common scenarios:
 
-- <strong>Double NAT</strong>: public IP → router A → router B → server; port forwarding is incomplete across the chain.
-- <strong>No hairpin NAT support</strong>: clients on the same LAN cannot reach the server using the external domain name.
+- Double NAT: public IP → router A → router B → server; port forwarding is incomplete across the chain.
+- No hairpin NAT support: clients on the same LAN cannot reach the server using the external domain name.
 
-Some routers require <strong>hairpin NAT (a.k.a. NAT loopback)</strong> to let internal clients access a local server via its public domain. When unsupported, networking communities recommend internal DNS or local hosts file overrides as workarounds.
+Some routers require hairpin NAT (a.k.a. NAT loopback) to let internal clients access a local server via its public domain. When unsupported, networking communities recommend internal DNS or local hosts file overrides as workarounds.
 
 <br/>
 
@@ -159,21 +159,21 @@ In DNS-related threads, engineers suggest testing from alternative networks and 
 
 ## 10. A practical troubleshooting sequence
 
-![A top-down workspace shot of a network engineer's desk with a laptop terminal and a topology map on a tablet](/images/server_access_diagnosis_engineer_desk_1771459353541.png)
+![A top-down workspace shot of a network engineer's desk with a laptop terminal and a topology map on a tablet](/images/serveraccessdiagnosisengineerdesk_1771459353541.png)
 
 With so many moving pieces, a simple sequence helps isolate the problem.
 
-1. <strong>From the server itself:</strong>
+1. From the server itself:
  - `curl http://localhost:PORT` to confirm the app responds.
- - Use <strong>netstat/ss</strong> to confirm the bind address (127.0.0.1 vs 0.0.0.0).
-2. <strong>From another machine on the same LAN:</strong>
- - Access `http://INTERNAL_SERVER_IP:PORT`.
+ - Use netstat/ss to confirm the bind address (127.0.0.1 vs 0.0.0.0).
+2. From another machine on the same LAN:
+ - Access `http://INTERNALSERVERIP:PORT`.
  - If this fails, suspect host firewall or internal routing issues first.
-3. <strong>From outside the network:</strong>
+3. From outside the network:
  - Use mobile data or another ISP to hit the public IP or domain.
  - If this fails, inspect router port forwarding, edge firewall, and cloud SG rules.
-4. <strong>Check DNS:</strong>
- - <strong>ping domain, nslookup domain</strong> to confirm which IP is being used.
+4. Check DNS:
+ - ping domain, nslookup domain to confirm which IP is being used.
 
 Following this path, most "server is running but unreachable" mysteries become straightforward to diagnose.
 

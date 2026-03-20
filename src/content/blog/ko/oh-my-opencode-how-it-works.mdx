@@ -16,14 +16,14 @@ OpenCode를 처음 켜 보면, 왠지 든든한 AI 페어 프로그래머를 한
 
 ## 1. 기본 구조: OpenCode 위에 올라간 에이전트 하네스
 
-oh-my-opencode의 구조를 한 줄로 요약하면 <strong>"OpenCode 위에서 돌아가는 배터리 포함(Batteries-Included) 에이전트 하네스"</strong>다. 핵심은 OpenCode의 CLI와 세션을 그대로 사용하면서, 그 위에 여러 개의 서브 에이전트와 도구 체인을 얹는 구조다.
+oh-my-opencode의 구조를 한 줄로 요약하면 "OpenCode 위에서 돌아가는 배터리 포함(Batteries-Included) 에이전트 하네스"다. 핵심은 OpenCode의 CLI와 세션을 그대로 사용하면서, 그 위에 여러 개의 서브 에이전트와 도구 체인을 얹는 구조다.
 
 공식 README와 사용기들을 기준으로 구성 요소를 정리하면 대략 이렇게 나뉜다.
 
-- <strong>Sisyphus</strong>: 메인 에이전트. 큰 작업을 쪼개서 서브 에이전트에게 분배하고, 끝까지 밀어붙이는 역할.
-- <strong>Sub Agents</strong>: Oracle, Librarian, Explore, Frontend 등 역할별 전문가 에이전트들.
-- <strong>도구 레이어</strong>: LSP, AST-Grep, 파일 시스템, Git, 세션 히스토리 검색 등.
-- <strong>호환성 레이어</strong>: Claude Code 설정/명령 체계를 그대로 읽어와 OpenCode 형식으로 변환하는 레이어.
+- Sisyphus: 메인 에이전트. 큰 작업을 쪼개서 서브 에이전트에게 분배하고, 끝까지 밀어붙이는 역할.
+- Sub Agents: Oracle, Librarian, Explore, Frontend 등 역할별 전문가 에이전트들.
+- 도구 레이어: LSP, AST-Grep, 파일 시스템, Git, 세션 히스토리 검색 등.
+- 호환성 레이어: Claude Code 설정/명령 체계를 그대로 읽어와 OpenCode 형식으로 변환하는 레이어.
 
 실행 자체는 OpenCode CLI가 담당한다. 예를 들어
 
@@ -41,10 +41,10 @@ oh-my-opencode의 심장은 Sisyphus라는 메인 에이전트다. README에는 
 
 이 에이전트가 하는 일은 대략 네 가지다.
 
-- <strong>작업 쪼개기</strong>: 사용자의 프롬프트(또는 ultrawork 같은 키워드)를 분석해서, 설계·리서치·구현·테스트 등으로 나눈다.
-- <strong>서브 에이전트 호출</strong>: 아키텍처는 Oracle, 코드 탐색은 Explore, 문서 검색은 Librarian 같은 식으로 역할을 위임한다.
-- <strong>재시도·전략 전환</strong>: 한 접근이 막히면 다른 도구나 다른 전략으로 다시 시도한다. 데모에서도 "작업이 안 되면 다른 전략으로 피벗한다"는 설명이 나온다.
-- <strong>Todo Continuation</strong>: 중간에 응답이 끊겨도, 남은 할 일 목록을 기반으로 다시 이어서 작업하게 만든다.
+- 작업 쪼개기: 사용자의 프롬프트(또는 ultrawork 같은 키워드)를 분석해서, 설계·리서치·구현·테스트 등으로 나눈다.
+- 서브 에이전트 호출: 아키텍처는 Oracle, 코드 탐색은 Explore, 문서 검색은 Librarian 같은 식으로 역할을 위임한다.
+- 재시도·전략 전환: 한 접근이 막히면 다른 도구나 다른 전략으로 다시 시도한다. 데모에서도 "작업이 안 되면 다른 전략으로 피벗한다"는 설명이 나온다.
+- Todo Continuation: 중간에 응답이 끊겨도, 남은 할 일 목록을 기반으로 다시 이어서 작업하게 만든다.
 
 그래서 "한 번 시도해 보고 아니다 싶으면 포기"하던 기존 에이전트와 달리, 목표에 도달할 때까지 집요하게 리트라이하는 패턴을 보여 준다.
 
@@ -56,13 +56,13 @@ oh-my-opencode의 심장은 Sisyphus라는 메인 에이전트다. README에는 
 
 문서와 가이드에서 소개하는 대표 서브 에이전트는 다음과 같다.
 
-- <strong>Oracle</strong>: 아키텍처 분석, 코드 리뷰, 리팩터링 전략 제안.
-- <strong>Librarian</strong>: 문서·코드베이스 검색, 레거시 코드 이해 보조.
-- <strong>Explore</strong>: 빠른 코드 검색, 심볼 추적.
-- <strong>Frontend/Backend 등 역할별 에이전트</strong>: 특정 레이어의 구현을 집중적으로 담당.
-- <strong>Background Agents</strong>: `run_in_background: true` 옵션으로 백그라운드에서 돌릴 수 있는 작업들.
+- Oracle: 아키텍처 분석, 코드 리뷰, 리팩터링 전략 제안.
+- Librarian: 문서·코드베이스 검색, 레거시 코드 이해 보조.
+- Explore: 빠른 코드 검색, 심볼 추적.
+- Frontend/Backend 등 역할별 에이전트: 특정 레이어의 구현을 집중적으로 담당.
+- Background Agents: `runinbackground: true` 옵션으로 백그라운드에서 돌릴 수 있는 작업들.
 
-특히 `call_omo_agent`라는 도구를 통해 다른 서브 에이전트를 호출할 수 있고, 이때 `run_in_background` 플래그를 켜면 결과를 기다리지 않고 다른 일로 넘어갈 수 있다. 여러 에이전트가 병렬로 돌아가면서, 실제 팀이 각자 모듈을 나눠 개발하는 것과 비슷한 구조가 된다.
+특히 `callomoagent`라는 도구를 통해 다른 서브 에이전트를 호출할 수 있고, 이때 `runinbackground` 플래그를 켜면 결과를 기다리지 않고 다른 일로 넘어갈 수 있다. 여러 에이전트가 병렬로 돌아가면서, 실제 팀이 각자 모듈을 나눠 개발하는 것과 비슷한 구조가 된다.
 
 <br/>
 
@@ -74,11 +74,11 @@ oh-my-opencode의 심장은 Sisyphus라는 메인 에이전트다. README에는 
 
 문서에 정리된 대표 도구는 다음과 같다.
 
-- <strong>LSP 기반 기능</strong>: 정의로 이동, 참조 찾기, 심볼 검색, 진단 오류 조회, 리팩터링(code action, rename 등).
-- <strong>AST-Grep</strong>: 25개 이상의 언어에 대해 AST 기반 패턴 검색·치환(검색과 교체를 코드 구조 단위로 수행).
-- <strong>세션 히스토리 검색</strong>: 과거 대화·수정 내역을 토큰 낭비 없이 다시 찾아 쓸 수 있는 기능.
+- LSP 기반 기능: 정의로 이동, 참조 찾기, 심볼 검색, 진단 오류 조회, 리팩터링(code action, rename 등).
+- AST-Grep: 25개 이상의 언어에 대해 AST 기반 패턴 검색·치환(검색과 교체를 코드 구조 단위로 수행).
+- 세션 히스토리 검색: 과거 대화·수정 내역을 토큰 낭비 없이 다시 찾아 쓸 수 있는 기능.
 
-README에는 기존 grep/glob 도구를 대체하고, 타임아웃 없는 AST-Grep 도구를 기본 제공한다고 나온다. 핵심 아이디어는 <strong>"왜 IDE의 모든 도구를 사람만 쓰고, 에이전트는 못 쓰게 하는가?"</strong>라는 질문이다. oh-my-opencode는 이 장벽을 없애서, 에이전트가 직접 LSP·AST 도구를 호출해 더 정확한 수정을 하게 만든다.
+README에는 기존 grep/glob 도구를 대체하고, 타임아웃 없는 AST-Grep 도구를 기본 제공한다고 나온다. 핵심 아이디어는 "왜 IDE의 모든 도구를 사람만 쓰고, 에이전트는 못 쓰게 하는가?"라는 질문이다. oh-my-opencode는 이 장벽을 없애서, 에이전트가 직접 LSP·AST 도구를 호출해 더 정확한 수정을 하게 만든다.
 
 <br/>
 
@@ -105,7 +105,7 @@ oh-my-opencode는 MCP(Model Context Protocol)를 통해 외부 서비스를 연�
 
 이 말은 곧
 
-- PR 코멘트, 이슈, Slack 대화를 읽고 <strong>개발 맥락을 이해</strong>할 수 있고,
+- PR 코멘트, 이슈, Slack 대화를 읽고 개발 맥락을 이해할 수 있고,
 - 설계 문서나 API 스펙을 직접 가져와 코드에 반영할 수 있다는 뜻이다.
 
 OpenCode 자체도 MCP를 지원하지만, oh-my-opencode는 이를 미리 통합해 "배터리 포함" 상태로 제공한다. 사용자는 복잡한 MCP 설정을 일일이 하지 않고도, 기본적인 외부 도구 연동을 바로 쓸 수 있다.
@@ -114,14 +114,14 @@ OpenCode 자체도 MCP를 지원하지만, oh-my-opencode는 이를 미리 통�
 
 ## 7. ultrawork 키워드: 한 줄로 풀 세트를 켜는 스위치
 
-세부 설정을 다 알 필요 없이, oh-my-opencode의 모든 기능을 한 번에 켜는 방법이 있다. 바로 <strong>`ultrawork`</strong> 또는 줄여서 <strong>`ulw`</strong>라는 키워드를 프롬프트에 넣는 것이다.
+세부 설정을 다 알 필요 없이, oh-my-opencode의 모든 기능을 한 번에 켜는 방법이 있다. 바로 `ultrawork` 또는 줄여서 `ulw`라는 키워드를 프롬프트에 넣는 것이다.
 
 리뷰에 따르면, ultrawork가 들어간 프롬프트를 보내면 Sisyphus가 다음과 같이 동작한다.
 
 - 작업을 단계별로 쪼개고
 - 필요한 서브 에이전트를 병렬로 띄우고
 - LSP/AST 도구까지 동원해서
-- <strong>"초안 → 수정 → 리팩터링 → 정리"</strong>까지 한 번에 밀어붙인다.
+- "초안 → 수정 → 리팩터링 → 정리"까지 한 번에 밀어붙인다.
 
 실제 사용 후기를 보면, 8시간짜리 작업을 1시간 안에 끝냈다는 사례도 나온다. 복잡한 플러밍을 한 번에 정리했다는 개발자 블로그도 이를 증명한다.
 
@@ -131,9 +131,9 @@ OpenCode 자체도 MCP를 지원하지만, oh-my-opencode는 이를 미리 통�
 
 리뷰와 사용기를 종합하면, oh-my-opencode를 썼을 때 체감 변화는 대략 이런 식이다.
 
-- 단일 프롬프트 → <strong>여러 에이전트가 각자 역할</strong>을 나눠 일을 진행한다.
+- 단일 프롬프트 → 여러 에이전트가 각자 역할을 나눠 일을 진행한다.
 - 한 번 삐끗한다고 작업이 끝나지 않고, 다른 시도를 몇 번이고 반복한다.
-- 코드 수정이 "한 줄 생성" 수준이 아니라, LSP·AST 도구를 동원한 <strong>리팩터링</strong>에 가깝다.
+- 코드 수정이 "한 줄 생성" 수준이 아니라, LSP·AST 도구를 동원한 리팩터링에 가깝다.
 - 초기 구축 설정이 조금 필요하지만, 세팅만 끝나면 실제 개발 속도가 확실히 빨라진다는 평가가 많다.
 
 물론 비판도 있다. 일부 사용자들은 "기본 구성이 잘못되면 쓸데없는 수정이 많다"는 의견도 남겼다. 결국 에이전트 구성과 프롬프트 설계에 따라 체감 품질이 크게 달라지는 셈이다.
@@ -144,9 +144,9 @@ OpenCode 자체도 MCP를 지원하지만, oh-my-opencode는 이를 미리 통�
 
 정리하면, oh-my-opencode는 다음 세 가지를 동시에 해결하는 도구다.
 
-- <strong>오케스트레이션</strong>: Sisyphus가 작업을 나누고 여러 서브 에이전트를 병렬로 돌린다.
-- <strong>도구 통합</strong>: LSP, AST-Grep, MCP, 파일·Git 도구까지 에이전트가 직접 사용한다.
-- <strong>호환성과 생산성</strong>: Claude Code 설정을 그대로 가져와 OpenCode에서 재사용하고, ultrawork 같은 키워드로 풀 세트를 한 번에 켠다.
+- 오케스트레이션: Sisyphus가 작업을 나누고 여러 서브 에이전트를 병렬로 돌린다.
+- 도구 통합: LSP, AST-Grep, MCP, 파일·Git 도구까지 에이전트가 직접 사용한다.
+- 호환성과 생산성: Claude Code 설정을 그대로 가져와 OpenCode에서 재사용하고, ultrawork 같은 키워드로 풀 세트를 한 번에 켠다.
 
 그래서 "Oh-My-OpenCode 는 어떻게 동작하는가"를 한 문장으로 말하면 이렇게 정리할 수 있다.
 
