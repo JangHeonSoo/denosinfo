@@ -164,16 +164,16 @@ In DNS-related threads, engineers suggest testing from alternative networks and 
 With so many moving pieces, a simple sequence helps isolate the problem.
 
 1. <strong>From the server itself:</strong>
-   - `curl http://localhost:PORT` to confirm the app responds.
-   - Use <strong>netstat/ss</strong> to confirm the bind address (127.0.0.1 vs 0.0.0.0).
+ - `curl http://localhost:PORT` to confirm the app responds.
+ - Use <strong>netstat/ss</strong> to confirm the bind address (127.0.0.1 vs 0.0.0.0).
 2. <strong>From another machine on the same LAN:</strong>
-   - Access `http://INTERNAL_SERVER_IP:PORT`.
-   - If this fails, suspect host firewall or internal routing issues first.
+ - Access `http://INTERNAL_SERVER_IP:PORT`.
+ - If this fails, suspect host firewall or internal routing issues first.
 3. <strong>From outside the network:</strong>
-   - Use mobile data or another ISP to hit the public IP or domain.
-   - If this fails, inspect router port forwarding, edge firewall, and cloud SG rules.
+ - Use mobile data or another ISP to hit the public IP or domain.
+ - If this fails, inspect router port forwarding, edge firewall, and cloud SG rules.
 4. <strong>Check DNS:</strong>
-   - <strong>ping domain, nslookup domain</strong> to confirm which IP is being used.
+ - <strong>ping domain, nslookup domain</strong> to confirm which IP is being used.
 
 Following this path, most "server is running but unreachable" mysteries become straightforward to diagnose.
 

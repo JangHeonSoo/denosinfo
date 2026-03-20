@@ -50,13 +50,13 @@ MCP uses JSON-RPC 2.0 as its wire format. A request looks like this:
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "get_weather",
-    "arguments": { "city": "Seoul" }
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "tools/call",
+ "params": {
+ "name": "get_weather",
+ "arguments": { "city": "Seoul" }
+ }
 }
 ```
 
@@ -64,12 +64,12 @@ A successful response:
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [{ "type": "text", "text": "Seoul: 18°C, Clear" }],
-    "isError": false
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "result": {
+ "content": [{ "type": "text", "text": "Seoul: 18°C, Clear" }],
+ "isError": false
+ }
 }
 ```
 
@@ -116,21 +116,21 @@ mcp = FastMCP("my-first-mcp")
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
-    """Add two integers together."""
-    return a + b
+ """Add two integers together."""
+ return a + b
 
 @mcp.tool()
 def get_weather(city: str) -> str:
-    """Return weather info for a given city. (Demo — hardcoded values)"""
-    weather_data = {
-        "Seoul": "18°C, Clear",
-        "Busan": "22°C, Cloudy",
-        "Jeju": "25°C, Partly Cloudy",
-    }
-    return weather_data.get(city, f"No weather data found for {city}.")
+ """Return weather info for a given city. (Demo — hardcoded values)"""
+ weather_data = {
+ "Seoul": "18°C, Clear",
+ "Busan": "22°C, Cloudy",
+ "Jeju": "25°C, Partly Cloudy",
+ }
+ return weather_data.get(city, f"No weather data found for {city}.")
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+ mcp.run(transport="stdio")
 ```
 
 The `@mcp.tool()` decorator is the entire registration mechanism. The function's docstring becomes the Tool description — this is what the LLM reads to decide when and how to use the Tool.
@@ -146,34 +146,34 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 async def main():
-    server_params = StdioServerParameters(
-        command="python",
-        args=["server.py"],
-        env=None
-    )
+ server_params = StdioServerParameters(
+ command="python",
+ args=["server.py"],
+ env=None
+ )
 
-    async with stdio_client(server_params) as (read, write):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
+ async with stdio_client(server_params) as (read, write):
+ async with ClientSession(read, write) as session:
+ await session.initialize()
 
-            # List available Tools
-            tools_response = await session.list_tools()
-            print("=== Available Tools ===")
-            for tool in tools_response.tools:
-                print(f"  - {tool.name}: {tool.description}")
+ # List available Tools
+ tools_response = await session.list_tools()
+ print("=== Available Tools ===")
+ for tool in tools_response.tools:
+ print(f" - {tool.name}: {tool.description}")
 
-            # Call add Tool
-            print("\n=== Calling add(3, 7) ===")
-            result = await session.call_tool("add", {"a": 3, "b": 7})
-            print(f"  Result: {result.content[0].text}")
+ # Call add Tool
+ print("\n=== Calling add(3, 7) ===")
+ result = await session.call_tool("add", {"a": 3, "b": 7})
+ print(f" Result: {result.content[0].text}")
 
-            # Call get_weather Tool
-            print("\n=== Calling get_weather('Seoul') ===")
-            result = await session.call_tool("get_weather", {"city": "Seoul"})
-            print(f"  Result: {result.content[0].text}")
+ # Call get_weather Tool
+ print("\n=== Calling get_weather('Seoul') ===")
+ result = await session.call_tool("get_weather", {"city": "Seoul"})
+ print(f" Result: {result.content[0].text}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+ asyncio.run(main())
 ```
 
 ### 5-4. Run It
@@ -186,14 +186,14 @@ Expected output:
 
 ```
 === Available Tools ===
-  - add: Add two integers together.
-  - get_weather: Return weather info for a given city. (Demo — hardcoded values)
+ - add: Add two integers together.
+ - get_weather: Return weather info for a given city. (Demo — hardcoded values)
 
 === Calling add(3, 7) ===
-  Result: 10
+ Result: 10
 
 === Calling get_weather('Seoul') ===
-  Result: 18°C, Clear
+ Result: 18°C, Clear
 ```
 
 Server and client communicated over Stdio using JSON-RPC. Connect a real Claude Desktop or Cursor instance, and the AI autonomously decides when to invoke these Tools.
@@ -216,17 +216,17 @@ Opens at `http://127.0.0.1:6274`. Click a Tool, fill in parameters, see the resu
 
 One config file change attaches the server to Claude Desktop.
 
-<strong>macOS</strong>: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+<strong>macOS</strong>: `~/Library/Application Support/Claude/claude_desktop_config.json` 
 <strong>Windows</strong>: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
-  "mcpServers": {
-    "my-first-mcp": {
-      "command": "python",
-      "args": ["/absolute/path/to/server.py"]
-    }
-  }
+ "mcpServers": {
+ "my-first-mcp": {
+ "command": "python",
+ "args": ["/absolute/path/to/server.py"]
+ }
+ }
 }
 ```
 

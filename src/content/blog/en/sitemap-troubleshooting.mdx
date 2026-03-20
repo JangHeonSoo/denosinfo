@@ -8,12 +8,12 @@ description: "Why is Google ignoring your sitemap? From technical XML errors to 
 heroImage: "/images/sitemap_hero_bot_scan_1770942587238.png"
 ---
 
-You conscientiously submitted your sitemap.  
-Yet, the Search Console indexing graph remains flat.  
+You conscientiously submitted your sitemap. 
+Yet, the Search Console indexing graph remains flat. 
 It's that agonizing period where you start wondering, “Is Google just ignoring me?”
 
-Funny thing is, this situation is quite common.  
-The causes range from deceptively simple to frustratingly complex.  
+Funny thing is, this situation is quite common. 
+The causes range from deceptively simple to frustratingly complex. 
 Knowing these cases will save you from the futile cycle of deleting and re-submitting your sitemap.
 
 ![Intelligent search bot scanning digital sitemap tree structures](/images/sitemap_hero_bot_scan_1770942587238.png)
@@ -32,15 +32,15 @@ Knowing these cases will save you from the futile cycle of deleting and re-submi
 
 Let’s clear up a few misconceptions.
 
-1. <strong>Search Console → Indexing → Sitemaps</strong>  
-   - Status: Is it “Success,” “Couldn’t fetch,” or “Read error”?  
-   - “Last read” date: Is it recent or stuck in the past?
+1. <strong>Search Console → Indexing → Sitemaps</strong> 
+ - Status: Is it “Success,” “Couldn’t fetch,” or “Read error”? 
+ - “Last read” date: Is it recent or stuck in the past?
 
-2. <strong>Search Console → Indexing → Pages</strong>  
-   - Are the URLs in your sitemap grouped as:  
-     - “Discovered – currently not indexed”?  
-     - “Crawled – currently not indexed”?  
-     - Or entirely missing from the list?
+2. <strong>Search Console → Indexing → Pages</strong> 
+ - Are the URLs in your sitemap grouped as: 
+ - “Discovered – currently not indexed”? 
+ - “Crawled – currently not indexed”? 
+ - Or entirely missing from the list?
 
 Usually, the situation falls into one of these three patterns:
 
@@ -83,19 +83,19 @@ A frustratingly common oversight.
 
 Example scenario:
 ```txt
-User-agent: *  
-Disallow: /  
+User-agent: * 
+Disallow: / 
 
-Sitemap: https://example.com/sitemap.xml  
+Sitemap: https://example.com/sitemap.xml 
 ```
 In this scenario, you’ve basically said, <strong>“Here is my sitemap,”</strong> but followed it up with, <strong>“don’t you dare enter.”</strong>
 
 What to check:
 
-- In `https://yourdomain.com/robots.txt`:  
-  - Ensure `Disallow: /` isn't blocking everything.  
-  - Ensure no `Disallow` rule specific to `/sitemap.xml` exists.  
-- Open a few representational URLs from the sitemap and check for `<meta name="robots" content="noindex">`.  
+- In `https://yourdomain.com/robots.txt`: 
+ - Ensure `Disallow: /` isn't blocking everything. 
+ - Ensure no `Disallow` rule specific to `/sitemap.xml` exists. 
+- Open a few representational URLs from the sitemap and check for `<meta name="robots" content="noindex">`. 
 - Check if your canonical tags point elsewhere (indexing duplicate content).
 
 It's very common to forget to remove `noindex` or `Disallow` rules used during development when moving to production.
@@ -272,7 +272,7 @@ Resubmitting the sitemap won't help here. Instead:
 
 ## One-Line Summary
 
-- A sitemap is a <strong>“hint,”</strong> not a <strong>“guarantee.”</strong>  
+- A sitemap is a <strong>“hint,”</strong> not a <strong>“guarantee.”</strong> 
 - Silence for a few days is normal; silence for weeks usually indicates one of these 8 causes.
 
 Stop the loop of deleting and resubmitting; check your technicals once, then spend your time on content and links.

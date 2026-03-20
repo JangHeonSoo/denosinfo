@@ -37,12 +37,12 @@ SSL 인증서까지 다 발급받고, 도메인도 https로 잘 붙여 놨다. �
 대표적인 방법은 세 가지다.
 
 1. 브라우저 개발자 도구
-   - 크롬: `F12` → Console 탭에서 "Mixed Content" 경고 확인.
-   - Network 탭에서 "Scheme" 컬럼을 보면 http/https가 한눈에 보인다.
+ - 크롬: `F12` → Console 탭에서 "Mixed Content" 경고 확인.
+ - Network 탭에서 "Scheme" 컬럼을 보면 http/https가 한눈에 보인다.
 2. 온라인 검사 도구
-   - Why No Padlock 같은 서비스에 URL을 넣어 혼합 콘텐츠를 한 번에 스캔할 수 있다.
+ - Why No Padlock 같은 서비스에 URL을 넣어 혼합 콘텐츠를 한 번에 스캔할 수 있다.
 3. 정적 코드 검색
-   - 프로젝트 전체에서 `http://` 문자열을 검색해 하드코딩된 주소를 찾는다.
+ - 프로젝트 전체에서 `http://` 문자열을 검색해 하드코딩된 주소를 찾는다.
 
 워드프레스·CMS 환경에서는, 테마·플러그인·글 내용 안에 예전 `http://도메인` 링크가 잔뜩 남아 있는 경우가 대다수다.
 
@@ -177,18 +177,18 @@ Sucuri와 여러 보안 문서는, 혼합 콘텐츠를 남겨두는 것 자체�
 정리하면, https 전환 후 CSS·이미지가 깨질 때는 아래 순서로 보면 대부분 해결된다.
 
 1. <strong>콘솔에서 Mixed Content 경고 확인</strong>
-   - 어떤 리소스가 http로 요청되고 있는지 목록을 뽑는다.
+ - 어떤 리소스가 http로 요청되고 있는지 목록을 뽑는다.
 2. <strong>코드·DB에서 `http://도메인` 검색</strong>
-   - HTML, CSS, JS, 템플릿, DB 내용에서 http 링크를 https 또는 상대경로로 수정한다.
+ - HTML, CSS, JS, 템플릿, DB 내용에서 http 링크를 https 또는 상대경로로 수정한다.
 3. <strong>서버/헤더 설정 보완</strong>
-   - `Content-Security-Policy: upgrade-insecure-requests` 헤더 검토.
-   - Nginx/Apache의 HTTP→HTTPS 리다이렉트, 정적 리소스 경로 점검.
+ - `Content-Security-Policy: upgrade-insecure-requests` 헤더 검토.
+ - Nginx/Apache의 HTTP→HTTPS 리다이렉트, 정적 리소스 경로 점검.
 4. <strong>CDN·플러그인 활용</strong>
-   - Cloudflare Automatic HTTPS Rewrites, 워드프레스용 혼합 콘텐츠 플러그인 등 활용.
+ - Cloudflare Automatic HTTPS Rewrites, 워드프레스용 혼합 콘텐츠 플러그인 등 활용.
 5. <strong>외부 리소스 교체</strong>
-   - https 미지원 외부 리소스는 직접 호스팅 또는 대체 리소스로 교체.
+ - https 미지원 외부 리소스는 직접 호스팅 또는 대체 리소스로 교체.
 6. <strong>모든 캐시 삭제 후 재테스트</strong>
-   - CDN, 애플리케이션, 브라우저 캐시를 모두 비우고 다시 확인.
+ - CDN, 애플리케이션, 브라우저 캐시를 모두 비우고 다시 확인.
 
 한 번 제대로 정리해 두면, 이후 프로젝트에서 SSL 적용은 "자물쇠 켜고 끝"에 가까워진다.
 

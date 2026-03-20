@@ -36,24 +36,24 @@ heroImage: "/images/claude-code-hero.png"
 벌써 코파일럿 도구가 넘치는 시대다. 그럼에도 Claude Code를 "3대장" 안에 넣어야 하는 이유가 있다.
 
 1. <strong>프로젝트 전체 맥락 이해</strong>
-   - 에이전틱 검색을 통해 코드를 일일이 선택해주지 않아도, 프로젝트 구조와 의존성을 자동으로 파악한다.
-   - 3만 라인 이상 되는 코드베이스도 구조를 요약하고, 모듈별 역할을 정리해준다.
+ - 에이전틱 검색을 통해 코드를 일일이 선택해주지 않아도, 프로젝트 구조와 의존성을 자동으로 파악한다.
+ - 3만 라인 이상 되는 코드베이스도 구조를 요약하고, 모듈별 역할을 정리해준다.
 
 2. <strong>멀티 파일 대규모 리팩터링</strong>
-   - 다수의 파일을 동시에 수정하면서도, 빌드와 테스트를 돌려가며 일관성을 유지한다.
-   - GitHub 이슈를 읽고, 브랜치를 생성하고, 수정, 테스트, 커밋, PR 생성까지 한 번에 처리하는 워크플로우를 지원한다.
+ - 다수의 파일을 동시에 수정하면서도, 빌드와 테스트를 돌려가며 일관성을 유지한다.
+ - GitHub 이슈를 읽고, 브랜치를 생성하고, 수정, 테스트, 커밋, PR 생성까지 한 번에 처리하는 워크플로우를 지원한다.
 
 3. <strong>안전한 변경 승인 플로우</strong>
-   - Ask permissions 모드에서는 모든 파일 변경을 diff 뷰로 보여주고, 사용자가 승인해야 실제로 반영된다.
-   - Auto accept edits, Plan mode, Bypass permissions 등 네 가지 권한 모드로 자동화 수준을 조절할 수 있다.
+ - Ask permissions 모드에서는 모든 파일 변경을 diff 뷰로 보여주고, 사용자가 승인해야 실제로 반영된다.
+ - Auto accept edits, Plan mode, Bypass permissions 등 네 가지 권한 모드로 자동화 수준을 조절할 수 있다.
 
 4. <strong>실행 가능한 Dev 서버 + 미니 브라우저</strong>
-   - dev 서버를 띄우고, 내장 브라우저에서 앱을 띄운 뒤, DOM을 읽고, 버튼을 클릭하고, 폼을 채우면서 스스로 버그를 찾는다.
-   - `.claude/launch.json`으로 `npm run dev`, `yarn dev` 같은 커맨드를 설정해두면, 저장 후 자동 검증까지 돌아간다.
+ - dev 서버를 띄우고, 내장 브라우저에서 앱을 띄운 뒤, DOM을 읽고, 버튼을 클릭하고, 폼을 채우면서 스스로 버그를 찾는다.
+ - `.claude/launch.json`으로 `npm run dev`, `yarn dev` 같은 커맨드를 설정해두면, 저장 후 자동 검증까지 돌아간다.
 
 5. <strong>맥 환경 최적화 + 로컬/클라우드/SSH</strong>
-   - macOS용 데스크톱 앱에서 Local, Remote, SSH 세 가지 환경을 선택해 세션을 시작할 수 있다.
-   - 로컬 세션은 내 맥의 환경변수와 CLI 도구를 그대로 사용하고, Remote 세션은 클라우드에서 장시간 작업을 계속 돌려준다.
+ - macOS용 데스크톱 앱에서 Local, Remote, SSH 세 가지 환경을 선택해 세션을 시작할 수 있다.
+ - 로컬 세션은 내 맥의 환경변수와 CLI 도구를 그대로 사용하고, Remote 세션은 클라우드에서 장시간 작업을 계속 돌려준다.
 
 개발자가 해야 할 일은 방향을 정해주고, Claude가 만든 결과물을 리뷰하고, 최종 결정을 내려주는 것 정도로 줄어든다. "AI가 짜온 코드 뒷처리"에서 "AI 팀장을 굴리는 느낌"으로 바뀐다.
 
@@ -106,10 +106,10 @@ cd claude-web-demo
 
 1. Claude 데스크톱 앱을 실행하고 상단의 <strong>Code</strong> 탭을 연다.
 2. "New session"을 누르고 아래 네 가지를 설정한다.
-   - Environment: Local
-   - Project folder: `claude-web-demo` 디렉터리
-   - Model: Sonnet 4.6 또는 Opus 4.6 중 선택.
-   - Permission mode: 처음에는 `Ask permissions`를 추천한다.
+ - Environment: Local
+ - Project folder: `claude-web-demo` 디렉터리
+ - Model: Sonnet 4.6 또는 Opus 4.6 중 선택.
+ - Permission mode: 처음에는 `Ask permissions`를 추천한다.
 3. 첫 메시지에 이렇게 적는다.
 
 ```text
@@ -225,15 +225,15 @@ Claude는 다음과 같은 루틴으로 움직인다.
 
 ```json
 {
-  "version": "0.0.1",
-  "configurations": [
-    {
-      "name": "web",
-      "runtimeExecutable": "yarn",
-      "runtimeArgs": ["dev"],
-      "port": 3000
-    }
-  ]
+ "version": "0.0.1",
+ "configurations": [
+ {
+ "name": "web",
+ "runtimeExecutable": "yarn",
+ "runtimeArgs": ["dev"],
+ "port": 3000
+ }
+ ]
 }
 ```
 

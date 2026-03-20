@@ -50,13 +50,13 @@ MCP는 내부적으로 JSON-RPC 2.0 포맷으로 통신한다. 요청 하나를 
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "get_weather",
-    "arguments": { "city": "Seoul" }
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "tools/call",
+ "params": {
+ "name": "get_weather",
+ "arguments": { "city": "Seoul" }
+ }
 }
 ```
 
@@ -64,12 +64,12 @@ MCP는 내부적으로 JSON-RPC 2.0 포맷으로 통신한다. 요청 하나를 
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [{ "type": "text", "text": "서울 현재 기온: 18°C, 맑음" }],
-    "isError": false
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "result": {
+ "content": [{ "type": "text", "text": "서울 현재 기온: 18°C, 맑음" }],
+ "isError": false
+ }
 }
 ```
 
@@ -119,21 +119,21 @@ mcp = FastMCP("my-first-mcp")
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
-    """두 정수를 더한다."""
-    return a + b
+ """두 정수를 더한다."""
+ return a + b
 
 @mcp.tool()
 def get_weather(city: str) -> str:
-    """도시 이름을 받아 날씨 정보를 반환한다. (데모용 하드코딩)"""
-    weather_data = {
-        "Seoul": "18°C, 맑음",
-        "Busan": "22°C, 흐림",
-        "Jeju": "25°C, 구름 조금",
-    }
-    return weather_data.get(city, f"{city}의 날씨 정보를 찾을 수 없다.")
+ """도시 이름을 받아 날씨 정보를 반환한다. (데모용 하드코딩)"""
+ weather_data = {
+ "Seoul": "18°C, 맑음",
+ "Busan": "22°C, 흐림",
+ "Jeju": "25°C, 구름 조금",
+ }
+ return weather_data.get(city, f"{city}의 날씨 정보를 찾을 수 없다.")
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+ mcp.run(transport="stdio")
 ```
 
 데코레이터 `@mcp.tool()` 하나면 끝이다. 함수 docstring이 Tool 설명이 된다. LLM이 이 설명을 보고 언제 어떤 Tool을 쓸지 판단한다.
@@ -149,36 +149,36 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 async def main():
-    # 서버 실행 파라미터 설정
-    server_params = StdioServerParameters(
-        command="python",
-        args=["server.py"],
-        env=None
-    )
+ # 서버 실행 파라미터 설정
+ server_params = StdioServerParameters(
+ command="python",
+ args=["server.py"],
+ env=None
+ )
 
-    async with stdio_client(server_params) as (read, write):
-        async with ClientSession(read, write) as session:
-            # 세션 초기화
-            await session.initialize()
+ async with stdio_client(server_params) as (read, write):
+ async with ClientSession(read, write) as session:
+ # 세션 초기화
+ await session.initialize()
 
-            # 등록된 Tool 목록 확인
-            tools_response = await session.list_tools()
-            print("=== 사용 가능한 Tools ===")
-            for tool in tools_response.tools:
-                print(f"  - {tool.name}: {tool.description}")
+ # 등록된 Tool 목록 확인
+ tools_response = await session.list_tools()
+ print("=== 사용 가능한 Tools ===")
+ for tool in tools_response.tools:
+ print(f" - {tool.name}: {tool.description}")
 
-            # add Tool 호출
-            print("\n=== add(3, 7) 호출 ===")
-            result = await session.call_tool("add", {"a": 3, "b": 7})
-            print(f"  결과: {result.content[0].text}")
+ # add Tool 호출
+ print("\n=== add(3, 7) 호출 ===")
+ result = await session.call_tool("add", {"a": 3, "b": 7})
+ print(f" 결과: {result.content[0].text}")
 
-            # get_weather Tool 호출
-            print("\n=== get_weather('Seoul') 호출 ===")
-            result = await session.call_tool("get_weather", {"city": "Seoul"})
-            print(f"  결과: {result.content[0].text}")
+ # get_weather Tool 호출
+ print("\n=== get_weather('Seoul') 호출 ===")
+ result = await session.call_tool("get_weather", {"city": "Seoul"})
+ print(f" 결과: {result.content[0].text}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+ asyncio.run(main())
 ```
 
 ### 5-4. 실행
@@ -191,14 +191,14 @@ python client.py
 
 ```
 === 사용 가능한 Tools ===
-  - add: 두 정수를 더한다.
-  - get_weather: 도시 이름을 받아 날씨 정보를 반환한다. (데모용 하드코딩)
+ - add: 두 정수를 더한다.
+ - get_weather: 도시 이름을 받아 날씨 정보를 반환한다. (데모용 하드코딩)
 
 === add(3, 7) 호출 ===
-  결과: 10
+ 결과: 10
 
 === get_weather('Seoul') 호출 ===
-  결과: 18°C, 맑음
+ 결과: 18°C, 맑음
 ```
 
 서버-클라이언트가 Stdio를 통해 JSON-RPC로 대화한 결과다. 실제 Claude Desktop이나 Cursor와 연결하면 AI가 이 Tool들을 자율적으로 판단해서 쓴다.
@@ -221,17 +221,17 @@ npx @modelcontextprotocol/inspector python server.py
 
 만든 서버를 Claude Desktop에 붙이려면 설정 파일 하나만 수정하면 된다.
 
-<strong>macOS</strong>: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+<strong>macOS</strong>: `~/Library/Application Support/Claude/claude_desktop_config.json` 
 <strong>Windows</strong>: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
-  "mcpServers": {
-    "my-first-mcp": {
-      "command": "python",
-      "args": ["/절대경로/server.py"]
-    }
-  }
+ "mcpServers": {
+ "my-first-mcp": {
+ "command": "python",
+ "args": ["/절대경로/server.py"]
+ }
+ }
 }
 ```
 

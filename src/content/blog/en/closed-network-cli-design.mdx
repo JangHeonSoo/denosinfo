@@ -27,8 +27,8 @@ Initially, I just thought about writing simple scripts. But repeatedly coding, l
 
 First, I need to be crystal clear about what I want.
 
-**Language**: **Python 3**  
-**Interface**: **Web-based** (accessible via browser)  
+**Language**: **Python 3** 
+**Interface**: **Web-based** (accessible via browser) 
 **Core Features**:
 - Receive user questions and pass them to **internal GPT**
 - Read built-in **context** (project info, codebase) to generate concrete **execution plans**
@@ -69,16 +69,16 @@ Internal GPT probably has a similar structure. Just use the `requests` library f
 import requests
 
 def call_internal_gpt(messages, api_endpoint, token):
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    }
-    payload = {
-        'model': 'gpt-4',  # Internal model name
-        'messages': messages
-    }
-    response = requests.post(api_endpoint, json=payload, headers=headers)
-    return response.json()
+ headers = {
+ 'Authorization': f'Bearer {token}',
+ 'Content-Type': 'application/json'
+ }
+ payload = {
+ 'model': 'gpt-4', # Internal model name
+ 'messages': messages
+ }
+ response = requests.post(api_endpoint, json=payload, headers=headers)
+ return response.json()
 ```
 
 Simple. No need for complex SDKs.
@@ -100,11 +100,11 @@ In Python, simply manage with a list:
 conversation_history = []
 
 def add_message(role, content):
-    conversation_history.append({"role": role, "content": content})
+ conversation_history.append({"role": role, "content": content})
 
 def get_context():
-    # Keep only the last 10 messages
-    return conversation_history[-10:]
+ # Keep only the last 10 messages
+ return conversation_history[-10:]
 ```
 
 For more sophistication:
@@ -129,14 +129,14 @@ For example, to analyze project structure:
 from pathlib import Path
 
 def get_project_structure(root_path):
-    structure = []
-    for path in Path(root_path).rglob('*.py'):
-        structure.append(str(path))
-    return structure
+ structure = []
+ for path in Path(root_path).rglob('*.py'):
+ structure.append(str(path))
+ return structure
 
 def read_file_content(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return f.read()
+ with open(file_path, 'r', encoding='utf-8') as f:
+ return f.read()
 ```
 
 Security considerations:
@@ -157,9 +157,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 @app.route('/chat')
 def chat():
-    if 'history' not in session:
-        session['history'] = []
-    # Process conversation
+ if 'history' not in session:
+ session['history'] = []
+ # Process conversation
 ```
 
 **Bottle approach**:
@@ -173,9 +173,9 @@ If you're the only user in a closed network, global variables might suffice. Pro
 sessions = {}
 
 def get_session(session_id):
-    if session_id not in sessions:
-        sessions[session_id] = {'history': [], 'context': {}}
-    return sessions[session_id]
+ if session_id not in sessions:
+ sessions[session_id] = {'history': [], 'context': {}}
+ return sessions[session_id]
 ```
 
 ## Architecture Design
@@ -188,30 +188,30 @@ Now let's sketch the overall structure.
 
 ```
 ┌─────────────────────────────────┐
-│   Web Interface (HTML/JS)        │
-│   - Input field                  │
-│   - Conversation display         │
+│ Web Interface (HTML/JS) │
+│ - Input field │
+│ - Conversation display │
 └──────────────┬──────────────────┘
-               │ HTTP Request
+ │ HTTP Request
 ┌──────────────▼──────────────────┐
-│   Web Server (Bottle/Flask)      │
-│   - Routing                      │
-│   - Session management           │
+│ Web Server (Bottle/Flask) │
+│ - Routing │
+│ - Session management │
 └──────────────┬──────────────────┘
-               │
+ │
 ┌──────────────▼──────────────────┐
-│   Conversation Manager           │
-│   - Load context                 │
-│   - Manage history               │
-│   - Generate plans               │
+│ Conversation Manager │
+│ - Load context │
+│ - Manage history │
+│ - Generate plans │
 └──────────────┬──────────────────┘
-               │
-       ┌───────┴────────┐
-       │                │
-┌──────▼─────┐  ┌──────▼──────┐
-│ LLM Interface│  │ File System │
-│ (Internal GPT)│ │   Access    │
-└────────────┘  └─────────────┘
+ │
+ ┌───────┴────────┐
+ │ │
+┌──────▼─────┐ ┌──────▼──────┐
+│ LLM Interface│ │ File System │
+│ (Internal GPT)│ │ Access │
+└────────────┘ └─────────────┘
 ```
 
 ### Key Modules
@@ -223,30 +223,30 @@ Now let's sketch the overall structure.
 
 **2. Conversation Management Module** (`conversation.py`)
 - `ConversationManager` class
-  - `add_message()`: Add message
-  - `get_history()`: Retrieve history
-  - `summarize_old_messages()`: Summarize old conversations
-  - `clear_context()`: Reset context
+ - `add_message()`: Add message
+ - `get_history()`: Retrieve history
+ - `summarize_old_messages()`: Summarize old conversations
+ - `clear_context()`: Reset context
 
 **3. LLM Interface Module** (`llm_client.py`)
 - `InternalGPTClient` class
-  - `__init__(api_endpoint, token)`: Initialize
-  - `chat(messages)`: General conversation
-  - `create_plan(context, question)`: **Generate execution plan**
-  - `summarize(text)`: Summarize text
+ - `__init__(api_endpoint, token)`: Initialize
+ - `chat(messages)`: General conversation
+ - `create_plan(context, question)`: **Generate execution plan**
+ - `summarize(text)`: Summarize text
 
 **4. File System Module** (`filesystem.py`)
 - `FileSystemManager` class
-  - `list_files(directory)`: File list
-  - `read_file(path)`: Read file
-  - `search_files(pattern)`: Search files
-  - `get_project_context()`: Analyze project structure
+ - `list_files(directory)`: File list
+ - `read_file(path)`: Read file
+ - `search_files(pattern)`: Search files
+ - `get_project_context()`: Analyze project structure
 
 **5. Context Management Module** (`context.py`)
 - `ContextManager` class
-  - `load_context(name)`: Load predefined context
-  - `save_context(name, content)`: Save context
-  - `merge_contexts(contexts)`: Merge multiple contexts
+ - `load_context(name)`: Load predefined context
+ - `save_context(name, content)`: Save context
+ - `merge_contexts(contexts)`: Merge multiple contexts
 
 ### Data Flow
 
@@ -254,9 +254,9 @@ Now let's sketch the overall structure.
 2. **Receive Request** → Web server receives POST request
 3. **Check Session** → Load user's conversation history by session ID
 4. **Compose Context**:
-   - Load base context (project info, rules, etc.)
-   - Add conversation history
-   - Add file contents if needed
+ - Load base context (project info, rules, etc.)
+ - Add conversation history
+ - Add file contents if needed
 5. **Call LLM** → Call **internal GPT** with composed context
 6. **Generate Plan** → LLM returns concrete **execution plan**
 7. **Save Response** → Add to conversation history
@@ -269,29 +269,29 @@ Now let's sketch the overall structure.
 1. User enters question in web interface
 2. Server receives request and passes to `ConversationManager`
 3. `FileSystemManager` scans project directory
-   - Find files like `app.py`, `routes.py`
-   - Search for route decorator patterns
+ - Find files like `app.py`, `routes.py`
+ - Search for route decorator patterns
 4. `ContextManager` composes context:
-   ```
-   System: You are a Python web development expert.
-   Context: Current project is Flask-based with these files: ...
-   History: [Previous 3 conversations]
-   User: List the API endpoints in this project
-   ```
+ ```
+ System: You are a Python web development expert.
+ Context: Current project is Flask-based with these files: ...
+ History: [Previous 3 conversations]
+ User: List the API endpoints in this project
+ ```
 5. `LLMClient` calls internal GPT
 6. GPT response:
-   ```
-   Project API Endpoint Analysis:
-   
-   1. GET /api/users - Retrieve user list
-   2. POST /api/users - Create new user
-   3. GET /api/data - Query data
-   ...
-   
-   Would you like to proceed with:
-   - Auto-generate API documentation
-   - Write test code
-   ```
+ ```
+ Project API Endpoint Analysis:
+ 
+ 1. GET /api/users - Retrieve user list
+ 2. POST /api/users - Create new user
+ 3. GET /api/data - Query data
+ ...
+ 
+ Would you like to proceed with:
+ - Auto-generate API documentation
+ - Write test code
+ ```
 7. Display result in web UI
 
 ## Required Packages
@@ -331,8 +331,8 @@ Don't neglect security just because it's a closed network.
 ALLOWED_DIRECTORIES = ['/workspace/project', '/data/documents']
 
 def is_safe_path(path):
-    real_path = os.path.realpath(path)
-    return any(real_path.startswith(allowed) for allowed in ALLOWED_DIRECTORIES)
+ real_path = os.path.realpath(path)
+ return any(real_path.startswith(allowed) for allowed in ALLOWED_DIRECTORIES)
 ```
 
 **2. Input Validation**

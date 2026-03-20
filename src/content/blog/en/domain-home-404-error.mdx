@@ -156,19 +156,19 @@ Knowing the real HTTP status code often changes the direction of debugging entir
 Despite the many possible causes, a short checklist can narrow things down quickly.
 
 1. <strong>DNS</strong>
-   - `nslookup yourdomain.com` and verify the IP.
-   - Fix A/AAAA records or nameservers if they point elsewhere.
+ - `nslookup yourdomain.com` and verify the IP.
+ - Fix A/AAAA records or nameservers if they point elsewhere.
 2. <strong>Web root and homepage</strong>
-   - Ensure `index.html`/`index.php` exists in the correct web root.
-   - Check Nginx/Apache `root`/`DocumentRoot` and `index` directives.
+ - Ensure `index.html`/`index.php` exists in the correct web root.
+ - Check Nginx/Apache `root`/`DocumentRoot` and `index` directives.
 3. <strong>Routing and rewrites</strong>
-   - Verify `.htaccess` or Nginx rewrite rules for your framework.
-   - On WordPress, re-save Permalinks to regenerate `.htaccess`.
+ - Verify `.htaccess` or Nginx rewrite rules for your framework.
+ - On WordPress, re-save Permalinks to regenerate `.htaccess`.
 4. <strong>Builder/platform settings</strong>
-   - Confirm a homepage is set and published.
-   - Ensure both `www` and naked domains route correctly.
+ - Confirm a homepage is set and published.
+ - Ensure both `www` and naked domains route correctly.
 5. <strong>Cache</strong>
-   - Purge CDN caches and clear browser cache, then retest.
+ - Purge CDN caches and clear browser cache, then retest.
 
 <br/>
 

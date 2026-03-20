@@ -151,19 +151,19 @@ Wix, Squarespace, Google Sites, HubSpot 같은 빌더 기반 서비스에서는,
 원인이 많아 보여도, 순서대로만 보면 생각보다 빨리 잡힌다.
 
 1. <strong>DNS 확인</strong>
-   - `nslookup 내도메인.com`으로 현재 A 레코드 IP 확인.
-   - 기대한 서버 IP와 다르면, DNS·네임서버부터 수정.
+ - `nslookup 내도메인.com`으로 현재 A 레코드 IP 확인.
+ - 기대한 서버 IP와 다르면, DNS·네임서버부터 수정.
 2. <strong>서버 루트·홈페이지 확인</strong>
-   - 웹 루트 디렉터리에 `index.html`/`index.php`가 있는지 확인.
-   - Nginx/Apache의 `root`/`DocumentRoot`, `index` 설정 점검.
+ - 웹 루트 디렉터리에 `index.html`/`index.php`가 있는지 확인.
+ - Nginx/Apache의 `root`/`DocumentRoot`, `index` 설정 점검.
 3. <strong>라우팅/리라이트 확인</strong>
-   - 프레임워크 사용 시 `.htaccess` 또는 Nginx rewrite 규칙 점검.
-   - 워드프레스라면 고유주소 설정 저장으로 .htaccess 재생성.
+ - 프레임워크 사용 시 `.htaccess` 또는 Nginx rewrite 규칙 점검.
+ - 워드프레스라면 고유주소 설정 저장으로 .htaccess 재생성.
 4. <strong>빌더/플랫폼 설정 확인</strong>
-   - 사용 중인 플랫폼에서 홈 페이지가 지정되어 있는지.
-   - `www`와 루트 도메인이 모두 연결/리다이렉트 되는지.
+ - 사용 중인 플랫폼에서 홈 페이지가 지정되어 있는지.
+ - `www`와 루트 도메인이 모두 연결/리다이렉트 되는지.
 5. <strong>캐시 삭제</strong>
-   - CDN 캐시 퍼지, 브라우저 캐시 삭제 후 재접속.
+ - CDN 캐시 퍼지, 브라우저 캐시 삭제 후 재접속.
 
 <br/>
 

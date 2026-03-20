@@ -93,7 +93,7 @@ paru -S opencode-bin
 버전 확인:
 
 ```bash
-opencode --version  # 1.0.150 이상이어야 함
+opencode --version # 1.0.150 이상이어야 함
 ```
 
 ### Oh-My-OpenCode 얹기
@@ -234,25 +234,25 @@ opencode
 
 ```json
 {
-  "agents": {
-    "sisyphus": {
-      "model": "anthropic/claude-opus-4.5",
-      "fallback": ["openai/gpt-5", "google/gemini-3-pro"]
-    },
-    "oracle": {
-      "model": "anthropic/claude-opus-4.5"
-    },
-    "librarian": {
-      "model": "zai-coding-plan/glm-4.7"
-    }
-  },
-  "categories": {
-    "quick": { "model": "opencode/gpt-5-nano" },
-    "unspecified-low": { "model": "zai-coding-plan/glm-4.7" }
-  },
-  "experimental": {
-    "aggressive_truncation": true
-  }
+ "agents": {
+ "sisyphus": {
+ "model": "anthropic/claude-opus-4.5",
+ "fallback": ["openai/gpt-5", "google/gemini-3-pro"]
+ },
+ "oracle": {
+ "model": "anthropic/claude-opus-4.5"
+ },
+ "librarian": {
+ "model": "zai-coding-plan/glm-4.7"
+ }
+ },
+ "categories": {
+ "quick": { "model": "opencode/gpt-5-nano" },
+ "unspecified-low": { "model": "zai-coding-plan/glm-4.7" }
+ },
+ "experimental": {
+ "aggressive_truncation": true
+ }
 }
 ```
 
@@ -300,18 +300,18 @@ Categories는 작업 유형별 모델이다. `quick`는 빠른 작업용 나노 
 
 ```json
 {
-  "mcp": {
-    "github": {
-      "type": "remote",
-      "url": "https://mcp.github.com",
-      "enabled": true
-    },
-    "sentry": {
-      "type": "remote",
-      "url": "https://mcp.sentry.io",
-      "enabled": true
-    }
-  }
+ "mcp": {
+ "github": {
+ "type": "remote",
+ "url": "https://mcp.github.com",
+ "enabled": true
+ },
+ "sentry": {
+ "type": "remote",
+ "url": "https://mcp.sentry.io",
+ "enabled": true
+ }
+ }
 }
 ```
 
@@ -361,13 +361,13 @@ Analyze the test results above and suggest improvements.
 
 ```json
 {
-  "permission": {
-    "bash": {
-      "*": "ask",
-      "git *": "allow",
-      "rm *": "deny"
-    }
-  }
+ "permission": {
+ "bash": {
+ "*": "ask",
+ "git *": "allow",
+ "rm *": "deny"
+ }
+ }
 }
 ```
 
@@ -425,8 +425,8 @@ opencode -s abc123
 `EDITOR` 환경변수 설정하면 `/editor`로 본인 에디터 열린다:
 
 ```bash
-export EDITOR="code --wait"  # VS Code
-export EDITOR="vim"           # Vim
+export EDITOR="code --wait" # VS Code
+export EDITOR="vim" # Vim
 ```
 
 긴 프롬프트 쓸 때 유용하다. 터미널 입력창보다 편하다.

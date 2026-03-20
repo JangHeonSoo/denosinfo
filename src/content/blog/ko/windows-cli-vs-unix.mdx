@@ -143,9 +143,9 @@ Get-ChildItem | Where-Object {$_.Name -like "*config*"} | Select-Object Name
 근데 PowerShell도 Unix 명령어 alias 지원한다:
 
 ```powershell
-ls  # Get-ChildItem의 alias
-cd  # Set-Location의 alias
-cp  # Copy-Item의 alias
+ls # Get-ChildItem의 alias
+cd # Set-Location의 alias
+cp # Copy-Item의 alias
 ```
 
 ### 3. 스크립팅
@@ -164,9 +164,9 @@ grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b' access.log | sort | uniq -c | sort -n
 
 ```bash
 if [ -f "$file" ]; then
-    if [ -r "$file" ]; then
-        echo "파일 읽을 수 있음"
-    fi
+ if [ -r "$file" ]; then
+ echo "파일 읽을 수 있음"
+ fi
 fi
 ```
 
@@ -174,9 +174,9 @@ fi
 
 ```powershell
 if (Test-Path $file) {
-    if (Test-Path $file -PathType Leaf) {
-        Write-Host "파일 읽을 수 있음"
-    }
+ if (Test-Path $file -PathType Leaf) {
+ Write-Host "파일 읽을 수 있음"
+ }
 }
 ```
 
@@ -256,15 +256,15 @@ Microsoft가 2019년에 만든 현대적 터미널:
 
 ```json
 {
-    "profiles": {
-        "defaults": {
-            "font": {
-                "face": "Cascadia Code",
-                "size": 11
-            },
-            "colorScheme": "One Half Dark"
-        }
-    }
+ "profiles": {
+ "defaults": {
+ "font": {
+ "face": "Cascadia Code",
+ "size": 11
+ },
+ "colorScheme": "One Half Dark"
+ }
+ }
 }
 ```
 
@@ -334,19 +334,19 @@ Node.js 프로젝트에서 `npm link` 쓰다가 권한 에러 나서 삽질했�
 
 1. iTerm2 실행 (Cmd+Space → "iTerm")
 2. tmux 세션 열기:
-   ```bash
-   tmux new -s myproject
-   ```
+ ```bash
+ tmux new -s myproject
+ ```
 3. 분할 창 만들기 (Ctrl+b %)
 4. Vim으로 코드 편집
 5. 테스트 돌리기
-   ```bash
-   npm test
-   ```
+ ```bash
+ npm test
+ ```
 6. Git 커밋
-   ```bash
-   git add . && git commit -m "fix: bug" && git push
-   ```
+ ```bash
+ git add . && git commit -m "fix: bug" && git push
+ ```
 
 모든 게 키보드로 가능하다. 마우스 안 쓴다. 빠르다.
 
@@ -512,55 +512,55 @@ Windows에서도 WSL2 + AI CLI 도구 조합으로 가능하다.
 ### 맥북 개발자가 Windows로 넘어간다면?
 
 1. **WSL2 먼저 설치**:
-   ```powershell
-   wsl --install -d Ubuntu-20.04
-   ```
+ ```powershell
+ wsl --install -d Ubuntu-20.04
+ ```
 
 2. **Windows Terminal 설치**:
-   - Microsoft Store에서 다운로드
-   - WSL 프로필 기본으로 설정
+ - Microsoft Store에서 다운로드
+ - WSL 프로필 기본으로 설정
 
 3. **Scoop 설치**:
-   ```powershell
-   iwr -useb get.scoop.sh | iex
-   scoop install git nodejs python
-   ```
+ ```powershell
+ iwr -useb get.scoop.sh | iex
+ scoop install git nodejs python
+ ```
 
 4. **VS Code Remote-WSL 확장**:
-   - WSL 내부 파일을 VS Code에서 편집
-   - 터미널도 WSL 사용
+ - WSL 내부 파일을 VS Code에서 편집
+ - 터미널도 WSL 사용
 
 5. **oh-my-zsh 설정**:
-   ```bash
-   # WSL 내부에서
-   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-   ```
+ ```bash
+ # WSL 내부에서
+ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+ ```
 
 이러면 macOS와 거의 비슷한 환경이 된다.
 
 ### Windows 개발자가 PowerShell 마스터한다면?
 
 1. **PowerShell 7 설치**:
-   ```powershell
-   winget install Microsoft.PowerShell
-   ```
+ ```powershell
+ winget install Microsoft.PowerShell
+ ```
 
 2. **PSReadLine 모듈**:
-   - 명령어 히스토리 강화
-   - 자동완성 개선
+ - 명령어 히스토리 강화
+ - 자동완성 개선
 
 3. **Posh-Git**:
-   - Git 상태 프롬프트에 표시
-   - 탭 완성 지원
+ - Git 상태 프롬프트에 표시
+ - 탭 완성 지원
 
 4. **Windows Terminal 커스터마이징**:
-   - Quake mode 설정
-   - 단축키 매핑
-   - 테마 적용
+ - Quake mode 설정
+ - 단축키 매핑
+ - 테마 적용
 
 5. **Chocolatey/Scoop**:
-   - 패키지 관리자 선택
-   - 스크립트로 환경 복원
+ - 패키지 관리자 선택
+ - 스크립트로 환경 복원
 
 ## 결론
 
@@ -626,12 +626,12 @@ echo "백업 시작: $SOURCE_DIR"
 tar -czf "${BACKUP_DIR}/${ARCHIVE}" "$SOURCE_DIR"
 
 if [ $? -eq 0 ]; then
-    echo "백업 완료: ${BACKUP_DIR}/${ARCHIVE}"
-    # 7일 이상 된 백업 파일 삭제
-    find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +7 -delete
+ echo "백업 완료: ${BACKUP_DIR}/${ARCHIVE}"
+ # 7일 이상 된 백업 파일 삭제
+ find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +7 -delete
 else
-    echo "백업 실패!" >&2
-    exit 1
+ echo "백업 실패!" >&2
+ exit 1
 fi
 ```
 
@@ -645,24 +645,24 @@ $memoryThreshold = 90
 
 # CPU 사용률 체크
 $cpu = Get-Counter '\Processor(_Total)\% Processor Time' | 
-    Select-Object -ExpandProperty CounterSamples | 
-    Select-Object -ExpandProperty CookedValue
+ Select-Object -ExpandProperty CounterSamples | 
+ Select-Object -ExpandProperty CookedValue
 
 if ($cpu -gt $cpuThreshold) {
-    Write-Warning "CPU 사용률 높음: $($cpu.ToString('F2'))%"
-    
-    # 상위 5개 프로세스 출력
-    Get-Process | Sort-Object CPU -Descending | 
-        Select-Object -First 5 Name, CPU, WorkingSet
+ Write-Warning "CPU 사용률 높음: $($cpu.ToString('F2'))%"
+ 
+ # 상위 5개 프로세스 출력
+ Get-Process | Sort-Object CPU -Descending | 
+ Select-Object -First 5 Name, CPU, WorkingSet
 }
 
 # 메모리 사용률 체크
 $os = Get-CimInstance Win32_OperatingSystem
 $memoryUsed = ($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) / 
-              $os.TotalVisibleMemorySize * 100
+ $os.TotalVisibleMemorySize * 100
 
 if ($memoryUsed -gt $memoryThreshold) {
-    Write-Warning "메모리 사용률 높음: $($memoryUsed.ToString('F2'))%"
+ Write-Warning "메모리 사용률 높음: $($memoryUsed.ToString('F2'))%"
 }
 ```
 

@@ -93,7 +93,7 @@ paru -S opencode-bin
 Check version:
 
 ```bash
-opencode --version  # Must be 1.0.150+
+opencode --version # Must be 1.0.150+
 ```
 
 ### Adding Oh-My-OpenCode
@@ -234,25 +234,25 @@ Tiered deployment by task type. Cheap for exploration, expensive for design. Thi
 
 ```json
 {
-  "agents": {
-    "sisyphus": {
-      "model": "anthropic/claude-opus-4.5",
-      "fallback": ["openai/gpt-5", "google/gemini-3-pro"]
-    },
-    "oracle": {
-      "model": "anthropic/claude-opus-4.5"
-    },
-    "librarian": {
-      "model": "zai-coding-plan/glm-4.7"
-    }
-  },
-  "categories": {
-    "quick": { "model": "opencode/gpt-5-nano" },
-    "unspecified-low": { "model": "zai-coding-plan/glm-4.7" }
-  },
-  "experimental": {
-    "aggressive_truncation": true
-  }
+ "agents": {
+ "sisyphus": {
+ "model": "anthropic/claude-opus-4.5",
+ "fallback": ["openai/gpt-5", "google/gemini-3-pro"]
+ },
+ "oracle": {
+ "model": "anthropic/claude-opus-4.5"
+ },
+ "librarian": {
+ "model": "zai-coding-plan/glm-4.7"
+ }
+ },
+ "categories": {
+ "quick": { "model": "opencode/gpt-5-nano" },
+ "unspecified-low": { "model": "zai-coding-plan/glm-4.7" }
+ },
+ "experimental": {
+ "aggressive_truncation": true
+ }
 }
 ```
 
@@ -300,18 +300,18 @@ Once set up, no repeated explanations needed. The agent remembers project contex
 
 ```json
 {
-  "mcp": {
-    "github": {
-      "type": "remote",
-      "url": "https://mcp.github.com",
-      "enabled": true
-    },
-    "sentry": {
-      "type": "remote",
-      "url": "https://mcp.sentry.io",
-      "enabled": true
-    }
-  }
+ "mcp": {
+ "github": {
+ "type": "remote",
+ "url": "https://mcp.github.com",
+ "enabled": true
+ },
+ "sentry": {
+ "type": "remote",
+ "url": "https://mcp.sentry.io",
+ "enabled": true
+ }
+ }
 }
 ```
 
@@ -361,13 +361,13 @@ Glob patterns supported:
 
 ```json
 {
-  "permission": {
-    "bash": {
-      "*": "ask",
-      "git *": "allow",
-      "rm *": "deny"
-    }
-  }
+ "permission": {
+ "bash": {
+ "*": "ask",
+ "git *": "allow",
+ "rm *": "deny"
+ }
+ }
 }
 ```
 
@@ -425,8 +425,8 @@ Context becomes precise. The agent doesn't wander.
 Set the `EDITOR` environment variable and `/editor` opens your editor:
 
 ```bash
-export EDITOR="code --wait"  # VS Code
-export EDITOR="vim"           # Vim
+export EDITOR="code --wait" # VS Code
+export EDITOR="vim" # Vim
 ```
 
 Useful for long prompts. More comfortable than the terminal input box.

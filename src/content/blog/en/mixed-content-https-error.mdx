@@ -37,12 +37,12 @@ Before fixing anything, identify <strong>exactly which resources still use HTTP<
 Three practical approaches:
 
 1. Browser DevTools
-   - Chrome: `F12` → Console to see "Mixed Content" warnings.
-   - Network tab: add the "Scheme" column to quickly see http vs https.
+ - Chrome: `F12` → Console to see "Mixed Content" warnings.
+ - Network tab: add the "Scheme" column to quickly see http vs https.
 2. Online scanners
-   - Tools like "Why No Padlock?" scan a URL and list HTTP assets causing mixed content.
+ - Tools like "Why No Padlock?" scan a URL and list HTTP assets causing mixed content.
 3. Code search
-   - Search your project for `http://` to find hard-coded URLs in templates, CSS, JS, or content.
+ - Search your project for `http://` to find hard-coded URLs in templates, CSS, JS, or content.
 
 On WordPress and other CMS platforms, themes, plugins, and post content often contain many leftover `http://yourdomain` links.
 
@@ -176,14 +176,14 @@ Only after this should you trust that what you see reflects the current configur
 To summarize, when CSS and images break right after enabling HTTPS, follow this order:
 
 1. <strong>Inspect mixed content warnings in DevTools.</strong>
-   - List all assets still requested over HTTP.
+ - List all assets still requested over HTTP.
 2. <strong>Search and replace `http://yourdomain` in code and database.</strong>
-   - Convert to HTTPS or root-relative URLs.
+ - Convert to HTTPS or root-relative URLs.
 3. <strong>Add or adjust server headers.</strong>
-   - Consider `Content-Security-Policy: upgrade-insecure-requests`.
-   - Confirm HTTP→HTTPS redirects and correct static asset paths.
+ - Consider `Content-Security-Policy: upgrade-insecure-requests`.
+ - Confirm HTTP→HTTPS redirects and correct static asset paths.
 4. <strong>Use CDN and plugins where appropriate.</strong>
-   - Cloudflare Automatic HTTPS Rewrites; CMS plugins for insecure content.
+ - Cloudflare Automatic HTTPS Rewrites; CMS plugins for insecure content.
 5. <strong>Replace or self-host HTTP-only third-party assets.</strong>
 6. <strong>Clear all caches and test again in a clean browser session.</strong>
 

@@ -27,8 +27,8 @@ heroImage: '/images/closed-net-hero.png'
 
 먼저 내가 원하는 게 뭔지 명확히 해야 한다.
 
-**언어**: **Python 3**  
-**인터페이스**: **웹 기반** (브라우저에서 접근 가능)  
+**언어**: **Python 3** 
+**인터페이스**: **웹 기반** (브라우저에서 접근 가능) 
 **핵심 기능**:
 - 사용자 질문을 받아서 **사내 GPT**에 전달
 - 내장된 **컨텍스트**(프로젝트 정보, 코드 베이스)를 읽어서 구체적인 **실행 계획 생성**
@@ -69,16 +69,16 @@ Python 웹 프레임워크 중에서 경량급을 찾아야 한다. 폐쇄망이
 import requests
 
 def call_internal_gpt(messages, api_endpoint, token):
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    }
-    payload = {
-        'model': 'gpt-4',  # 사내 모델명
-        'messages': messages
-    }
-    response = requests.post(api_endpoint, json=payload, headers=headers)
-    return response.json()
+ headers = {
+ 'Authorization': f'Bearer {token}',
+ 'Content-Type': 'application/json'
+ }
+ payload = {
+ 'model': 'gpt-4', # 사내 모델명
+ 'messages': messages
+ }
+ response = requests.post(api_endpoint, json=payload, headers=headers)
+ return response.json()
 ```
 
 간단하다. 복잡한 SDK 없이도 충분히 가능하다.
@@ -100,11 +100,11 @@ Python에서는 간단하게 리스트로 관리 가능:
 conversation_history = []
 
 def add_message(role, content):
-    conversation_history.append({"role": role, "content": content})
+ conversation_history.append({"role": role, "content": content})
 
 def get_context():
-    # 최근 10개 메시지만 유지
-    return conversation_history[-10:]
+ # 최근 10개 메시지만 유지
+ return conversation_history[-10:]
 ```
 
 더 정교하게 하려면:
@@ -129,14 +129,14 @@ Python 표준 라이브러리면 충분:
 from pathlib import Path
 
 def get_project_structure(root_path):
-    structure = []
-    for path in Path(root_path).rglob('*.py'):
-        structure.append(str(path))
-    return structure
+ structure = []
+ for path in Path(root_path).rglob('*.py'):
+ structure.append(str(path))
+ return structure
 
 def read_file_content(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return f.read()
+ with open(file_path, 'r', encoding='utf-8') as f:
+ return f.read()
 ```
 
 보안 주의사항:
@@ -157,9 +157,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 @app.route('/chat')
 def chat():
-    if 'history' not in session:
-        session['history'] = []
-    # 대화 처리
+ if 'history' not in session:
+ session['history'] = []
+ # 대화 처리
 ```
 
 **Bottle 방식**:
@@ -173,9 +173,9 @@ Bottle은 내장 세션이 없어서 직접 구현하거나 **beaker** 같은 �
 sessions = {}
 
 def get_session(session_id):
-    if session_id not in sessions:
-        sessions[session_id] = {'history': [], 'context': {}}
-    return sessions[session_id]
+ if session_id not in sessions:
+ sessions[session_id] = {'history': [], 'context': {}}
+ return sessions[session_id]
 ```
 
 ## 아키텍처 설계
@@ -188,30 +188,30 @@ def get_session(session_id):
 
 ```
 ┌─────────────────────────────────┐
-│   웹 인터페이스 (HTML/JS)        │
-│   - 입력창                       │
-│   - 대화 표시                    │
+│ 웹 인터페이스 (HTML/JS) │
+│ - 입력창 │
+│ - 대화 표시 │
 └──────────────┬──────────────────┘
-               │ HTTP Request
+ │ HTTP Request
 ┌──────────────▼──────────────────┐
-│   웹 서버 (Bottle/Flask)         │
-│   - 라우팅                       │
-│   - 세션 관리                    │
+│ 웹 서버 (Bottle/Flask) │
+│ - 라우팅 │
+│ - 세션 관리 │
 └──────────────┬──────────────────┘
-               │
+ │
 ┌──────────────▼──────────────────┐
-│   대화 관리자                    │
-│   - 컨텍스트 로드                │
-│   - 이력 관리                    │
-│   - 플랜 생성                    │
+│ 대화 관리자 │
+│ - 컨텍스트 로드 │
+│ - 이력 관리 │
+│ - 플랜 생성 │
 └──────────────┬──────────────────┘
-               │
-       ┌───────┴────────┐
-       │                │
-┌──────▼─────┐  ┌──────▼──────┐
-│ LLM 인터페이스│  │ 파일 시스템  │
-│ (사내 GPT)  │  │   접근      │
-└────────────┘  └─────────────┘
+ │
+ ┌───────┴────────┐
+ │ │
+┌──────▼─────┐ ┌──────▼──────┐
+│ LLM 인터페이스│ │ 파일 시스템 │
+│ (사내 GPT) │ │ 접근 │
+└────────────┘ └─────────────┘
 ```
 
 ### 주요 모듈
@@ -223,30 +223,30 @@ def get_session(session_id):
 
 **2. 대화 관리 모듈** (`conversation.py`)
 - `ConversationManager` 클래스
-  - `add_message()`: 메시지 추가
-  - `get_history()`: 이력 조회
-  - `summarize_old_messages()`: 오래된 대화 요약
-  - `clear_context()`: 컨텍스트 초기화
+ - `add_message()`: 메시지 추가
+ - `get_history()`: 이력 조회
+ - `summarize_old_messages()`: 오래된 대화 요약
+ - `clear_context()`: 컨텍스트 초기화
 
 **3. LLM 인터페이스 모듈** (`llm_client.py`)
 - `InternalGPTClient` 클래스
-  - `__init__(api_endpoint, token)`: 초기화
-  - `chat(messages)`: 일반 대화
-  - `create_plan(context, question)`: **실행 계획 생성**
-  - `summarize(text)`: 텍스트 요약
+ - `__init__(api_endpoint, token)`: 초기화
+ - `chat(messages)`: 일반 대화
+ - `create_plan(context, question)`: **실행 계획 생성**
+ - `summarize(text)`: 텍스트 요약
 
 **4. 파일 시스템 모듈** (`filesystem.py`)
 - `FileSystemManager` 클래스
-  - `list_files(directory)`: 파일 목록
-  - `read_file(path)`: 파일 읽기
-  - `search_files(pattern)`: 파일 검색
-  - `get_project_context()`: 프로젝트 구조 분석
+ - `list_files(directory)`: 파일 목록
+ - `read_file(path)`: 파일 읽기
+ - `search_files(pattern)`: 파일 검색
+ - `get_project_context()`: 프로젝트 구조 분석
 
 **5. 컨텍스트 관리 모듈** (`context.py`)
 - `ContextManager` 클래스
-  - `load_context(name)`: 미리 정의된 컨텍스트 로드
-  - `save_context(name, content)`: 컨텍스트 저장
-  - `merge_contexts(contexts)`: 여러 컨텍스트 병합
+ - `load_context(name)`: 미리 정의된 컨텍스트 로드
+ - `save_context(name, content)`: 컨텍스트 저장
+ - `merge_contexts(contexts)`: 여러 컨텍스트 병합
 
 ### 데이터 흐름
 
@@ -254,9 +254,9 @@ def get_session(session_id):
 2. **요청 수신** → 웹 서버가 POST 요청 받음
 3. **세션 확인** → 세션 ID로 해당 사용자 대화 이력 로드
 4. **컨텍스트 구성**:
-   - 기본 컨텍스트 (프로젝트 정보, 규칙 등) 로드
-   - 대화 이력 추가
-   - 필요시 파일 내용 추가
+ - 기본 컨텍스트 (프로젝트 정보, 규칙 등) 로드
+ - 대화 이력 추가
+ - 필요시 파일 내용 추가
 5. **LLM 호출** → 구성된 컨텍스트와 함께 **사내 GPT** 호출
 6. **계획 생성** → LLM이 구체적인 **실행 계획** 반환
 7. **응답 저장** → 대화 이력에 추가
@@ -269,29 +269,29 @@ def get_session(session_id):
 1. 사용자가 웹에서 질문 입력
 2. 서버가 요청 받아서 `ConversationManager`에 전달
 3. `FileSystemManager`가 프로젝트 디렉토리 스캔
-   - `app.py`, `routes.py` 같은 파일 찾기
-   - 라우트 데코레이터 패턴 검색
+ - `app.py`, `routes.py` 같은 파일 찾기
+ - 라우트 데코레이터 패턴 검색
 4. `ContextManager`가 컨텍스트 구성:
-   ```
-   System: 당신은 Python 웹 개발 전문가입니다.
-   Context: 현재 프로젝트는 Flask 기반이며 다음 파일들이 있습니다: ...
-   History: [이전 대화 3개]
-   User: 이 프로젝트의 API 엔드포인트를 정리해줘
-   ```
+ ```
+ System: 당신은 Python 웹 개발 전문가입니다.
+ Context: 현재 프로젝트는 Flask 기반이며 다음 파일들이 있습니다: ...
+ History: [이전 대화 3개]
+ User: 이 프로젝트의 API 엔드포인트를 정리해줘
+ ```
 5. `LLMClient`가 사내 GPT 호출
 6. GPT 응답:
-   ```
-   프로젝트 API 엔드포인트 분석:
-   
-   1. GET /api/users - 사용자 목록 조회
-   2. POST /api/users - 신규 사용자 생성
-   3. GET /api/data - 데이터 조회
-   ...
-   
-   다음 작업을 진행하시겠습니까?
-   - API 문서 자동 생성
-   - 테스트 코드 작성
-   ```
+ ```
+ 프로젝트 API 엔드포인트 분석:
+ 
+ 1. GET /api/users - 사용자 목록 조회
+ 2. POST /api/users - 신규 사용자 생성
+ 3. GET /api/data - 데이터 조회
+ ...
+ 
+ 다음 작업을 진행하시겠습니까?
+ - API 문서 자동 생성
+ - 테스트 코드 작성
+ ```
 7. 결과를 웹 UI에 표시
 
 ## 필요한 패키지 목록
@@ -331,8 +331,8 @@ pip install --no-index --find-links=packages/ bottle requests
 ALLOWED_DIRECTORIES = ['/workspace/project', '/data/documents']
 
 def is_safe_path(path):
-    real_path = os.path.realpath(path)
-    return any(real_path.startswith(allowed) for allowed in ALLOWED_DIRECTORIES)
+ real_path = os.path.realpath(path)
+ return any(real_path.startswith(allowed) for allowed in ALLOWED_DIRECTORIES)
 ```
 
 **2. 입력 검증**
