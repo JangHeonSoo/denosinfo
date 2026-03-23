@@ -1,0 +1,400 @@
+---
+title: "Building a Web UI Auto-Testing Tool with Python and LLM API Key Authentication"
+description: "Building a Web UI Auto-Testing Tool with Python and LLM API Key Authentication"
+pubDate: 2026-03-23
+heroImage: "/images/llm-ui-test-tool-hero.png"
+category: "tech"
+author: "denosinfo"
+tags: ["submit-btn", "submit-button-v2"]
+comments: true
+---
+
+# Building a Web UI Auto-Testing Tool with Python and LLM API Key Authentication
+
+> 3-Line Summary
+> - Python + Playwright lets you build a self-healing web UI auto-testing tool from scratch.
+> - LLM API Keys are managed securely via environment variables; when selectors break, the LLM heals them automatically.
+> - Wrapping it with Streamlit produces a fully usable tool that anyone can operate without writing code.
+
+---
+
+## Why Build This
+
+There is exactly one reason automated testing is painful: the moment a UI changes, every script breaks. The day `#submit-btn` quietly becomes `#submit-button-v2`, all that lovingly written test code turns to dust.
+
+Plug an LLM into the test loop and the game changes. When a selector disappears, you just ask the LLM, "Look at the current DOM — where is the button?" It is, in essence, grafting self-healing capability into test code.
+
+As of 2025–2026, Playwright + LLM is already showing up in real QA pipelines. Libraries like Alumnium package the whole pattern into a single install. Building it yourself is better — you choose any LLM API and retain full control over every piece of logic.
+
+---
+
+## Overall Architecture
+
+```
+[Streamlit Web UI]
+ ↓ (URL input, API Key input, scenario input)
+[Test Orchestrator (Python)]
+ ↓
+[Playwright Browser Driver]
+ ↓ (element not found?)
+[LLM API (OpenAI / Gemini / Anthropic)]
+ ↓ (returns new selector)
+[Retry Logic]
+ ↓
+[Result Report (Streamlit screen + HTML)]
+```
+
+Four components: Streamlit UI, test engine, Playwright driver, LLM API client. Each has a single responsibility, which means swapping the LLM provider is a one-line change.
+
+---
+
+## Environment Setup
+
+Python 3.10 or higher is required. One command installs everything.
+
+```bash
+pip install playwright streamlit openai python-dotenv pytest-playwright
+playwright install chromium
+```
+
+Create a `.env` file at the project root. Never hardcode API Keys into source files. This is not a preference — it is a rule.
+
+```
+# .env
+OPENAIAPIKEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+GEMINIAPIKEY=AIzaSyxxxxxxxxxxxxxxxx
+LLM_PROVIDER=openai # openai | gemini | anthropic
+TARGET_URL=https://example.com
+```
+
+Add `.env` to `.gitignore` without exception. A key pushed to a public GitHub repo gets abused within minutes — the average exploitation time for an exposed API key on GitHub was under 5 minutes as of 2024.
+
+---
+
+## LLM Client Module
+
+Every LLM provider has a slightly different interface. Build an abstraction layer so every provider is called with the same function signature.
+
+```python
+# llm_client.py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class LLMClient:
+ def init(self):
+ self.provider = os.getenv("LLM_PROVIDER", "openai")
+ self.apikey = self.loadapikey()
+ self.client = self.initclient()
+
+ def loadapi_key(self):
+ key_map = {
+ "openai": "OPENAIAPIKEY",
+ "gemini": "GEMINIAPIKEY",
+ "anthropic": "ANTHROPICAPIKEY",
+ }
+ key = os.getenv(keymap.get(self.provider, "OPENAIAPI_KEY"))
+ if not key:
+ raise ValueError(f"API Key not found for provider: {self.provider}")
+ return key
+
+ def initclient(self):
+ if self.provider == "openai":
+ from openai import OpenAI
+ return OpenAI(apikey=self.apikey)
+ elif self.provider == "gemini":
+ # Gemini uses an OpenAI-compatible endpoint
+ from openai import OpenAI
+ return OpenAI(
+ apikey=self.apikey,
+ base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+ )
+ elif self.provider == "anthropic":
+ import anthropic
+ return anthropic.Anthropic(apikey=self.apikey)
+
+ def ask(self, prompt: str) -> str:
+ if self.provider in ("openai", "gemini"):
+ response = self.client.chat.completions.create(
+ model="gpt-4o-mini" if self.provider == "openai" else "gemini-2.0-flash",
+ messages=[{"role": "user", "content": prompt}],
+ max_tokens=256,
+ )
+ return response.choices[0].message.content.strip()
+ elif self.provider == "anthropic":
+ response = self.client.messages.create(
+ model="claude-3-5-haiku-latest",
+ max_tokens=256,
+ messages=[{"role": "user", "content": prompt}]
+ )
+ return response.content[0].text.strip()
+```
+
+Change only the `provider` value and the module handles OpenAI, Gemini, or Anthropic transparently.
+
+---
+
+## Self-Healing Test Engine
+
+This is the core logic. When Playwright cannot locate an element it does not simply fail — it hands the current DOM to the LLM, receives a new selector, and retries.
+
+```python
+# test_engine.py
+from playwright.syncapi import syncplaywright, TimeoutError as PlaywrightTimeout
+from llm_client import LLMClient
+
+llm = LLMClient()
+
+def selfhealingfind(page, selector: str, description: str = ""):
+ """Tries the given selector; on failure, asks the LLM for a new one."""
+ try:
+ return page.waitforselector(selector, timeout=5000)
+ except PlaywrightTimeout:
+ print(f"[HEALING] '{selector}' not found. Asking LLM...")
+ dom_snippet = page.content()[:3000] # Truncate for token limits
+ prompt = f"""
+A snippet of the current web page HTML is provided below.
+Target element description: "{description or selector}"
+Selector used: "{selector}" — this selector returned no match.
+
+HTML:
+{dom_snippet}
+
+Analyze the HTML and return only the single most appropriate CSS selector for the intended element.
+Return the selector string only — no explanation, no extra text.
+"""
+ new_selector = llm.ask(prompt)
+ print(f"[HEALING] LLM suggested: {new_selector}")
+ return page.waitforselector(new_selector.strip(), timeout=5000)
+
+
+def runtestscenario(url: str, scenarios: list[dict]) -> list[dict]:
+ """Executes a list of test steps in order and returns results."""
+ results = []
+ with sync_playwright() as p:
+ browser = p.chromium.launch(headless=True)
+ page = browser.new_page()
+ page.goto(url, timeout=15000)
+
+ for step in scenarios:
+ action = step.get("action")
+ selector = step.get("selector", "")
+ value = step.get("value", "")
+ description = step.get("description", selector)
+ result = {"step": description, "status": "pass", "error": ""}
+
+ try:
+ element = selfhealingfind(page, selector, description)
+
+ if action == "click":
+ element.click()
+ elif action == "fill":
+ element.fill(value)
+ elif action == "assert_visible":
+ assert element.is_visible(), f"Element not visible: {selector}"
+ elif action == "assert_text":
+ actual = element.inner_text()
+ assert value in actual, f"Expected '{value}' in '{actual}'"
+
+ result["status"] = "pass"
+ except Exception as e:
+ result["status"] = "fail"
+ result["error"] = str(e)
+
+ results.append(result)
+
+ browser.close()
+ return results
+```
+
+`selfhealingfind` is the key. It catches Playwright's `TimeoutError`, feeds the DOM to the LLM, and retries with the returned selector. Minor UI renames no longer cause test failures.
+
+---
+
+## Streamlit Web UI
+
+A clean interface wrapping the engine. Streamlit was chosen for one reason: the whole UI takes about 50 lines of Python.
+
+```python
+# app.py
+import streamlit as st
+import json
+import os
+from dotenv import load_dotenv
+from testengine import runtest_scenario
+
+load_dotenv()
+
+st.setpageconfig(page_title="LLM Web UI Tester", layout="wide")
+st.title("🔍 LLM-Powered Web UI Auto Tester")
+
+# --- Sidebar: Configuration ---
+with st.sidebar:
+ st.header("⚙️ Settings")
+ provider = st.selectbox("LLM Provider", ["openai", "gemini", "anthropic"])
+ apikeyinput = st.text_input("API Key", type="password",
+ value=os.getenv(f"{provider.upper()}APIKEY", ""))
+ if apikeyinput:
+ os.environ[f"{provider.upper()}APIKEY"] = apikeyinput
+ os.environ["LLM_PROVIDER"] = provider
+
+ targeturl = st.textinput("Target URL", value="https://example.com")
+
+# --- Main: Scenario Input ---
+st.subheader("📋 Test Scenario (JSON)")
+default_scenario = json.dumps([
+ {"action": "assert_visible", "selector": "h1", "description": "Page title visible"},
+ {"action": "click", "selector": "a[href]", "description": "Click first link"},
+], indent=2)
+
+scenarioinput = st.textarea("Scenario JSON", value=default_scenario, height=250)
+
+run_btn = st.button("▶ Run Tests", type="primary")
+
+if run_btn:
+ if not target_url:
+ st.error("Please enter a URL.")
+ else:
+ try:
+ scenarios = json.loads(scenario_input)
+ with st.spinner("Running tests..."):
+ results = runtestscenario(target_url, scenarios)
+
+ st.subheader("📊 Results")
+ pass_count = sum(1 for r in results if r["status"] == "pass")
+ failcount = len(results) - passcount
+
+ cola, colb, col_c = st.columns(3)
+ col_a.metric("Total", len(results))
+ colb.metric("✅ Passed", passcount)
+ colc.metric("❌ Failed", failcount)
+
+ for r in results:
+ icon = "✅" if r["status"] == "pass" else "❌"
+ with st.expander(f"{icon} {r['step']}"):
+ st.write(f"Status: {r['status'].upper()}")
+ if r["error"]:
+ st.error(r["error"])
+
+ except json.JSONDecodeError as e:
+ st.error(f"JSON parse error: {e}")
+ except Exception as e:
+ st.error(f"Test execution error: {e}")
+```
+
+Launch with a single terminal command.
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## Project Structure
+
+```
+llm-ui-tester/
+├── app.py # Streamlit web UI
+├── test_engine.py # Self-healing test engine
+├── llm_client.py # LLM API abstraction layer
+├── .env # API Keys (excluded from git)
+├── .gitignore
+└── requirements.txt
+```
+
+`requirements.txt`:
+
+```
+playwright>=1.40.0
+streamlit>=1.32.0
+openai>=1.30.0
+python-dotenv>=1.0.0
+anthropic>=0.25.0
+```
+
+---
+
+## Security Checkpoints
+
+Three things that absolutely cannot be skipped.
+
+1. Environment Variable Priority
+Never hardcode an API Key into source. Load exclusively via `os.getenv()`. For Streamlit Cloud deployments, use the built-in Secrets management feature.
+
+2. Key Presence Validation
+Raise an exception at startup if the key is absent. A crash at launch is vastly preferable to an auth failure buried mid-test run.
+
+```python
+key = os.getenv("OPENAIAPIKEY")
+if not key:
+ raise ValueError("OPENAIAPIKEY is not set.")
+```
+
+3. DOM Token Budget
+Sending the full DOM to an LLM blows the token budget fast. Slice it: `page.content()[:3000]`. An LLM can infer a selector reliably from the first 3,000 characters of most pages.
+
+---
+
+## Sample Test Scenario: Login Page
+
+A login flow expressed in JSON — five steps, fully self-healing.
+
+```json
+[
+ {
+ "action": "assert_visible",
+ "selector": "input[name='username']",
+ "description": "Username field is visible"
+ },
+ {
+ "action": "fill",
+ "selector": "input[name='username']",
+ "value": "testuser@example.com",
+ "description": "Enter email"
+ },
+ {
+ "action": "fill",
+ "selector": "input[type='password']",
+ "value": "password123",
+ "description": "Enter password"
+ },
+ {
+ "action": "click",
+ "selector": "button[type='submit']",
+ "description": "Click login button"
+ },
+ {
+ "action": "assert_text",
+ "selector": ".dashboard-title",
+ "value": "Dashboard",
+ "description": "Verify dashboard title after login"
+ }
+]
+```
+
+If `button[type='submit']` vanishes in a UI update, the LLM analyzes the DOM and returns the correct new selector. Zero human intervention required.
+
+---
+
+## Extension Ideas
+
+- CI/CD integration: Call `python -m pytest` from GitHub Actions on every pull request
+- Screenshot diff: Capture before/after screenshots and compare for visual regression detection
+- Natural language scenario generation: Ask the LLM, "Write a login test scenario," and receive the JSON automatically
+- Multi-LLM comparison: Run the same broken selector scenario against both OpenAI and Gemini to compare suggestion quality
+
+The third option is the most immediately useful. Delegating scenario creation to the LLM means QA engineers only need to review, not write.
+
+---
+
+## References
+
+- Dhiraj Das, Integrating LLMs into Python Automation (Jan 2026) — https://www.dhirajdas.dev/blog/integrating-llms-python-automation
+- apxml.com, LLM API Authentication and Security (Apr 2025) — https://apxml.com/courses/prompt-engineering-llm-application-development/chapter-4-interacting-with-llm-apis/api-authentication
+- Talentica, Self-Hosted LLMs for QA: Test Case & UI Automation Guide (Mar 2025) — https://www.talentica.com/blogs/boosting-qa-productivity-with-self-hosted-llms-for-test-case-ui-automation-generation/
+- LinkedIn / Arun Ohm, Modern Test Automation with AI(LLM) and Playwright MCP (Aug 2025) — https://www.linkedin.com/pulse/modern-test-automation-aillm-playwright-mcp-model-context-arun-ohm
+- pyimagesearch.com, Building a Streamlit Python UI for LLaVA with OpenAI API Integration (Sep 2025) — https://pyimagesearch.com/2025/09/29/building-a-streamlit-ui-for-llava-with-openai-api-integration/
+- Playwright Official Docs, Test Agents — https://playwright.dev/docs/test-agents
+- Reddit r/Playwright, Made a LLM browser automation Python lib using playwright (Dec 2025) — https://www.reddit.com/r/Playwright/comments/1plgd7g/madeallmbrowserautomationpythonlib_using/
+- nextwebspark.com, Your First LLM App: Using OpenAI API with Streamlit and Python (May 2025) — https://nextwebspark.com/2025/05/31/your-first-llm-app-using-openai-api-with-streamlit-and-python/
