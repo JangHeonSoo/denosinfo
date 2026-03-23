@@ -5,7 +5,7 @@ category: 'development'
 author: denosinfo
 tags: [OpenClaw, AI Agent, Telegram, Automation, Security, MacOS]
 description: "Installing OpenClaw is easy, but managing Gateway and Telegram permissions is tricky. We share operational know-how from solving LaunchAgent env var issues to securing skills and browser relay."
-heroImage: "/images/openclawgatewayarchitecture_1770617594667.png"
+heroImage: "/images/openclaw_gateway_architecture_1770617594667.png"
 ---
 
 OpenClaw installation finishes quickly.
@@ -18,7 +18,7 @@ This post organizes the actual blocking points from "Installation → Telegram S
 
 ## Establishing the Structure Where Gateway Resides
 
-![Visualization of 'Invisible Wall' between User Terminal and LaunchAgent Daemon](/images/openclawgatewayarchitecture_1770617594667.png)
+![Visualization of 'Invisible Wall' between User Terminal and LaunchAgent Daemon](/images/openclaw_gateway_architecture_1770617594667.png)
 
 OpenClaw is not a tool that ends with a single CLI execution.
 It follows a structure where a Gateway resides to handle channel connections and agent execution.
@@ -40,7 +40,7 @@ OpenClaw allows handling channel settings via `openclaw config set channels.tele
 
 ## Telegram DM Policy: Pairing and allowFrom are Key
 
-![Digital security gate verifying connection requests](/images/openclawsecuritypairingv21770617629890.png)
+![Digital security gate verifying connection requests](/images/openclaw_security_pairing_v2_1770617629890.png)
 
 The default DM policy for Telegram channels is `pairing`.
 In this mode, if an unknown sender sends a DM, it only receives a pairing code, and messages are ignored until approval.
@@ -66,7 +66,7 @@ Fixing it this way increases reproducibility by not relying on "abstract targets
 
 ## Browser Automation Standards Set by Chrome Extension Relay
 
-![Digital bridge connecting browser extension to engine](/images/openclawbrowserrelayv21770617644829.png)
+![Digital bridge connecting browser extension to engine](/images/openclaw_browser_relay_v2_1770617644829.png)
 
 OpenClaw operates browser profiles in several ways.
 There is a method to launch a separate OpenClaw-managed browser, but in practice, the Extension Relay that attaches "my already logged-in Chrome tab" is strong.

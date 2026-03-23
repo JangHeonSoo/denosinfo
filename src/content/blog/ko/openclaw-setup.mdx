@@ -5,7 +5,7 @@ category: 'development'
 author: denosinfo
 tags: [OpenClaw, AI Agent, Telegram, Automation, Security, MacOS]
 description: "OpenClaw 설치 후 겪게 되는 Gateway, 텔레그램 권한, 브라우저 연동 문제를 실무 관점에서 해결합니다. LaunchAgent 환경 변수 문제부터 스킬 보안 관리까지 운영 노하우를 공유합니다."
-heroImage: "/images/openclawgatewayarchitecture_1770617594667.png"
+heroImage: "/images/openclaw_gateway_architecture_1770617594667.png"
 ---
 
 OpenClaw 설치는 금방 끝난다.
@@ -18,7 +18,7 @@ OpenClaw 설치는 금방 끝난다.
 
 ## Gateway가 상주하는 구조를 먼저 잡는다
 
-![사용자 터미널과 LaunchAgent 데몬 사이의 '보이지 않는 벽' 시각화](/images/openclawgatewayarchitecture_1770617594667.png)
+![사용자 터미널과 LaunchAgent 데몬 사이의 '보이지 않는 벽' 시각화](/images/openclaw_gateway_architecture_1770617594667.png)
 
 OpenClaw는 CLI 한 번 실행으로 끝나는 도구가 아니다.
 채널 연결과 에이전트 실행을 받는 Gateway가 상주하는 구조다.
@@ -40,7 +40,7 @@ OpenClaw는 채널 설정을 `openclaw config set channels.telegram.botToken ...
 
 ## 텔레그램 DM 정책은 pairing과 allowFrom이 핵심이다
 
-![접속 요청을 검증하는 디지털 보안 게이트](/images/openclawsecuritypairingv21770617629890.png)
+![접속 요청을 검증하는 디지털 보안 게이트](/images/openclaw_security_pairing_v2_1770617629890.png)
 
 텔레그램 채널의 기본 DM 정책은 `pairing`이다.
 이 모드에서는 모르는 발신자가 DM을 보내면 페어링 코드만 받고, 승인 전까지 메시지를 무시한다.
@@ -66,7 +66,7 @@ OpenClaw의 단일 출구 커맨드는 `openclaw message send`다.
 
 ## 브라우저 자동화는 Chrome Extension Relay가 기준이 된다
 
-![브라우저 확장 프로그램과 엔진을 연결하는 디지털 브리지](/images/openclawbrowserrelayv21770617644829.png)
+![브라우저 확장 프로그램과 엔진을 연결하는 디지털 브리지](/images/openclaw_browser_relay_v2_1770617644829.png)
 
 OpenClaw는 브라우저 프로필을 여러 방식으로 운영한다.
 OpenClaw-managed 브라우저를 따로 띄우는 방식도 있지만, 실전에서는 “이미 로그인된 내 Chrome 탭”을 붙이는 Extension Relay가 강하다.

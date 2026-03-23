@@ -5,14 +5,14 @@ category: 'tech'
 author: denosinfo
 tags: [Server, Networking, Firewall, Troubleshooting, WebServer, SysAdmin]
 description: "로컬에서는 잘 되는데 외부에서는 접속이 안 되나요? 포트 바인딩, 방화벽, 포트 포워딩, 보안 그룹 등 서버 접속 장애를 일으키는 10가지 주요 원인과 체계적인 진단 순서를 정리했습니다."
-heroImage: "/images/serveraccessheroconnectionglow_1771459314906.png"
+heroImage: "/images/server_access_hero_connection_glow_1771459314906.png"
 ---
 
 로컬에서는 서버가 잘 열린다. `localhost:8080`으로 들어가면 화면이 반듯하게 뜬다. 그런데 집 밖, 회사, 휴대폰 LTE에서 접속하면 타임아웃이나 연결 실패만 돌아온다. 서버는 살아 있는데, 세상과 단절된 섬이 된 느낌이다.
 
 사실 이런 상황은 생각보다 자주 생긴다. 웹 서버, 게임 서버, 개발 중인 API, 뭐든 간에. 그래서 여기서는 "서버 프로세스는 떠 있는데 외부에서 접속이 안 되는" 상황에서 많이 나오는 원인을 한 번에 정리한다.
 
-![데이터 센터 내의 하이테크 서버 랙에서 특정 포트만 발광하며 연결 문제를 암시하는 모습](/images/serveraccessheroconnectionglow_1771459314906.png)
+![데이터 센터 내의 하이테크 서버 랙에서 특정 포트만 발광하며 연결 문제를 암시하는 모습](/images/server_access_hero_connection_glow_1771459314906.png)
 
 <br/>
 
@@ -50,7 +50,7 @@ Stack Overflow에서도 "로컬에서는 잘 되는데, 다른 컴퓨터에서�
 
 ## 3. 네트워크 방화벽·라우터에서 막힌 경우 (포트 포워딩, 인바운드 정책)
 
-![미래 지향적인 로봇 팔이 방화벽의 인바운드/아웃바운드 정책을 세밀하게 조정하는 시각화](/images/serveraccessfirewallrobotichand_1771459334384.png)
+![미래 지향적인 로봇 팔이 방화벽의 인바운드/아웃바운드 정책을 세밀하게 조정하는 시각화](/images/server_access_firewall_robotic_hand_1771459334384.png)
 
 서버 앞단에 공유기나 네트워크 방화벽이 있으면, 거기서 한 번 더 막힐 수 있다. 집에서 쓰는 NAS, 홈 서버, 사무실 내부 서버에서 특히 자주 터지는 문제다.
 
@@ -161,7 +161,7 @@ AWS, GCP, Azure 같은 클라우드 환경에서는 OS 방화벽 말고도 한 �
 
 ## 10. 진단 순서 예시
 
-![터미널과 네트워크 맵을 대조하며 차례대로 원인을 분석하는 고해상도 워크스페이스 사진](/images/serveraccessdiagnosisengineerdesk_1771459353541.png)
+![터미널과 네트워크 맵을 대조하며 차례대로 원인을 분석하는 고해상도 워크스페이스 사진](/images/server_access_diagnosis_engineer_desk_1771459353541.png)
 
 원인 후보가 많아서 헷갈리기 쉽다. 그래서 보통은 아래 순서로 하나씩 잘라 나가는 게 빠르다.
 
