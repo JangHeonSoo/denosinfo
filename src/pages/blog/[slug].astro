@@ -1,0 +1,31 @@
+---
+import { SUPPORTED_LOCALES, getPosts, stripLocaleFromSlug } from '@/utils'
+
+export async function getStaticPaths() {
+	const bySlug = new Map<string, string>()
+
+	for (const locale of SUPPORTED_LOCALES) {
+		const posts = await getPosts(undefined, locale)
+		for (const post of posts) {
+			const slug = stripLocaleFromSlug(post.slug, locale)
+			if (!bySlug.has(slug) || locale === 'ko') {
+				bySlug.set(slug, locale)
+			}
+		}
+	}
+
+	return [...bySlug.entries()].map(([slug, locale]) => ({
+		params: { slug },
+		props: { locale }
+	}))
+}
+
+const slug = Astro.params.slug
+const locale = Astro.props.locale as string
+
+if (!slug) {
+	return Astro.redirect('/ko/blog/', 302)
+}
+
+return Astro.redirect(`/${locale}/blog/${slug}/`, 302)
+---
