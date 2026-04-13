@@ -1,0 +1,182 @@
+---
+title: "OpenClaw Update Complete Analysis — v2026.4.11"
+description: "OpenClaw Update Complete Analysis — v2026.4.11"
+pubDate: 2026-04-13
+heroImage: "/images/openclaw-update-hero.png"
+category: "tech"
+author: "denosinfo"
+tags: ["OpenClaw", "Update", "Complete", "Analysis", "v2026", "11"]
+comments: true
+---
+
+# OpenClaw Update Complete Analysis — v2026.4.11
+
+> Latest stable version: 2026.4.11 (Released April 12, 2026)
+
+---
+
+The version number looks routine. But OpenClaw in April 2026 has become a completely different beast. Memory now moves autonomously like an AI agent, the video generation pipeline has been rebuilt, and platform integrations have reached genuine practical value. Here's a deep dive into where this 430,000-line codebase with 215,000 GitHub stars actually stands right now.
+
+---
+
+## Current Version & Release Status
+
+Latest stable: `2026.4.11` — Released April 12, 2026.
+
+OpenClaw follows CalVer (year.month.day) versioning and maintains a near-daily release cadence. Key recent releases:
+
+| Version | Release Date | Scale |
+|---------|-------------|-------|
+| `2026.4.11` | 2026-04-12 | Chat UI overhaul, video generation rebuild, Teams reactions |
+| `2026.4.10` | 2026-04-11 | Active Memory plugin, Codex provider, MLX local speech |
+| `2026.4.9` | 2026-04-09 | Dreaming/memory backfill, iOS pinning, security hardening |
+| `2026.3.22` | 2026-03-23 | Largest ever — 45 new features, 13 breaking changes |
+| `2026.2.23` | 2026-02-24 | Claude Opus 4.6 support, major security patches |
+
+To update:
+```bash
+npm install -g openclaw@latest
+openclaw version
+openclaw doctor --fix # auto-resolves most breaking changes
+```
+
+---
+
+## What Is OpenClaw
+
+One-line answer: a locally-executed, open-source personal AI agent.
+
+It runs directly on your Mac, Windows, or Linux — no cloud dependency. The architecture places AI on top of messaging apps you already use: WhatsApp, Telegram, Slack, Discord, iMessage. It can read/write files, execute shell commands, and control browsers, while the ClawHub skills marketplace provides 4,000+ community-built extensions. The software itself is free; you pay only for your LLM API tokens (Claude, GPT-5, etc.).
+
+---
+
+## v2026.4.11 — Core Technical Breakdown
+
+### ChatGPT Conversation Import + Memory Palace
+
+A native ingestion pipeline now brings ChatGPT conversation history directly into OpenClaw's Dreaming tab. Imported conversations are organized into Imported Insights and Memory Palace diary subtabs, letting you browse compiled wiki pages and raw source pages from the UI. Users running GPT and OpenClaw in parallel now have a real history migration path.
+
+### video_generate — Full Rebuild
+
+The video generation tooling has been completely redesigned. The headline change is URL-only asset delivery — large video files no longer need to be loaded into memory, only the URL is passed through. This is joined by reference audio inputs, per-asset role hints, adaptive aspect-ratio support, and a higher image-input cap. Seedance 2.0 model references were already added in 2026.4.10 via the bundled fal provider.
+
+### Microsoft Teams Reaction Support
+
+Teams integration has finally reached practical territory. Graph API-based reaction add/list, Graph API pagination, and delegated OAuth setup all landed simultaneously. The architecture preserves existing application-auth read paths while using delegated auth for reaction sends. Using OpenClaw inside a corporate Teams environment is now a real option.
+
+### Structured Chat Bubbles + [embed] Tag
+
+Assistant media/reply/voice directives now render as structured chat bubbles. The new `[embed ...]` rich output tag was also added, with external embed URLs gated behind config for security.
+
+---
+
+## v2026.4.10 — Core Technical Breakdown
+
+### Active Memory Plugin
+
+The most-watched feature from 2026.4.10. A dedicated memory sub-agent runs just before the main reply, automatically pulling in preferences, context, and past details — no manual "remember this" prompts needed. You can inspect live memory behavior with `/verbose` and tune message/recent/full context modes via config. Official docs at `docs.openclaw.ai/concepts/active-memory`.
+
+### Codex Provider — Independent Split
+
+Codex models previously shared the OpenAI provider path. Now a standalone Codex provider handles managed auth, native threads, model discovery, and compaction independently. `openai/gpt-` stays on the OpenAI path; `codex/gpt-` routes through Codex. Coding-heavy workflows benefit from clean separation.
+
+### Local MLX Talk Mode (Apple Silicon Only)
+
+Talk Mode now supports fully local speech processing on Apple Silicon Macs — no cloud API calls, no voice data leaving the device. System voice fallback is included. Practical for privacy-sensitive environments or offline use cases.
+
+---
+
+## v2026.3.22 — The "Biggest Ever" Update Revisited
+
+Released late March, v2026.3.22 remains the single largest OpenClaw release: 45+ new features, 13 breaking changes, 82 bug fixes, 20 security patches — earning 294 GitHub reactions.
+
+### ClawHub Skills Marketplace Goes Native
+
+`openclaw plugins install` now prioritizes ClawHub over npm, falling back to npm only when a package isn't found. Cross-ecosystem compatibility auto-converts skill packages from Claude, Codex, and Cursor into OpenClaw format — 4,000+ skills in one place.
+
+### Agent Timeout: 10 minutes → 48 hours
+
+The default agent timeout expanded from 10 minutes to 48 hours with zero config changes. Batch jobs, long documents, and complex multi-step workflows no longer get cut off mid-task.
+
+### SSH/OpenShell Pluggable Sandbox
+
+The sandbox execution environment now supports pluggable backends. SSH and OpenShell are the first two, with `mirror` and `remote` workspace modes. Agents can now SSH into remote machines and execute tasks directly — no more workarounds for server-side execution.
+
+### Multi-LLM Provider Expansion
+
+| Provider | Change |
+|----------|--------|
+| OpenAI | Default upgraded to GPT-5.4; forward-compat for gpt-5.4-mini/nano |
+| Anthropic | Claude callable via Google Vertex AI |
+| MiniMax | M2.5 → M2.7, high-speed mode |
+| xAI Grok | Synced to Pi-backed latest Grok family |
+| Xiaomi | MiMo V2 Pro + V2 Omni |
+| GitHub Copilot | Forward-compatible dynamic model IDs |
+
+### Native Web Search Triple Pack
+
+Exa, Tavily, and Firecrawl ship as first-party bundled plugins. No third-party configuration needed — agents have reliable web search out of the box.
+
+---
+
+## ByteRover Native Memory Plugin — Notable Third-Party
+
+Separate from the official Active Memory plugin, ByteRover's native memory plugin offers a three-layer memory architecture:
+
+- Context Tree — deep structured knowledge base
+- Workspace Memory — core rules, preferences, guidelines
+- Daily Memory — session notes
+
+It achieves 92.2% retrieval accuracy on the LoCoMo benchmark, maintaining 90% accuracy even with lightweight models. Installs via ClawHub; requires v2026.3.22+. Memory is stored as human-readable, git-diffable Markdown files — you can see exactly what the agent has learned.
+
+```bash
+openclaw skills install @byterover/byterover
+```
+
+---
+
+## Security Hardening Timeline
+
+| Release | Key Security Changes |
+|---------|---------------------|
+| 2026.4.11 | External embed URL gating, Telegram sender validation tightening |
+| 2026.4.10 | SSRF defaults across browser/sandbox, exec preflight reads, plugin dependency scanning |
+| 2026.4.9 | Blocked runtime-control env vars in .env, node exec events marked untrusted |
+| 2026.3.22 | Windows SMB credential protection, Unicode hidden text detection, Nostr DM guards, device pairing hardening |
+| 2026.2.23 | Claude Opus 4.6 integration, Telegram/WhatsApp group policy fixes |
+
+---
+
+## Messaging Platform Integration Status
+
+| Platform | Latest Update |
+|---------|-------------|
+| Microsoft Teams | Reactions, Graph pagination, delegated OAuth |
+| WhatsApp | Socket reconnect stability, media send path fixes |
+| Feishu/Lark | Document comment threads, reactions, typing feedback |
+| Telegram | TTS in core, custom API endpoints |
+| Matrix | Official matrix-js-sdk plugin, MSC4357 live markers |
+| Discord | Opus voice notes, Carbon v0.15.0 |
+| Slack | @slack/bolt startup stability |
+
+---
+
+## What This Means for Developers
+
+The 48-hour timeout, SSH sandbox, ClawHub's 4,000+ skills, and Active Memory together form a competitive locally-run autonomous agent environment. The GPT-5.4 vs Opus 4.6 agentic parity report gate added in 2026.4.11 signals that the OpenClaw team is officially tracking behavioral differences between the two leading model families — useful context for anyone choosing a primary model for agentic workflows.
+
+For productivity workflows: the `notion-connector` skill enables bidirectional Notion sync, and `github-pr-review` delegates code review to the agent. Both install with a single command via ClawHub.
+
+---
+
+## References
+
+- OpenClaw Official GitHub Releases: https://github.com/openclaw/openclaw/releases
+- Releasebot OpenClaw Release Notes (April 2026): https://releasebot.io/updates/openclaw
+- OpenClaw v2026.3.22 Release Guide (bibigpt): https://bibigpt.co/blog/posts/openclaw-v2026322-release-update-breaking-changes-guide-2026-en
+- OpenClaw 2026.4.10 Analysis (bongman): https://bongman.tistory.com/1417
+- OpenClaw 2026.4.11 Changelog (bongman): https://bongman.tistory.com/1420
+- OpenClaw 4.10 Review: Active Memory, Codex, MLX (shippingskool): https://www.shippingskool.com/blog/openc-law-4-10-review-active-memory-codex-mlx-speech
+- ByteRover Native Memory Plugin: https://www.byterover.dev/blog/native-structured-long-term-memory-plugin-openclaw
+- DigitalOcean: What is OpenClaw? (2026): https://www.digitalocean.com/resources/articles/what-is-openclaw
+- CyberSecurityNews OpenClaw 2026.2.23: https://cybersecuritynews.com/openclaw-2026-2-23-released/

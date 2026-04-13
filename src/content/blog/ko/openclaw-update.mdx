@@ -1,0 +1,190 @@
+---
+title: "OpenClaw 업데이트 완전 분석 — 2026.4.11"
+description: "OpenClaw 업데이트 완전 분석 — 2026.4.11"
+pubDate: 2026-04-13
+heroImage: "/images/openclaw-update-hero.png"
+category: "tech"
+author: "denosinfo"
+tags: ["OpenClaw", "업데이트", "완전", "분석", "2026", "11"]
+comments: true
+---
+
+# OpenClaw 업데이트 완전 분석 — 2026.4.11
+
+> 현재 최신 안정 버전: 2026.4.11 (2026년 4월 12일 출시)
+
+---
+
+버전 번호만 보면 평범한 패치 같다. 근데 2026년 4월의 OpenClaw는 완전히 다른 짐승이 됐다. 메모리가 AI처럼 스스로 움직이고, 영상 생성 파이프라인이 바뀌었고, 협업 플랫폼 연동도 실용적인 수준에 올라섰다. 코드베이스 43만 줄, GitHub 스타 215,000개짜리 오픈소스 AI 에이전트가 지금 어디까지 왔는지 직접 뜯어본다.
+
+---
+
+## 현재 버전 및 릴리즈 현황
+
+최신 안정 버전: `2026.4.11` — 2026년 4월 12일 출시.
+
+OpenClaw는 CalVer(연도.월.일) 방식으로 버전을 관리하며, 거의 매일 새 릴리즈를 내놓는 속도전을 이어가고 있다. 최근 주요 릴리즈 흐름은 다음과 같다.
+
+| 버전 | 출시일 | 규모 |
+|------|--------|------|
+| `2026.4.11` | 2026-04-12 | 채팅 UI, 영상 생성, Teams 리액션 전면 개편 |
+| `2026.4.10` | 2026-04-11 | Active Memory 플러그인, Codex 프로바이더, MLX 음성 |
+| `2026.4.9` | 2026-04-09 | Dreaming/메모리 백필, iOS 버전 고정, 보안 강화 |
+| `2026.3.22` | 2026-03-23 | 역대 최대 업데이트 — 신기능 45개, breaking 13개 |
+| `2026.2.23` | 2026-02-24 | Claude Opus 4.6 지원, 보안 다중 패치 |
+
+업데이트 방법:
+```bash
+npm install -g openclaw@latest
+openclaw version
+openclaw doctor --fix # breaking change 자동 수정
+```
+
+---
+
+## OpenClaw란 무엇인가
+
+한 줄 요약: 로컬 실행 기반의 오픈소스 개인 AI 에이전트.
+
+클라우드 서버에 의존하지 않고 내 Mac, Windows, Linux에서 직접 돌아간다. WhatsApp, Telegram, Slack, Discord, iMessage 등 이미 쓰고 있는 채팅 앱 위에 AI가 올라타는 구조다. 파일 읽기/쓰기, 셸 명령 실행, 브라우저 제어까지 직접 할 수 있는 에이전트이면서, ClawHub 스킬 마켓플레이스를 통해 4,000개 이상의 커뮤니티 스킬을 붙일 수 있다. 비용은 소프트웨어 자체가 무료고, LLM API 토큰(Claude, GPT-5 등)만 직접 지불하면 된다.
+
+---
+
+## 2026.4.11 핵심 기술 분석
+
+### ChatGPT 대화 임포트 + Memory Palace
+
+드디어 쓸 수 있게 됐다. Dreaming 탭에 ChatGPT 대화 기록을 직접 임포트하는 ingestion 파이프라인이 추가됐다. 임포트된 대화는 Imported Insights와 Memory Palace 다이어리 서브탭으로 분류돼, 컴파일된 위키 페이지와 원본 소스 페이지를 UI에서 바로 열람할 수 있다. GPT와 OpenClaw를 병행하던 사람들에게는 히스토리 재활용 경로가 생긴 셈이다.
+
+### video_generate 전면 개편
+
+기존 영상 생성 도구가 완전히 재설계됐다. 핵심은 URL 전용 에셋 전달 — 대형 영상 파일을 메모리에 올리지 않고 URL만 넘기는 방식이라 메모리 부담이 크게 줄었다. 여기에 레퍼런스 오디오 입력, 에셋별 role 힌트, adaptive 비율 지원, 이미지 입력 상한 확대까지 한 번에 들어왔다. Seedance 2.0 모델도 이미 2026.4.10부터 번들 fal 프로바이더에 추가됐다.
+
+### Microsoft Teams 리액션 지원
+
+Teams 통합이 드디어 실용 수준에 도달했다. Graph API 기반 리액션 추가/조회, Graph API 페이지네이션, delegated OAuth 설정이 한꺼번에 들어왔다. 기존 application-auth 읽기 경로는 유지하면서 리액션 전송에는 delegated 인증을 쓰는 구조다. 사내 Teams 환경에서 OpenClaw를 쓰는 시나리오가 현실이 됐다.
+
+### 구조화 채팅 버블 + [embed] 태그
+
+어시스턴트의 미디어/응답/음성 지시문이 이제 구조화된 채팅 버블로 렌더링된다. 새로운 `[embed ...]` rich output 태그도 추가됐고, 외부 임베드 URL은 설정으로 게이트를 둬 보안을 강화했다.
+
+---
+
+## 2026.4.10 핵심 기술 분석
+
+### Active Memory 플러그인
+
+2026.4.10에서 가장 주목받은 기능이다. 메인 응답 직전에 전용 메모리 서브에이전트가 먼저 동작해, 사용자가 "이거 기억해줘"라고 말하지 않아도 선호도·맥락·과거 대화를 자동으로 당겨온다. `/verbose` 명령으로 실시간 메모리 동작을 확인할 수 있고, 메시지/최근/전체 컨텍스트 모드를 설정으로 조절할 수 있다. 공식 문서는 `docs.openclaw.ai/concepts/active-memory`에 있다.
+
+### Codex 프로바이더 독립 분리
+
+기존에는 Codex 모델이 OpenAI 프로바이더 경로를 공유했다. 이번에 독립된 Codex 프로바이더가 생기면서, 관리 인증·네이티브 스레드·모델 디스커버리·컴팩션이 모두 별도로 처리된다. `openai/gpt-`는 기존 OpenAI 경로 그대로, `codex/gpt-`는 Codex 경로로 명확히 분리됐다. 코딩 헤비한 워크플로우에서 혼선이 없어졌다.
+
+### 로컬 MLX Talk Mode (Apple Silicon 전용)
+
+Talk Mode가 로컬 음성 처리를 지원한다. Apple Silicon Mac에서 클라우드 API 호출 없이 완전 로컬로 음성 인식과 TTS가 돌아간다. 음성 데이터가 외부로 나가지 않는다. 프라이버시가 중요한 환경이나 인터넷이 불안정한 상황에서 바로 써먹을 수 있다. 시스템 음성 폴백도 지원한다.
+
+---
+
+## 2026.3.22 — "역대 최대" 업데이트 재조명
+
+3월 말에 나온 v2026.3.22는 단일 릴리즈 기준으로 역대 최대 규모였다. 신기능 45개, breaking change 13개, 버그 수정 82건, 보안 패치 20개. GitHub 반응 294개가 붙었고, 중국 기술 커뮤니티에서는 "역사상 가장 강력한 업데이트"라고 불렀다.
+
+### ClawHub 스킬 마켓플레이스 네이티브화
+
+`openclaw plugins install`이 이제 ClawHub를 우선 조회하고, 없을 때만 npm으로 폴백한다. Claude, Codex, Cursor의 스킬 패키지를 자동으로 OpenClaw 포맷으로 변환해 4,000개 이상의 크로스 에코시스템 스킬이 한 곳에 모였다.
+
+### Agent 타임아웃 48시간으로 확장
+
+기본 타임아웃이 10분에서 48시간으로 늘었다. 설정 변경 없이 자동 적용된다. 배치 작업, 장문서 처리, 복잡한 멀티스텝 워크플로우에서 중간에 끊기는 일이 없어진다.
+
+### SSH/OpenShell 플러그러블 샌드박스
+
+샌드박스 실행 환경에 SSH와 OpenShell 백엔드가 추가됐다. `mirror`와 `remote` 워크스페이스 모드를 통해 에이전트가 원격 서버에 직접 SSH 접속해서 작업할 수 있다. 로컬 Mac에서 지시만 내리고 실제 실행은 원격 서버에서 처리하는 구조가 공식 지원된다.
+
+### 멀티 LLM 프로바이더 대량 추가
+
+| 프로바이더 | 변경 사항 |
+|-----------|----------|
+| OpenAI | 기본 모델 GPT-5.4로 업그레이드, gpt-5.4-mini/nano 호환 |
+| Anthropic | Google Vertex AI를 통한 Claude 호출 지원 |
+| MiniMax | M2.5 → M2.7, 고속 모드 추가 |
+| xAI Grok | Pi 기반 최신 Grok 패밀리 동기화 |
+| Xiaomi | MiMo V2 Pro / V2 Omni 추가 |
+| GitHub Copilot | 동적 모델 ID 전방 호환 |
+
+어떤 LLM을 써도 OpenClaw가 연동을 책임지는 구조다.
+
+### 네이티브 웹 검색 트리플 팩
+
+Exa, Tavily, Firecrawl이 퍼스트파티 번들 플러그인으로 탑재됐다. 서드파티 설정 없이 바로 웹 검색이 에이전트에게 열린다.
+
+---
+
+## ByteRover Native Memory Plugin — 주목할 서드파티
+
+공식 Active Memory와 별개로, 커뮤니티 플러그인 중에서 주목할 만한 것이 있다. ByteRover Native Memory Plugin이다.
+
+3계층 메모리 아키텍처를 쓴다:
+- Context Tree — 깊은 구조화 지식 베이스
+- Workspace Memory — 핵심 규칙, 선호도, 가이드라인
+- Daily Memory — 세션 노트
+
+LoCoMo 벤치마크 기준 92.2% 검색 정확도를 달성했고, 경량 모델에서도 90% 정확도를 유지한다. ClawHub를 통해 단일 명령으로 설치되며, v2026.3.22 이상에서만 작동한다.
+
+```bash
+openclaw skills install @byterover/byterover
+```
+
+메모리가 Git처럼 관리된다. Markdown 파일 형태라서 사람이 직접 읽고 편집할 수 있고, `git diff`로 에이전트가 뭘 학습했는지 추적할 수 있다.
+
+---
+
+## 보안 강화 흐름
+
+| 릴리즈 | 주요 보안 변경사항 |
+|-------|-----------------|
+| 2026.4.11 | 외부 임베드 URL 게이팅, Telegram 발신자 검증 강화 |
+| 2026.4.10 | 브라우저/샌드박스 SSRF 기본값 강화, 플러그인 의존성 스캔 |
+| 2026.4.9 | .env에서 런타임 제어 env var 차단, node exec 이벤트 untrusted 마킹 |
+| 2026.3.22 | Windows SMB 크리덴셜 보호, Unicode 숨김 텍스트 탐지, Nostr DM 보안 |
+| 2026.2.23 | Claude Opus 4.6 통합, Telegram/WhatsApp 그룹 정책 수정 |
+
+---
+
+## 메시징 플랫폼 통합 현황
+
+| 플랫폼 | 최신 업데이트 |
+|-------|------------|
+| Microsoft Teams | 리액션, Graph 페이지네이션, delegated OAuth |
+| WhatsApp | 소켓 재연결 안정화, 미디어 전송 경로 개선 |
+| Feishu/Lark | 문서 댓글 스레드, 리액션, 타이핑 피드백 |
+| Telegram | TTS 코어 통합, 커스텀 API 엔드포인트 |
+| Matrix | matrix-js-sdk 공식 플러그인, MSC4357 라이브 마커 |
+| Discord | Opus 보이스 노트, Carbon v0.15.0 |
+| Slack | @slack/bolt 안정화 |
+
+---
+
+## 개발자·PM 관점 — 이 업데이트가 의미하는 것
+
+솔직히 말하면, 6개월 전 OpenClaw와 지금의 OpenClaw는 다른 도구다. 48시간 타임아웃, SSH 샌드박스, ClawHub 4,000개 스킬, Active Memory — 이 조합이면 로컬에서 돌아가는 자율 에이전트 환경으로서 경쟁력이 생겼다. API 토큰 비용을 직접 내야 하는 구조지만, 데이터 프라이버시와 커스터마이징 자유도는 어떤 클라우드 서비스도 따라오지 못한다.
+
+PM 도구 관점에서 주목할 건 Notion 커넥터와 GitHub PR 리뷰 스킬이다. `openclaw skills install notion-connector`로 에이전트가 Notion에 직접 쓰고 읽는 양방향 동기화가 가능해지고, `github-pr-review` 스킬은 코드 리뷰를 에이전트에게 위임할 수 있다.
+
+GPT-5.4 vs Opus 4.6 agentic parity report 게이트가 2026.4.11 QA에 추가됐다. OpenClaw 팀이 두 모델의 에이전트 행동 차이를 공식적으로 추적하기 시작했다는 뜻이다. 어떤 모델을 기본으로 쓸지 결정하는 데 참고할 만한 공식 데이터가 나올 예정이다.
+
+---
+
+## 참고 자료
+
+- OpenClaw 공식 GitHub 릴리즈: https://github.com/openclaw/openclaw/releases
+- Releasebot OpenClaw 릴리즈 노트 (2026년 4월): https://releasebot.io/updates/openclaw
+- OpenClaw v2026.3.22 Release Guide (bibigpt): https://bibigpt.co/blog/posts/openclaw-v2026322-release-update-breaking-changes-guide-2026-en
+- OpenClaw 2026.4.10 Active Memory 분석 (bongman): https://bongman.tistory.com/1417
+- OpenClaw 2026.4.11 변경사항 (bongman): https://bongman.tistory.com/1420
+- OpenClaw 4.10 Review: Active Memory, Codex, MLX (shippingskool): https://www.shippingskool.com/blog/openc-law-4-10-review-active-memory-codex-mlx-speech
+- ByteRover Native Memory Plugin: https://www.byterover.dev/blog/native-structured-long-term-memory-plugin-openclaw
+- DigitalOcean: What is OpenClaw? (2026): https://www.digitalocean.com/resources/articles/what-is-openclaw
+- CyberSecurityNews OpenClaw 2026.2.23: https://cybersecuritynews.com/openclaw-2026-2-23-released/
+- Skywork: OpenClaw Latest Updates 2026: https://skywork.ai/skypage/en/openclaw-latest-updates-2026/2037437426655117312
