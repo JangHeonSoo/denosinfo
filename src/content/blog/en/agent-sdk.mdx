@@ -1,0 +1,174 @@
+---
+title: "What is ChatGPT's Agent SDK? From Install to First Run"
+description: "What is ChatGPT's Agent SDK? From Install to First Run"
+pubDate: 2026-04-20
+heroImage: "/images/agent-sdk-hero.png"
+category: "tech"
+author: "denosinfo"
+tags: ["What", "is", "ChatGPT", "Agent", "SDK", "From", "Install", "to"]
+comments: true
+---
+
+# What is ChatGPT's Agent SDK? From Install to First Run
+
+![workspace](https://user-gen-media-assets.s3.amazonaws.com/gemini_images/22957600-1c13-4824-82be-c2832fcabf97.png?AWSAccessKeyId=ASIA2F3EMEYEZZU7TNR2&Signature=DWEHoqMBWp7lSRUcLOJxtGDOWF8%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEEcaCXVzLWVhc3QtMSJGMEQCIATtRsqFgjqTCV1oi9BsRncOdQv7qlBLog6%2FZd8fvad7AiA%2B9sh1pQzXgTUVzmgvnNV2eZkh8Asu7H%2FX1CfuiPiWCyrzBAgQEAEaDDY5OTc1MzMwOTcwNSIMVoHMVkE0Aeu3%2BemBKtAEiG8OMncOs3nFs8a7Eh95AVQXG136SCLLun3XXpKZeL2zv8w20bMChk4zwW8Xovxt6aJXu%2FzwhtCgyT%2BkIzP97TMgRXiFpK3C3p1K8R47cYuVGMlSNP%2BG%2F3%2Fu2EUtvTg8YQbpxooJuNzmlzHgZHsJvpnSc9az7n5D5RuM7vL8sISXrzi1RVkpbO0Atw4n0rxCsdLXFXIqQDEXqvw9B7KPJyNQspWQEsKo3Q1oOVfKsKmXHWT3%2FIW6GPDqHzhKZ3pz2NiQ03yJukl3kY7u%2F3zk2LMKKxWV1cES5SpJGTTNLNpmqxOC%2FWBY26g3PPjMnLIotOrpkgYzUJvgldXG1xsayTP03QtM%2B4w%2B%2BJi%2B52E2bdXNvK5hyV3g%2FOVqaN8oiDaJT5Hl%2BNJ5Z6Y9LZFDmEoM%2Fnepof%2FMDdrkftyx%2FY5Me%2FqPpyYljWo%2BXofdxOXjsNytz9EFfSgci9LoBzqQ0P1izDeBNfuJRF2lZe33MgdFRShnuVO7fM8YQUlt1h71xI85m%2FVGccWfro0od5II%2BZYTEo2YWFSrxxMCKlRsnO2ppdU%2Bi0wRyrk6rB5YeN2tI23zL89O7Kei0mbYIL7mjs9JWhjifdUEZyKYYDivVNuRHM5Xavh1VRtMRDKYLUNq3JY1f6xETFpuAJHsy3xUAKm0zMc705MluU2ko0JaZVrbNr85xt01kir34rLsARf3%2FzoxT2W38d%2Fy2K7OS8LqgRYrFzmgI%2B7LM0fHokV2b3T4PidPnGjukE9h0OnwOnoaRsg663jzpm%2Fep7whiwDMwnd20DCovpXPBjqZAX%2FNIspgiPB8pC2h9fpPrEnxbEYse%2FqVOS4%2FbIqUtwBRY4v6MCV4M3oRNWlWH1ygFx03N5nlgU7PuNA0hYFMp4ywAQEQJ2euS175PxiUe0Kq3nMirhBnPOOafNd1%2FL6wfsF4ylKFgY4xJWVxbrYFTenMJgBTtu0%2F2LZjyhwVAm8u6UEElDnwm4nLfY%2Bilmn6PlIvRigzbttBDQ%3D%3D&Expires=1776643323)
+
+Everyone keeps saying "agents, agents." Drop into the code and most of it is fog. OpenAI's Agents SDK, released on March 11, 2025, turned a chunk of that fog into solid ground. It's light. Almost no abstractions. Python, as-is.
+
+## So what does it actually do
+
+The Agents SDK is a Python framework for attaching tools, guardrails, and handoffs to LLMs so they can "decide and act" on their own. It's the production-ready successor to OpenAI's earlier experiment, Swarm. No LangChain-sized cathedral here. Just a handful of primitives: Agent, Runner, Tool, Handoff, Guardrail, Session.
+
+Quick disambiguation. OpenAI also ships a consumer feature named "ChatGPT agent" - the one you trigger with `/agent` in the composer to have it browse the web for you. That's not this. This piece is about the developer SDK.
+
+## Six core concepts
+
+| Concept | One-liner |
+|---|---|
+| Agent | An LLM bundled with instructions, tools, and a model |
+| Runner | The thing that actually runs the agent |
+| Tool | A Python function decorated with `@function_tool` |
+| Handoff | A special tool that transfers control to another agent |
+| Guardrail | Parallel input/output validation that halts on failure |
+| Session | Automatic conversation history (e.g., SQLiteSession) |
+
+## Install
+
+Three things: Python 3.10+ (the repo allows 3.9+), a virtualenv, and an OpenAI API key.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install openai-agents
+```
+
+`uv` users get a shorter line.
+
+```bash
+uv add openai-agents
+```
+
+Need voice? `pip install "openai-agents[voice]"`. Redis sessions? `pip install "openai-agents[redis]"`. Pick what you need.
+
+Set the key.
+
+```bash
+export OPENAIAPIKEY="sk-..."
+```
+
+## First run - Hello, Agent
+
+Five lines and it moves.
+
+```python
+from agents import Agent, Runner
+
+agent = Agent(
+ name="Assistant",
+ instructions="You are a helpful assistant. Keep replies short.",
+)
+
+result = Runner.run_sync(agent, "Write a haiku about recursion.")
+print(result.final_output)
+```
+
+`Runner.run_sync` is sync. For async, `await Runner.run(...)`.
+
+## Adding a tool
+
+For the agent to do something, it needs tools. One decorator and the schema gets inferred.
+
+```python
+import asyncio
+from agents import Agent, Runner, function_tool
+
+@function_tool
+def get_weather(city: str) -> str:
+ return f"The weather in {city} is sunny."
+
+agent = Agent(
+ name="Weatherman",
+ instructions="Only answer city weather questions.",
+ tools=[get_weather],
+)
+
+async def main():
+ result = await Runner.run(agent, "What's the weather in Tokyo?")
+ print(result.final_output)
+
+asyncio.run(main())
+```
+
+The loop inside is simple. Call the LLM → if the response contains tool calls, execute them → feed results back → return when there's a final output. Handoffs swap the active agent mid-loop.
+
+## Memory via Session
+
+Stitching history by hand every turn is tedious. Hand it to a session object and move on.
+
+```python
+from agents import Agent, Runner, SQLiteSession
+
+agent = Agent(name="Assistant", instructions="Reply very concisely.")
+session = SQLiteSession("conversation_123")
+
+result = await Runner.run(agent, "What city is the Golden Gate Bridge in?", session=session)
+print(result.final_output) # San Francisco
+
+result = await Runner.run(agent, "What state is it in?", session=session)
+print(result.final_output) # California
+```
+
+One file, persistent context. Shut the laptop, open it tomorrow, the thread survives. Underrated little feature.
+
+## Multi-agent - a taste of Handoff
+
+Classic pattern: a triage agent routes to a sales or support agent based on intent.
+
+```python
+from agents import Agent, Runner, handoff
+
+sales = Agent(name="Sales", instructions="Answer pricing and quotes only.")
+support = Agent(name="Support", instructions="Answer refunds and bugs only.")
+
+triage = Agent(
+ name="Triage",
+ instructions="Read the question and hand off to the right team.",
+ handoffs=[handoff(sales), handoff(support)],
+)
+
+result = Runner.run_sync(triage, "How do I get a refund?")
+print(result.final_output)
+```
+
+The LLM makes the call. You design roles, not rules. That's the flavor of the Agents SDK.
+
+## How much can you trust it
+
+Guardrails attach on both input and output. Pydantic schemas for structured output are table stakes. Tracing is built in, so runs are inspectable in a dashboard out of the box. This is production-minded tooling.
+
+Don't get cocky though. Throw too many tools at an agent and costs dance. Timeouts, max-step caps, schema validation - set them day one. Your future self says thanks.
+
+## Where to go next
+
+- Bolt on `ChatKit` to embed a chat UI in a web app
+- Sketch a workflow in `Agent Builder` (visual editor), then export to SDK
+- Expose the agent over HTTP with FastAPI + Uvicorn
+- Wire in a vector DB and build a RAG subagent
+
+## TL;DR
+
+- The Agents SDK is OpenAI's lightweight Python agent framework, released March 2025.
+- One line - `pip install openai-agents` - gets you going; `Agent` and `Runner` are enough for a first run.
+- Layer on tools, sessions, handoffs, and guardrails to grow into a production-grade multi-agent system.
+
+## References
+
+- OpenAI Agents SDK Quickstart: https://openai.github.io/openai-agents-python/quickstart/
+- OpenAI Agents SDK (Korean docs): https://openai.github.io/openai-agents-python/ko/
+- GitHub - openai/openai-agents-python: https://github.com/openai/openai-agents-python
+- OpenAI API Docs - Agents SDK: https://developers.openai.com/api/docs/guides/agents
+- OpenAI Help Center - ChatGPT agent: https://help.openai.com/en/articles/11752874-chatgpt-agent
+- DataCamp - OpenAI Agents SDK Tutorial (2025-03-16): https://www.datacamp.com/tutorial/openai-agents-sdk-tutorial
+- dev.to - Build a Task-Running AI Agent with AgentKit (2025-10-07): https://dev.to/dhruvjoshi9/build-a-task-running-ai-agent-with-the-new-chatgpt-agentkit-a-step-by-step-guide-55nd
+- Wikidocs - Installing OpenAI Agents SDK: https://wikidocs.net/295490
+- Fast.io - OpenAI Agents SDK Guide (2026-02-08): https://fast.io/resources/openai-agents-sdk/

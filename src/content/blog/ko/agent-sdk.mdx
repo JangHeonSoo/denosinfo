@@ -1,0 +1,174 @@
+---
+title: "ChatGPT의 Agent SDK란? 설치부터 간단 사용까지"
+description: "ChatGPT의 Agent SDK란? 설치부터 간단 사용까지"
+pubDate: 2026-04-20
+heroImage: "/images/agent-sdk-hero.png"
+category: "tech"
+author: "denosinfo"
+tags: ["ChatGPT의", "Agent", "SDK란", "설치부터", "간단", "사용까지"]
+comments: true
+---
+
+# ChatGPT의 Agent SDK란? 설치부터 간단 사용까지
+
+![workspace](https://user-gen-media-assets.s3.amazonaws.com/gemini_images/22957600-1c13-4824-82be-c2832fcabf97.png?AWSAccessKeyId=ASIA2F3EMEYE62UAXQY5&Signature=CEgXTx8%2FTWhd7ewpsiLVjU%2B9Jec%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEEcaCXVzLWVhc3QtMSJGMEQCIBNxbJ%2F0%2F7H3iPSDO84J%2Fqk8qxuWyUVg%2Feh5KHKoQ%2ByiAiApAHjFxvVYfx6WV8cVgMzomGbD9c2NQvljgOmallcS2irzBAgQEAEaDDY5OTc1MzMwOTcwNSIMh7kZjpAgMm2Q5aqpKtAEnfNp8ohRyvpXemAvzeb9NL41KmwBcTHiYK7DydrA9PBeu7Q8QThaA6l%2FQ1KVLxoE51aHvrzURmPiJ4AauZMyHzF89NRkmllarfFkU0lVppJ0qd32VMl%2BwvsDuX75xM%2FHZRbWyP9NcnjbCwAA2GX2%2BFZRqJcBR247o%2FXCw9NC0w8v6vfSw38pyfgOTNQkANjr6Bgei2wDm9AufIAI6LfxH7NcPJl6aIJ0svrFFL2BJmdXWP%2FardXfBIwnLGG2SjTp%2BFBFs%2BheNZDInlFiCM68qei3sAVFex01lVzUrnpiEYbdK0Rvx5AlAjAsQnnOT6iVxEyWkgadNvtM027QNoIGWZq%2BREVdkz6EEQD4Go0gIADSwVaJPqVCx50g8wGiLtn%2BcApUMOxh%2F9HWNPyKm0qaaQVK6xvRxsla1hn2oNfv3m6Gb%2BQvG%2Bqc%2FvFl%2B32gTWGbVXRU2WVvXKyM8G60KwJ%2BKY3BGDe%2Bb6fHyUaniCpVyLbLa%2B7ATyx1Qv9WFHmOWwrKXAfVuVPqNu9YB38tvDjswRtyvD8G7YTO8U2CgJ2SuAJ7pCUemzz%2Fcx5PVf%2FAYuOoKDdWrFMVn4Ci%2Bbw1vwHTizjBucjmslw7hdzXhQ176QYnwZsZiw7KOZakokp6h7pHEXgZtnU7kBWCW9L1pPA51H4hN%2Fv4hcvyfPX0T7quwCtYqBYtTiTiI3YugtkfSqlcZrxmZAq1kpVXTKe3WuvbXL%2F%2FzU9mp%2BcOfWdeAExzusNyVDY%2FG4PYArzDxTkQo3N3QhqnWyOotioZZj5SuOierzCAsZXPBjqZARD3obAtTA%2FXTO2CgH5BoniubGNQpSMOUPcyektDPzZsblhSRjAWQFyd5GKmcR0RCmQh98Z8T2zjgXCqwVd1elh0E6LBgy2GMGOwcHRO3f7vyZdsyMtgIVgKcQcBbhYaH5TxgwbAC8XfVuALeJLQAxvfvuQ%2FOQCbewW7Z1SExLPe2EDORY%2BGsw3SrlIn4sCte1Q56EiEMQhflg%3D%3D&Expires=1776641619)
+
+요즘 "에이전트, 에이전트" 하는데 정작 코드로 내려가 보면 뜬구름인 경우가 많다. OpenAI가 2025년 3월 11일에 공개한 Agents SDK는 그 뜬구름을 꽤 단단한 땅으로 바꿔놓은 물건이다. 가볍다. 추상화가 거의 없다. 파이썬을 그대로 쓴다.
+
+## 도대체 뭐 하는 물건인가
+
+Agents SDK는 LLM에 도구(tool)와 가드레일, 그리고 다른 에이전트로의 핸드오프(handoff)를 붙여 "스스로 판단하고 행동하는 앱"을 만드는 파이썬 프레임워크다. 이전의 실험작 Swarm을 프로덕션용으로 다듬은 후속작이다. LangChain이나 LlamaIndex처럼 거대한 체계를 강요하지 않는다. 대신 Agent, Runner, Tool, Handoff, Guardrail, Session 정도의 최소 개념만 기억하면 된다.
+
+헷갈리기 쉬운 포인트 하나. 같은 "ChatGPT Agent"라는 이름으로 OpenAI가 일반 사용자용 기능도 따로 운영한다. 합성기의 `/agent` 명령으로 웹을 돌아다니게 시키는 그 기능. 이 글에서 다루는 건 그게 아니라, 개발자가 코드로 에이전트를 만드는 SDK 쪽이다.
+
+## 핵심 개념 6가지
+
+| 개념 | 한 줄 정리 |
+|---|---|
+| Agent | 지시문·도구·모델이 묶인 LLM 단위 |
+| Runner | 에이전트를 실제로 돌리는 실행기 |
+| Tool | 파이썬 함수에 `@function_tool` 붙이면 끝 |
+| Handoff | 다른 에이전트로 제어권을 넘기는 특수 도구 |
+| Guardrail | 입출력 검증, 병렬로 돌며 위반 시 중단 |
+| Session | 대화 히스토리를 자동으로 유지 (예: SQLiteSession) |
+
+## 설치
+
+준비물은 세 가지. 파이썬 3.10 이상(공식 저장소는 3.9 이상도 허용), 가상환경, 그리고 OpenAI API 키.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install openai-agents
+```
+
+`uv`를 쓰는 사람이면 더 짧다.
+
+```bash
+uv add openai-agents
+```
+
+음성 기능이 필요하면 `pip install "openai-agents[voice]"`, Redis 세션을 쓰려면 `pip install "openai-agents[redis]"`. 취향껏 골라 담으면 된다.
+
+API 키 세팅.
+
+```bash
+export OPENAIAPIKEY="sk-..."
+```
+
+## 첫 실행 - Hello, Agent
+
+진짜 5줄이면 움직인다.
+
+```python
+from agents import Agent, Runner
+
+agent = Agent(
+ name="Assistant",
+ instructions="너는 친절한 한국어 도우미다. 짧고 단정하게 답해라.",
+)
+
+result = Runner.run_sync(agent, "재귀에 대한 하이쿠를 써줘.")
+print(result.final_output)
+```
+
+`Runner.run_sync`는 동기. 비동기가 필요하면 `await Runner.run(...)`.
+
+## 도구(tool) 붙이기
+
+에이전트가 "진짜로" 뭔가를 하려면 도구가 있어야 한다. 함수에 데코레이터 하나 붙이면 스키마가 자동으로 잡힌다.
+
+```python
+import asyncio
+from agents import Agent, Runner, function_tool
+
+@function_tool
+def get_weather(city: str) -> str:
+ return f"{city}의 날씨는 맑음."
+
+agent = Agent(
+ name="Weatherman",
+ instructions="사용자의 도시 날씨 질문에만 답한다.",
+ tools=[get_weather],
+)
+
+async def main():
+ result = await Runner.run(agent, "도쿄 날씨 알려줘.")
+ print(result.final_output)
+
+asyncio.run(main())
+```
+
+안에서 돌아가는 루프는 단순하다. LLM 호출 → 응답에 도구 호출이 있으면 실행 → 결과를 히스토리에 넣고 다시 LLM 호출 → 최종 출력이 나오면 종료. 핸드오프가 끼면 에이전트 자체가 교체된다.
+
+## 대화 기억시키기 - Session
+
+매 턴마다 히스토리를 수작업으로 이어붙이는 건 피곤하다. `SQLiteSession` 같은 세션 객체에 던져주면 알아서 관리한다.
+
+```python
+from agents import Agent, Runner, SQLiteSession
+
+agent = Agent(name="Assistant", instructions="아주 간결하게 답해라.")
+session = SQLiteSession("conversation_123")
+
+result = await Runner.run(agent, "금문교는 어느 도시에 있지?", session=session)
+print(result.final_output) # 샌프란시스코
+
+result = await Runner.run(agent, "그럼 어느 주에 속해?", session=session)
+print(result.final_output) # 캘리포니아
+```
+
+파일 하나만 있으면 대화가 살아남는다. 노트북 껐다 켜도 이어진다. 이게 사실 의외로 귀한 기능이다.
+
+## 멀티 에이전트 - Handoff 맛보기
+
+트리아지(triage) 에이전트 하나 두고, 질문 성격에 따라 영업팀·지원팀으로 넘기는 패턴이 고전이다.
+
+```python
+from agents import Agent, Runner, handoff
+
+sales = Agent(name="Sales", instructions="가격과 견적만 답한다.")
+support = Agent(name="Support", instructions="환불과 오류만 답한다.")
+
+triage = Agent(
+ name="Triage",
+ instructions="질문을 보고 적절한 팀으로 넘겨라.",
+ handoffs=[handoff(sales), handoff(support)],
+)
+
+result = Runner.run_sync(triage, "환불 어떻게 받나요?")
+print(result.final_output)
+```
+
+판단은 LLM이 한다. 개발자는 규칙이 아니라 "역할"만 설계하면 된다. 이게 Agents SDK의 맛이다.
+
+## 어디까지 믿을 만한가
+
+가드레일을 입력·출력 양쪽에 걸 수 있다. Pydantic으로 출력 스키마를 강제하는 건 기본기. 관측성(observability)을 위해 트레이싱이 기본 내장이라, 실행 흐름을 대시보드에서 그대로 들여다볼 수 있다. 프로덕션까지 밀고 갈 수 있게 설계된 물건이라는 얘기다.
+
+다만 맹신은 금물. 도구를 마구 던지면 비용이 춤을 춘다. 타임아웃, 최대 스텝 수, 스키마 검증 - 이 세 가지는 처음부터 세팅해 두는 게 몸에 이롭다.
+
+## 다음에 해볼 만한 것
+
+- `ChatKit`을 얹어 웹에 임베드되는 채팅 UI 붙이기
+- `Agent Builder`(비주얼 에디터)로 워크플로우 초안 잡고 SDK로 내려받기
+- FastAPI + Uvicorn으로 에이전트를 HTTP 엔드포인트로 노출
+- 벡터 DB 붙여 RAG 서브에이전트 만들기
+
+## 3줄 요약
+
+- Agents SDK는 OpenAI가 2025년 3월 공개한 경량 파이썬 에이전트 프레임워크다.
+- `pip install openai-agents` 한 줄이면 끝, `Agent`와 `Runner`만 알아도 첫 실행은 된다.
+- 도구·세션·핸드오프·가드레일 순으로 살을 붙여 나가면 프로덕션급 멀티 에이전트까지 자연스럽게 이어진다.
+
+## 참고 자료
+
+- OpenAI Agents SDK 공식 Quickstart: https://openai.github.io/openai-agents-python/quickstart/
+- OpenAI Agents SDK 한국어 문서: https://openai.github.io/openai-agents-python/ko/
+- GitHub - openai/openai-agents-python: https://github.com/openai/openai-agents-python
+- OpenAI API 문서 - Agents SDK: https://developers.openai.com/api/docs/guides/agents
+- OpenAI Help Center - ChatGPT agent: https://help.openai.com/en/articles/11752874-chatgpt-agent
+- DataCamp - OpenAI Agents SDK Tutorial (2025-03-16): https://www.datacamp.com/tutorial/openai-agents-sdk-tutorial
+- dev.to - Build a Task-Running AI Agent with AgentKit (2025-10-07): https://dev.to/dhruvjoshi9/build-a-task-running-ai-agent-with-the-new-chatgpt-agentkit-a-step-by-step-guide-55nd
+- 위키독스 - OpenAI Agents SDK 설치하기: https://wikidocs.net/295490
+- Fast.io - OpenAI Agents SDK Guide (2026-02-08): https://fast.io/resources/openai-agents-sdk/
